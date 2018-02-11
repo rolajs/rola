@@ -1,6 +1,6 @@
 {
   "name": "hypr",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tiny UI framework.",
   "main": "index.js",
   "scripts": {
