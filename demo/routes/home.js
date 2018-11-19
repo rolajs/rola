@@ -1,4 +1,4 @@
-const { h } = require('preact')
+const { h } = require('hypr')
 
 function load ({ state }) {
   return {
@@ -13,8 +13,8 @@ function load ({ state }) {
 
 function view (props) {
   return h('div', {}, [
-    h('h1', {}, props.title),
-    h('pre', {}, JSON.stringify(props, null, '  '))
+    h('h1', { key: 'a' }, props.title),
+    h('pre', { key: 'b' }, 'Hello')
   ])
 }
 

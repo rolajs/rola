@@ -1,18 +1,10 @@
 {
   "name": "hypr",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "description": "Tiny UI framework.",
-  "module": "dist/hypr.es.js",
-  "jsnext:main": "dist/hypr.es.js",
-  "main": "dist/hypr.js",
-  "umd:main": "dist/hypr.umd.js",
-  "files": [
-    "dist"
-  ],
+  "main": "index.js",
   "scripts": {
-    "build": "microbundle build",
-    "watch": "microbundle watch --compress false",
-    "publish": "npm publish"
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -29,14 +21,18 @@
   },
   "homepage": "https://github.com/estrattonbailey/hypr#readme",
   "dependencies": {
+    "compression": "^1.7.3",
+    "connect": "^3.6.6",
     "foil": "^2.2.3",
     "html-meta-tags": "^1.0.0",
-    "hyperapp-render": "^3.0.0",
-    "microbundle": "^0.7.0",
+    "module-alias": "^2.1.0",
+    "ms": "^2.1.1",
     "picostate": "^1.4.0",
+    "preact": "^8.3.1",
     "preact-render-to-string": "^4.1.0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
+    "serve-static": "^1.13.2",
     "superfine": "^6.0.1"
   }
 }
