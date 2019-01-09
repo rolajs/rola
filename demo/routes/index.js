@@ -1,6 +1,6 @@
-const home = require('./home.js')
+import * as home from './home.js'
 
-module.exports = [
+export default [
   home,
   {
     path: '*',

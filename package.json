@@ -9,9 +9,12 @@
   "files": [
     "dist"
   ],
+  "bin": {
+    "hypr": "./cli.js"
+  },
   "scripts": {
-    "build": "microbundle build",
-    "watch": "microbundle watch --compress false",
+    "build": "microbundle build --jsx React.createElement",
+    "watch": "microbundle watch --jsx React.createElement --compress false",
     "publish": "npm publish"
   },
   "repository": {
@@ -29,14 +32,28 @@
   },
   "homepage": "https://github.com/estrattonbailey/hypr#readme",
   "dependencies": {
+    "@friendsof/spaghetti": "^1.0.1",
+    "@foil/react": "^3.2.0",
+    "@picostate/react": "^1.1.0",
+    "ansi-colors": "^3.2.3",
+    "commander": "^2.19.0",
+    "exit-hook": "^2.0.0",
+    "fs-extra": "^5.0.0",
     "foil": "^2.2.3",
+    "gzip-size": "^4.1.0",
     "html-meta-tags": "^1.0.0",
     "hyperapp-render": "^3.0.0",
+    "loading-indicator": "^2.0.0",
+    "log-update": "^2.3.0",
+    "merge-deep": "^3.0.2",
     "microbundle": "^0.7.0",
     "picostate": "^1.4.0",
     "preact-render-to-string": "^4.1.0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
-    "superfine": "^6.0.1"
+    "source-map-support": "^0.5.9",
+    "superfine": "^6.0.1",
+    "webpack": "^4.28.2",
+    "webpack-node-externals": "^1.7.2"
   }
 }

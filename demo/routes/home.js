@@ -1,6 +1,8 @@
-const { h } = require('hypr')
+import React from 'react'
 
-function load ({ state }) {
+export const path = '/'
+
+export function load ({ state }) {
   return {
     state: {
       title: 'Hello world!',
@@ -11,15 +13,11 @@ function load ({ state }) {
   }
 }
 
-function view (props) {
-  return h('div', {}, [
-    h('h1', { key: 'a' }, props.title),
-    h('pre', { key: 'b' }, 'Hello')
-  ])
-}
-
-module.exports = {
-  path: '/',
-  load,
-  view
+export function view (props) {
+  return (
+    <div>
+      <h1>{props.title}</h1>
+      <pre>Hello</pre>
+    </div>
+  )
 }
