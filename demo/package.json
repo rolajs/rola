@@ -1,0 +1,30 @@
+{
+  "name": "hypr-demo",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "hypr"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/estrattonbailey/hypr.git"
+  },
+  "keywords": [
+    "ui",
+    "component"
+  ],
+  "author": "estrattonbailey",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/estrattonbailey/hypr/issues"
+  },
+  "homepage": "https://github.com/estrattonbailey/hypr#readme",
+  "dependencies": {
+    "compression": "^1.7.3",
+    "connect": "^3.6.6",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "serve-static": "^1.13.2"
+  }
+}
