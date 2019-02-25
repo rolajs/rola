@@ -62,12 +62,11 @@ export function client (routes, initialState = {}, options = {}) {
                     done(route.view(store.state))
                   })
                   .catch(e => {
-                    console.log(e)
-                    console.log('options.resolve failed')
+                    console.error('options.resolve failed', e.message || e)
                   })
               })
               .catch(e => {
-                console.log('route.load failed')
+                console.error('route.load failed', e.message || e)
               })
           }}>
           {route.view(store.state)}

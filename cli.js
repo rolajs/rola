@@ -8,11 +8,11 @@ const exit = require('exit')
 const onExit = require('exit-hook')
 const app = require('commander')
 const merge = require('deepmerge')
-const compiler = require('@friendsof/spaghetti')
 const c = require('ansi-colors')
 
 const pkg = require('./package.json')
 const log = require('./lib/logger.js')('hypr')
+const { createCompilers } = require('./lib/compiler.js')
 
 const PORT = process.env.PORT || 3002
 const cwd = process.cwd()
@@ -53,80 +53,76 @@ function createServer (file) {
   }
 }
 
-function createConfig (filename, watch) {
-  const client = filename === 'client'
-
-  return {
-    in: path.join(cwd, `${filename}.js`),
-    filename,
-    outDir: path.join(cwd, 'static'),
-    alias: {
-      '@': cwd
-    },
-    watch,
-    target: client ? 'web' : 'node',
-    output: client ? {} : {
-      library: '__hypr_internal',
-      libraryTarget: 'commonjs2'
-    },
-    banner: client ? `` : `require('source-map-support').install();`
-  }
-}
-
 prog
   .command('build')
   .action(() => {
-    const server = compiler(createConfig('server'))
-    const client = compiler(createConfig('client'))
+    const { client, server } = createCompilers()
 
     log.info('building', '', true)
 
-    client.build()
-      .end(stats => {
-        server.build()
-          .end(serverStats => {
-            logAssets(stats, {
-              gzip: true,
-              persist: true
-            })
-            logAssets(serverStats)
+    Promise.all([
+      new Promise((res, rej) => {
+        if (!client.config) return res()
 
-            exit()
-          })
+        client.compiler.build()
+          .end(stats => res(stats))
+          .error(e => rej(e))
+      }),
+      new Promise((res, rej) => {
+        if (!server.config) return res()
+
+        server.compiler.build()
+          .end(stats => res(stats))
+          .error(e => rej(e))
       })
+    ]).then(([ cs, ss ]) => {
+      cs && logAssets(cs, {
+        gzip: true,
+        persist: true
+      })
+
+      ss && logAssets(ss)
+
+      exit()
+    })
+
   })
 
 prog
   .command('watch')
   .action(() => {
-    const serverConfig = createConfig('server', true)
-    const server = compiler(serverConfig)
-    const client = compiler(createConfig('client', true))
-    const parent = createServer(
-      path.join(serverConfig.outDir, `${serverConfig.filename}.js`)
-    )
+    const { client, server } = createCompilers({ watch: true })
 
     log.info('watching', '', true)
 
-    client.watch()
-      .end(stats => {
-        log.info('built', `${log.colors.gray('client')} in ${stats.duration}ms`)
-      })
-      .error(e => {
-        log.error(e.message || e)
-      })
-    server.watch()
-      .end(stats => {
-        log.info('built', `${log.colors.gray('server')} in ${stats.duration}ms`)
-        parent.active ? parent.update() : parent.init()
-      })
-      .error(e => {
-        log.error(e.message || e)
-      })
+    if (client.config) {
+      client.compiler.watch()
+        .end(stats => {
+          log.info('built', `${log.colors.gray('client')} in ${stats.duration}ms`)
+        })
+        .error(e => {
+          log.error(e.message || e)
+        })
+    }
 
-    onExit(() => {
-      parent.close()
-    })
+    if (server.config) {
+      const serve = createServer(
+        path.join(server.config.outDir, `${server.config.filename}.js`)
+      )
+
+      server.compiler.watch()
+        .end(stats => {
+          log.info('built', `${log.colors.gray('server')} in ${stats.duration}ms`)
+          serve.active ? serve.update() : serve.init()
+        })
+        .error(e => {
+          log.error(e.message || e)
+        })
+
+      onExit(() => {
+        serve.close()
+      })
+    }
   })
 
 if (!process.argv.slice(2).length) {

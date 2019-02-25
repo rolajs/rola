@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/estrattonbailey/hypr#readme",
   "dependencies": {
-    "@friendsof/spaghetti": "^1.2.1",
+    "@friendsof/spaghetti": "^1.2.2",
     "@picostate/react": "^1.1.0",
     "ansi-colors": "^3.2.3",
     "biti": "^1.0.0",
