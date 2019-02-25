@@ -2,14 +2,17 @@
   "name": "hypr",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "dist/hypr.js",
+  "module": "dist/hypr.mjs",
+  "files": [
+    "dist"
+  ],
   "bin": {
     "hypr": "./cli.js"
   },
   "scripts": {
-    "build": "microbundle build -i client.js -o dist -f es,cjs,umd --jsx React.createElement",
-    "watch": "microbundle watch -i client.js -o dist -f es,cjs,umd --jsx React.createElement",
-    "publish": "npm publish"
+    "build": "microbundle build -i index.js -o dist -f es,cjs --jsx React.createElement",
+    "watch": "microbundle watch -i index.js -o dist -f es,cjs --jsx React.createElement"
   },
   "repository": {
     "type": "git",
@@ -41,6 +44,7 @@
     "matchit": "^1.0.7",
     "merge-deep": "^3.0.2",
     "microbundle": "^0.7.0",
+    "nanoclass": "0.0.2",
     "picostate": "^1.4.0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",

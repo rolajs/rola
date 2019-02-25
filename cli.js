@@ -10,29 +10,21 @@ const app = require('commander')
 const merge = require('deepmerge')
 const compiler = require('@friendsof/spaghetti')
 const c = require('ansi-colors')
+
+const pkg = require('./package.json')
+const log = require('./lib/logger.js')('hypr')
+
 const PORT = process.env.PORT || 3002
-
 const cwd = process.cwd()
+const prog = require('commander')
+  .version(pkg.version)
+  .option('-c, --config <path>', 'specify the path to your config file')
 
-app
-  .arguments('<command>')
-  .option('--config <config>', 'config file: --config config.js (default: hypr.config.js)')
-  .parse(process.argv)
-
-const production = app.args[0] && app.args[0] === 'build' || false
-
-function log (...args) {
-  if (typeof args[0] === 'function') {
-    console.log(
-      c.gray(`hypr`),
-      ...[].concat(args[0](c))
-    )
-  } else {
-    console.log(
-      c.gray(`hypr`),
-      ...args
-    )
-  }
+function logAssets ({ duration, assets }, opts = {}) {
+  log.info('built', `in ${duration}ms\n${assets.reduce((_, asset, i) => {
+    const size = opts.gzip && asset.size.gzip ? asset.size.gzip + 'kb gzipped' : asset.size.raw + 'kb'
+    return _ += `  > ${log.colors.gray(asset.filename)} ${size}${i !== assets.length - 1 ? `\n` : ''}`
+  }, '')}`, opts.persist)
 }
 
 function createServer (file) {
@@ -51,7 +43,7 @@ function createServer (file) {
 
       this.server.listen(PORT, e => {
         if (e) console.error(e)
-        console.log(`hypr open ::${PORT}`)
+        log.info('open', log.colors.green(PORT))
         this.active = true
       })
     },
@@ -61,7 +53,7 @@ function createServer (file) {
   }
 }
 
-function createConfig (filename) {
+function createConfig (filename, watch) {
   const client = filename === 'client'
 
   return {
@@ -71,7 +63,7 @@ function createConfig (filename) {
     alias: {
       '@': cwd
     },
-    watch: !production,
+    watch,
     target: client ? 'web' : 'node',
     output: client ? {} : {
       library: '__hypr_internal',
@@ -81,64 +73,67 @@ function createConfig (filename) {
   }
 }
 
-const clientConfig = createConfig('client')
-const serverConfig = createConfig('server')
-const client = compiler(clientConfig)
-const server = compiler(serverConfig)
-// console.log(JSON.stringify(clientConfig, null, '  '))
-// console.log(JSON.stringify(serverConfig, null, '  '))
+prog
+  .command('build')
+  .action(() => {
+    const server = compiler(createConfig('server'))
+    const client = compiler(createConfig('client'))
 
-if (production) {
-  client.build()
-    .end(stats => {
-      log(c => ([
-        c.green(`compiled`),
-        `in ${stats.duration}ms`
-      ]))
-      server.build()
-        .end(stats => {
-          log(c => ([
-            c.green(`compiled`),
-            `in ${stats.duration}ms`
-          ]))
-          exit()
-        })
-    })
-} else {
-  const parent = createServer(
-    path.join(serverConfig.outDir, `${serverConfig.filename}.js`)
-  )
+    log.info('building', '', true)
 
-  client.watch()
-    .end(stats => {
-      log(c => ([
-        c.green(`compiled client`),
-        `in ${stats.duration}ms`
-      ]))
-    })
-    .error(err => {
-      log(c => ([
-        c.red(`error`),
-        err ? err.message || err : ''
-      ]))
-    })
-  server.watch()
-    .end(stats => {
-      log(c => ([
-        c.green(`compiled server`),
-        `in ${stats.duration}ms`
-      ]))
+    client.build()
+      .end(stats => {
+        server.build()
+          .end(serverStats => {
+            logAssets(stats, {
+              gzip: true,
+              persist: true
+            })
+            logAssets(serverStats)
 
-      parent.active ? parent.update() : parent.init()
-    })
-    .error(err => {
-      log(c => ([
-        c.red(`error`),
-        err ? err.message || err : ''
-      ]))
-    })
-
-  onExit(() => {
-    parent.close()
+            exit()
+          })
+      })
   })
+
+prog
+  .command('watch')
+  .action(() => {
+    const serverConfig = createConfig('server', true)
+    const server = compiler(serverConfig)
+    const client = compiler(createConfig('client', true))
+    const parent = createServer(
+      path.join(serverConfig.outDir, `${serverConfig.filename}.js`)
+    )
+
+    log.info('watching', '', true)
+
+    client.watch()
+      .end(stats => {
+        logAssets(stats, { gzip: true })
+      })
+      .error(e => {
+        log.error(e.message || e)
+      })
+    server.watch()
+      .end(stats => {
+        logAssets(stats)
+        parent.active ? parent.update() : parent.init()
+      })
+      .error(e => {
+        log.error(e.message || e)
+      })
+
+    onExit(() => {
+      parent.close()
+    })
+  })
+
+if (!process.argv.slice(2).length) {
+  prog.outputHelp(txt => {
+    console.log(txt)
+    exit()
+  })
+} else {
+  prog.parse(process.argv)
 }

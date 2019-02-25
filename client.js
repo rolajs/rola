@@ -3,9 +3,12 @@ import { hydrate } from 'react-dom'
 import createStore from 'picostate'
 import { Provider } from '@picostate/react'
 import { parse } from 'flatted/esm'
-import Router, { history, matcher } from './router.js'
 
-const store = createStore({})
+import matcher from './lib/matcher.js'
+import { history, withHistory } from './history.js'
+import { store } from './state.js'
+import Link from './link.js'
+import Router from './router.js'
 
 export function client (routes, initialState = {}, options = {}) {
   const location = window.location.href.replace(window.location.origin, '')

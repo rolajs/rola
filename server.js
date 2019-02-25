@@ -3,8 +3,10 @@ import { renderToString } from 'react-dom/server'
 import createStore from 'picostate'
 import { Provider } from '@picostate/react'
 import merge from 'deepmerge'
-import Router, { matcher } from './router.js'
+
+import matcher from './lib/matcher.js'
 import html from './lib/html.js'
+import Router from './router.js'
 
 function redir (res, Location, Referer, status = 302) {
   res.writeHead(status, { Location, Referer })

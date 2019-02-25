@@ -5,7 +5,7 @@ export const pathname = '/'
 export function load ({ state }) {
   return {
     meta: {
-      title: 'hypr',
+      title: 'hypr - the react toolkit',
     },
     props: {
       title: 'hypr - the react toolkit',
