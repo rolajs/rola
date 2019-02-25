@@ -1,15 +1,15 @@
 import React from 'react'
 import App from '@/src/components/App.js'
 
-export const pathname = '/'
+export const pathname = '/about'
 
 export function load ({ state }) {
   return {
     meta: {
-      title: 'hypr - the react toolkit',
+      title: 'about - hypr - the react toolkit',
     },
     props: {
-      title: 'hypr - the react toolkit',
+      title: 'about - hypr - the react toolkit',
     }
   }
 }

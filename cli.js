@@ -110,14 +110,14 @@ prog
 
     client.watch()
       .end(stats => {
-        logAssets(stats, { gzip: true })
+        log.info('built', `${log.colors.gray('client')} in ${stats.duration}ms`)
       })
       .error(e => {
         log.error(e.message || e)
       })
     server.watch()
       .end(stats => {
-        logAssets(stats)
+        log.info('built', `${log.colors.gray('server')} in ${stats.duration}ms`)
         parent.active ? parent.update() : parent.init()
       })
       .error(e => {

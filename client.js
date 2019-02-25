@@ -33,45 +33,46 @@ export function client (routes, initialState = {}, options = {}) {
 
   return function render (root) {
     hydrate((
-      <Router
-        router={router}
-        location={location}
-        resolve={({ location, params, route }, done) => {
-          store.hydrate({
-            router: {
-              location,
-              params
-            }
-          })
-
-          const {
-            load = () =>  {},
-            view
-          } = route
-
-          Promise.resolve(load(store.state))
-            .then(({ redirect, meta, props }) => {
-              if (redirect) return history.pushState(redirect.to)
-
-              store.hydrate(props)
-
-              Promise.resolve(options.resolve && options.resolve(store.state))
-                .then(() => {
-                  document.title = meta.title || document.title
-                  done(route.view(store.state))
-                })
-                .catch(e => {
-                  console.log('options.resolve failed')
-                })
+      <Provider store={store}>
+        <Router
+          router={router}
+          location={location}
+          resolve={({ location, params, route }, done) => {
+            store.hydrate({
+              router: {
+                location,
+                params
+              }
             })
-            .catch(e => {
-              console.log('route.load failed')
-            })
-        }}>
-        <Provider store={store}>
+
+            const {
+              load = () =>  {},
+              view
+            } = route
+
+            Promise.resolve(load(store.state))
+              .then(({ redirect, meta = {}, props }) => {
+                if (redirect) return history.pushState(redirect.to)
+
+                store.hydrate(props)
+
+                Promise.resolve(options.resolve && options.resolve(store.state))
+                  .then(() => {
+                    document.title = meta.title || document.title
+                    done(route.view(store.state))
+                  })
+                  .catch(e => {
+                    console.log(e)
+                    console.log('options.resolve failed')
+                  })
+              })
+              .catch(e => {
+                console.log('route.load failed')
+              })
+          }}>
           {route.view(store.state)}
-        </Provider>
-      </Router>
+        </Router>
+      </Provider>
     ), root)
   }
 }

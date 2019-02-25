@@ -72,11 +72,11 @@ export function server (routes, initialState = {}, options = {}) {
         store.hydrate(props)
 
         res.end(options.html(store.state, meta, renderToString(
-          <Router router={router} location={req.url}>
-            <Provider store={store}>
+          <Provider store={store}>
+            <Router router={router} location={req.url}>
               {view(store.state)}
-            </Provider>
-          </Router>
+            </Router>
+          </Provider>
         )))
       }).catch(e => {
         res.statusCode = 500
