@@ -7,19 +7,19 @@ const http = require('http')
 const exit = require('exit')
 const onExit = require('exit-hook')
 const app = require('commander')
-const merge = require('merge-deep')
+const merge = require('deepmerge')
 const compiler = require('@friendsof/spaghetti')
-const logger = require('log-update')
 const c = require('ansi-colors')
 const PORT = process.env.PORT || 3002
 
+const cwd = process.cwd()
+
 app
-  .arguments('<build>')
+  .arguments('<command>')
   .option('--config <config>', 'config file: --config config.js (default: hypr.config.js)')
   .parse(process.argv)
 
 const production = app.args[0] && app.args[0] === 'build' || false
-const config = resolve(app.config || 'hypr.config.js')
 
 function log (...args) {
   if (typeof args[0] === 'function') {
@@ -35,24 +35,13 @@ function log (...args) {
   }
 }
 
-function clear () {
-  process.stdout.write('\x1B[2J\x1B[0f')
-}
-
-function resolve (...args) {
-  return path.resolve(process.cwd(), ...args)
-}
-
-function join (...args) {
-  return path.join(process.cwd(), ...args)
-}
-
 function createServer (file) {
   return {
     active: false,
     server: null,
     app: null,
     update () {
+      delete require.cache[file]
       this.app = require(file).default
     },
     init () {
@@ -74,34 +63,30 @@ function createServer (file) {
 
 function createConfig (filename) {
   const client = filename === 'client'
-  return merge({
-    in: resolve(`${filename}.js`),
+
+  return {
+    in: path.join(cwd, `${filename}.js`),
     filename,
-    outDir: resolve('build'),
-    alias: {},
-    plugins: [],
+    outDir: path.join(cwd, 'static'),
+    alias: {
+      '@': cwd
+    },
+    watch: !production,
     target: client ? 'web' : 'node',
     output: client ? {} : {
       library: '__hypr_internal',
-      libraryTarget: client ? 'umd' : 'commonjs2'
+      libraryTarget: 'commonjs2'
     },
     banner: client ? `` : `require('source-map-support').install();`
-  }, (
-    fs.existsSync(config) ? require(config)({
-      [filename]: true,
-      production
-    }) : {})
-  )
+  }
 }
 
 const clientConfig = createConfig('client')
 const serverConfig = createConfig('server')
-
-// console.log(JSON.stringify(clientConfig, null, '  '))
-// console.log(JSON.stringify(serverConfig, null, '  '))
-
 const client = compiler(clientConfig)
 const server = compiler(serverConfig)
+// console.log(JSON.stringify(clientConfig, null, '  '))
+// console.log(JSON.stringify(serverConfig, null, '  '))
 
 if (production) {
   client.build()
@@ -121,7 +106,7 @@ if (production) {
     })
 } else {
   const parent = createServer(
-    resolve(serverConfig.outDir, `${serverConfig.filename}.js`)
+    path.join(serverConfig.outDir, `${serverConfig.filename}.js`)
   )
 
   client.watch()

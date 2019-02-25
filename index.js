@@ -1,5 +1,5 @@
-import server from './lib/server.js'
-import client from './lib/client.js'
+import { server } from './server.js'
+import { client } from './client.js'
 
 export {
   server,

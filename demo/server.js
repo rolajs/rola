@@ -1,5 +1,5 @@
-import { server } from 'hypr'
-import routes from './routes/index.js'
+import { server } from 'hypr/server'
+import routes from '@/src/routes/index.js'
 
 export default require('connect')()
   .use(require('compression')())
