@@ -1,24 +1,29 @@
 #! /usr/bin/env node
 'use strict'
 
-const fs = require('fs')
+const fs = require('fs-extra')
 const path = require('path')
 const http = require('http')
 const exit = require('exit')
 const onExit = require('exit-hook')
-const app = require('commander')
-const merge = require('deepmerge')
-const c = require('ansi-colors')
+const write = require('log-update')
+
+const spitball = require('spitball')
+const biti = require('biti')
 
 const pkg = require('./package.json')
 const log = require('./lib/logger.js')('hypr')
-const { createCompilers } = require('./lib/compiler.js')
+const App = require('./dist/App.js')
+const html = require('./dist/html.js')
 
 const PORT = process.env.PORT || 3002
 const cwd = process.cwd()
 const prog = require('commander')
   .version(pkg.version)
   .option('-c, --config <path>', 'specify the path to your config file')
+
+const configpath = path.join(cwd, prog.config || 'hypr.config.js')
+const config = fs.existsSync(configpath) ? require(configpath) : {}
 
 function logAssets ({ duration, assets }, opts = {}) {
   log.info('built', `in ${duration}ms\n${assets.reduce((_, asset, i) => {
@@ -28,10 +33,13 @@ function logAssets ({ duration, assets }, opts = {}) {
 }
 
 function createServer (file) {
+  let active = false
   return {
-    active: false,
     server: null,
     app: null,
+    get active () {
+      return active
+    },
     update () {
       delete require.cache[file]
       this.app = require(file).default
@@ -39,12 +47,19 @@ function createServer (file) {
     init () {
       this.app = require(file).default
 
-      this.server = http.createServer((req, res) => this.app(req, res))
+      this.server = http.createServer(
+        require('connect')()
+          .use(require('compression')())
+          .use(require('serve-static')(path.join(cwd, 'static')))
+          .use((req, res, next) => {
+            this.app(req, res)
+          })
+      )
 
       this.server.listen(PORT, e => {
         if (e) console.error(e)
         log.info('open', log.colors.green(PORT))
-        this.active = true
+        active = true
       })
     },
     close () {
@@ -53,76 +68,107 @@ function createServer (file) {
   }
 }
 
+const generator = biti({
+  env: config.env,
+  alias: config.alias,
+  filter (routes) {
+    return routes.filter(r => !!r.config)
+  },
+  wrap: App,
+  html (props) {
+    return (config.html || html)(props)
+  }
+})
+
+generator.on('render', p => log.info('static', p))
+generator.on('error', e => log.error(e.message || e))
+
+function buildCallback (arr) {
+  log.info('compiled')
+  // arr.map(a => console.log(JSON.stringify(a.assets)))
+}
+
 prog
   .command('build')
   .action(() => {
-    const { client, server } = createCompilers()
+    log.info('building...')
 
-    log.info('building', '', true)
+    const time = Date.now()
 
-    Promise.all([
-      new Promise((res, rej) => {
-        if (!client.config) return res()
+    generator.on('done', p => log.info('static complete'))
 
-        client.compiler.build()
-          .end(stats => res(stats))
-          .error(e => rej(e))
-      }),
-      new Promise((res, rej) => {
-        if (!server.config) return res()
-
-        server.compiler.build()
-          .end(stats => res(stats))
-          .error(e => rej(e))
+    spitball(
+      ['client.js', 'server.js'].reduce((configs, entry) => {
+        return configs.concat({
+          in: path.join(cwd, entry),
+          out: path.join(cwd, 'static'),
+          env: config.env || {},
+          alias: config.alias || {},
+          node: entry === 'server.js',
+          banner: ''
+        })
+      }, [])
+    )
+      .build()
+      .then(stats => {
+        buildCallback(stats)
+        generator.render('/routes', '/static').then(() => {
+          log.info('built', `in ${(Date.now() - time) / 1000}s`)
+        })
       })
-    ]).then(([ cs, ss ]) => {
-      cs && logAssets(cs, {
-        gzip: true,
-        persist: true
+      .catch(e => {
+        log.error(e.message)
       })
-
-      ss && logAssets(ss)
-
-      exit()
-    })
-
   })
 
 prog
   .command('watch')
   .action(() => {
-    const { client, server } = createCompilers({ watch: true })
+    log.info('watching...')
 
-    log.info('watching', '', true)
+    let server
 
-    if (client.config) {
-      client.compiler.watch()
-        .end(stats => {
-          log.info('built', `${log.colors.gray('client')} in ${stats.duration}ms`)
+    generator.watch('/routes', '/static')
+
+    spitball(
+      ['client.js', 'server.js'].reduce((configs, entry) => {
+        const node = entry === 'server.js'
+
+        return configs.concat({
+          in: path.join(cwd, entry),
+          out: node ? {
+            path: path.join(cwd, 'static'),
+            libraryTarget: 'commonjs2'
+          } : path.join(cwd, 'static'),
+          env: config.env || {},
+          alias: config.alias || {},
+          node
         })
-        .error(e => {
-          log.error(e.message || e)
-        })
-    }
+      }, [])
+    )
+      .watch((e, stats) => {
+        if (e) return log.error(e.message)
 
-    if (server.config) {
-      const serve = createServer(
-        path.join(server.config.outDir, `${server.config.filename}.js`)
-      )
+        buildCallback(stats)
 
-      server.compiler.watch()
-        .end(stats => {
-          log.info('built', `${log.colors.gray('server')} in ${stats.duration}ms`)
-          serve.active ? serve.update() : serve.init()
-        })
-        .error(e => {
-          log.error(e.message || e)
-        })
+        server && server.update()
 
-      onExit(() => {
-        serve.close()
+        if (!server) {
+          server = createServer(path.join(cwd, '/static/server.js'))
+          server.init()
+        }
       })
-    }
+
+    onExit(() => {
+      server && server.close()
+    })
+  })
+
+prog
+  .command('static')
+  .action(() => {
+    generator.render('/routes', '/static').then(() => {
+    })
   })
 
 if (!process.argv.slice(2).length) {
@@ -133,3 +179,5 @@ if (!process.argv.slice(2).length) {
 } else {
   prog.parse(process.argv)
 }
+
+

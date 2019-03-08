@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "",
   "main": "dist/hypr.js",
-  "module": "dist/hypr.mjs",
   "files": [
     "dist"
   ],
@@ -11,8 +10,12 @@
     "hypr": "./cli.js"
   },
   "scripts": {
-    "build": "microbundle build -i index.js -o dist -f es,cjs --jsx React.createElement",
-    "watch": "microbundle watch -i index.js -o dist -f es,cjs --jsx React.createElement"
+    "build": "npm run build:index && npm run build:internals",
+    "build:index": "microbundle build -i index.js -o dist -f cjs --target web --jsx React.createElement",
+    "build:internals": "microbundle build lib/App.js lib/html.js -o dist -f cjs --jsx React.createElement",
+    "watch:index": "microbundle watch -i index.js -o dist -f cjs --target web --jsx React.createElement",
+    "watch:internals": "microbundle watch lib/App.js lib/html.js -o dist -f cjs --jsx React.createElement",
+    "watch": "npm run watch:index & npm run watch:internals"
   },
   "repository": {
     "type": "git",
@@ -29,11 +32,12 @@
   },
   "homepage": "https://github.com/estrattonbailey/hypr#readme",
   "dependencies": {
-    "@friendsof/spaghetti": "^1.2.2",
     "@picostate/react": "^1.1.0",
     "ansi-colors": "^3.2.3",
-    "biti": "^1.0.0",
+    "biti": "^2.0.0",
     "commander": "^2.19.0",
+    "compression": "^1.7.3",
+    "connect": "^3.6.6",
     "deepmerge": "^3.2.0",
     "exit-hook": "^2.0.0",
     "flatted": "^2.0.0",
@@ -42,14 +46,14 @@
     "html-meta-tags": "^1.1.0",
     "log-update": "^2.3.0",
     "matchit": "^1.0.7",
-    "merge-deep": "^3.0.2",
-    "microbundle": "^0.7.0",
+    "microbundle": "^0.11.0",
     "nanoclass": "0.0.2",
     "picostate": "^1.4.0",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4",
+    "serve-static": "^1.13.2",
     "source-map-support": "^0.5.9",
-    "webpack": "^4.28.2",
-    "webpack-node-externals": "^1.7.2"
+    "spitball": "0.0.6",
+    "webpack": "^4.29.6"
   }
 }

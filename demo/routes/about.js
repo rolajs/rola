@@ -1,9 +1,13 @@
 import React from 'react'
-import App from '@/src/components/App.js'
+import App from '@/components/App.js'
 
 export const pathname = '/about'
 
-export function load ({ state }) {
+export function config () {
+  return load()
+}
+
+export function load (state, req) {
   return {
     meta: {
       title: 'about - hypr - the react toolkit',

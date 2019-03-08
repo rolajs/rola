@@ -1,13 +1,12 @@
-import { client } from './client.js'
-import { withHistory, history } from './history.js'
-import { withState, store } from './state.js'
-import Link from './link.js'
-import Router from './router.js'
+import client from './lib/client.js'
+import server from './lib/server.js'
+import { withHistory, history } from './lib/history.js'
+import { withState, store } from './lib/state.js'
+import Link from './lib/Link.js'
+import Router from './lib/Router.js'
 
-/**
- * exported for non ssr applications
- */
 export {
+  server,
   client,
   withHistory,
   history,

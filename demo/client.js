@@ -1,6 +1,6 @@
-import '@/src/styles/main.css'
+import '@/styles/main.css'
 
-import { client } from 'hypr/client'
-import routes from '@/src/routes/index.js'
+import { client } from 'hypr'
+import routes from '@/routes.js'
 
 client(routes, {})(document.getElementById('root'))
