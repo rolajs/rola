@@ -3,7 +3,6 @@
 
 const fs = require('fs-extra')
 const path = require('path')
-const http = require('http')
 const exit = require('exit')
 const onExit = require('exit-hook')
 const write = require('log-update')
@@ -12,11 +11,16 @@ const spitball = require('spitball')
 const biti = require('biti')
 
 const pkg = require('./package.json')
-const log = require('./lib/logger.js')('hypr')
+const log = require('./util/logger.js')('hypr')
+const createServer = require('./util/createServer.js')
+const createConfig = require('./util/createConfig.js')
+
+/**
+ * compiled components
+ */
 const App = require('./dist/App.js')
 const html = require('./dist/html.js')
 
-const PORT = process.env.PORT || 3002
 const cwd = process.cwd()
 const prog = require('commander')
   .version(pkg.version)
@@ -25,48 +29,18 @@ const prog = require('commander')
 const configpath = path.join(cwd, prog.config || 'hypr.config.js')
 const config = fs.existsSync(configpath) ? require(configpath) : {}
 
-function logAssets ({ duration, assets }, opts = {}) {
-  log.info('built', `in ${duration}ms\n${assets.reduce((_, asset, i) => {
-    const size = opts.gzip && asset.size.gzip ? asset.size.gzip + 'kb gzipped' : asset.size.raw + 'kb'
-    return _ += `  > ${log.colors.gray(asset.filename)} ${size}${i !== assets.length - 1 ? `\n` : ''}`
-  }, '')}`, opts.persist)
-}
+let clientEntry
+let serverEntry
 
-function createServer (file) {
-  let active = false
-  return {
-    server: null,
-    app: null,
-    get active () {
-      return active
-    },
-    update () {
-      delete require.cache[file]
-      this.app = require(file).default
-    },
-    init () {
-      this.app = require(file).default
+try {
+  serverEntry = require.resolve(path.join(cwd, 'server.js'))
+} catch (e) {}
 
-      this.server = http.createServer(
-        require('connect')()
-          .use(require('compression')())
-          .use(require('serve-static')(path.join(cwd, 'static')))
-          .use((req, res, next) => {
-            this.app(req, res)
-          })
-      )
+try {
+  clientEntry = require.resolve(path.join(cwd, 'client.js'))
+} catch (e) {}
 
-      this.server.listen(PORT, e => {
-        if (e) console.error(e)
-        log.info('open', log.colors.green(PORT))
-        active = true
-      })
-    },
-    close () {
-      this.server && this.server.close()
-    }
-  }
-}
+// `require('source-map-support').install();`
 
 const generator = biti({
   env: config.env,
@@ -83,11 +57,6 @@ const generator = biti({
 generator.on('render', p => log.info('static', p))
 generator.on('error', e => log.error(e.message || e))
 
-function buildCallback (arr) {
-  log.info('compiled')
-  // arr.map(a => console.log(JSON.stringify(a.assets)))
-}
-
 prog
   .command('build')
   .action(() => {
@@ -97,21 +66,26 @@ prog
 
     generator.on('done', p => log.info('static complete'))
 
-    spitball(
-      ['client.js', 'server.js'].reduce((configs, entry) => {
-        return configs.concat({
-          in: path.join(cwd, entry),
-          out: path.join(cwd, 'static'),
-          env: config.env || {},
-          alias: config.alias || {},
-          node: entry === 'server.js',
-          banner: ''
-        })
-      }, [])
-    )
-      .build()
+    const configs = []
+
+    if (clientEntry) configs.push(createConfig({
+      entry: clientEntry,
+      env: config.env,
+      alias: config.alias
+    }))
+
+    if (serverEntry) configs.push(createConfig({
+      entry: serverEntry,
+      env: config.env,
+      alias: config.alias
+    }))
+
+    console.log(configs)
+
+    ;(configs.length ? spitball(configs).build() : Promise.resolve(null))
       .then(stats => {
-        buildCallback(stats)
+        // if (stats)
+
         generator.render('/routes', '/static').then(() => {
           log.info('built', `in ${(Date.now() - time) / 1000}s`)
         })
@@ -127,47 +101,43 @@ prog
     log.info('watching...')
 
     let server
+    const configs = []
+
+    if (clientEntry) configs.push(createConfig({
+      entry: clientEntry,
+      env: config.env,
+      alias: config.alias
+    }))
+
+    if (serverEntry) configs.push(createConfig({
+      entry: serverEntry,
+      env: config.env,
+      alias: config.alias
+    }))
+
+    function serve () {
+      if (!server) {
+        server = createServer(path.join(cwd, '/static/server.js'))
+        server.init()
+      }
+    }
 
     generator.watch('/routes', '/static')
 
-    spitball(
-      ['client.js', 'server.js'].reduce((configs, entry) => {
-        const node = entry === 'server.js'
-
-        return configs.concat({
-          in: path.join(cwd, entry),
-          out: node ? {
-            path: path.join(cwd, 'static'),
-            libraryTarget: 'commonjs2'
-          } : path.join(cwd, 'static'),
-          env: config.env || {},
-          alias: config.alias || {},
-          node
-        })
-      }, [])
-    )
-      .watch((e, stats) => {
+    if (configs.length) {
+      spitball(configs).watch((e, stats) => {
         if (e) return log.error(e.message)
-
-        buildCallback(stats)
 
         server && server.update()
 
-        if (!server) {
-          server = createServer(path.join(cwd, '/static/server.js'))
-          server.init()
-        }
+        serve()
       })
+    } else {
+      serve()
+    }
 
     onExit(() => {
       server && server.close()
-    })
-  })
-
-prog
-  .command('static')
-  .action(() => {
-    generator.render('/routes', '/static').then(() => {
     })
   })
 
