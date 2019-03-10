@@ -11,7 +11,6 @@ const spitball = require('spitball')
 const biti = require('biti')
 
 const pkg = require('./package.json')
-// const log = require('./util/logger.js')('hypr')
 const log = require('./util/log.js')
 const createServer = require('./util/createServer.js')
 const createConfig = require('./util/createConfig.js')

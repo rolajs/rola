@@ -5,6 +5,7 @@
   "main": "dist/hypr.js",
   "files": [
     "dist",
+    "util",
     "cli.js"
   ],
   "bin": {
