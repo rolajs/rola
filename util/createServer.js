@@ -1,10 +1,9 @@
 const path = require('path')
 const http = require('http')
 
-const PORT = process.env.PORT || 3000
 const cwd = process.cwd()
 
-const log = require('./logger.js')('hypr')
+const log = require('./log.js')
 
 function req (file) {
   let mod = null
@@ -17,7 +16,7 @@ function req (file) {
   return mod
 }
 
-module.exports = function createServer (file) {
+module.exports = function createServer (file, port) {
   let active = false
   return {
     server: null,
@@ -30,6 +29,7 @@ module.exports = function createServer (file) {
         delete require.cache[file]
       } catch (e) {}
       this.app = req(file)
+      this.socket && this.socket.emit('update')
     },
     init () {
       this.app = req(file)
@@ -42,20 +42,30 @@ module.exports = function createServer (file) {
             if (this.app) {
               this.app(req, res)
             } else {
-              res.statusCode = 404
+              res.writeHead(404, {
+                'Content-Type': 'text/plain'
+              })
+              res.write('hypr')
               res.end()
             }
           })
       )
 
-      this.server.listen(PORT, e => {
-        if (e) console.error(e)
-        log.info('open', log.colors.green(PORT))
+      this.socket = require('socket.io')(this.server, {
+        serveClient: false
+      })
+
+      this.server.listen(port, e => {
+        if (e) return log({ error: e.message })
+
+        log({ server: port })
+
         active = true
       })
     },
     close () {
       this.server && this.server.close()
+      this.socket && this.socket.close()
     }
   }
 }

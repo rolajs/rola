@@ -10,10 +10,10 @@ export function config () {
 export function load (state, req) {
   return {
     meta: {
-      title: 'hypr - the react toolkit',
+      title: 'home - hypr - the react toolkit',
     },
     props: {
-      title: 'hypr - the react toolkit',
+      title: 'home - hypr - the react toolkit',
     }
   }
 }

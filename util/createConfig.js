@@ -2,7 +2,7 @@ const path = require('path')
 
 const cwd = process.cwd()
 
-module.exports = function createConfig ({ entry, watch, env, alias }) {
+module.exports = function createConfig ({ entry, watch, env, alias, banner }) {
   const node = /server/.test(entry)
 
   return {
@@ -14,6 +14,6 @@ module.exports = function createConfig ({ entry, watch, env, alias }) {
     env: env || {},
     alias: alias || {},
     node,
-    banner: '/** built with hypr */'
+    banner: '/** built with hypr */' + banner
   }
 }

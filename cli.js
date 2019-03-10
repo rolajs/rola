@@ -11,7 +11,8 @@ const spitball = require('spitball')
 const biti = require('biti')
 
 const pkg = require('./package.json')
-const log = require('./util/logger.js')('hypr')
+// const log = require('./util/logger.js')('hypr')
+const log = require('./util/log.js')
 const createServer = require('./util/createServer.js')
 const createConfig = require('./util/createConfig.js')
 
@@ -21,6 +22,7 @@ const createConfig = require('./util/createConfig.js')
 const App = require('./dist/App.js')
 const html = require('./dist/html.js')
 
+const PORT = process.env.PORT || 3000
 const cwd = process.cwd()
 const prog = require('commander')
   .version(pkg.version)
@@ -53,18 +55,17 @@ const generator = biti({
     return (config.html || html)(props)
   }
 })
-
-generator.on('render', p => log.info('static', p))
-generator.on('error', e => log.error(e.message || e))
+generator.on('rendered', pages => {
+  log({ static: pages })
+})
+generator.on('error', e => {
+  log({ error: e.message || e })
+})
 
 prog
   .command('build')
   .action(() => {
-    log.info('building...')
-
-    const time = Date.now()
-
-    generator.on('done', p => log.info('static complete'))
+    log({ msg: 'build' })
 
     const configs = []
 
@@ -80,25 +81,40 @@ prog
       alias: config.alias
     }))
 
-    console.log(configs)
+    let allstats = []
 
     ;(configs.length ? spitball(configs).build() : Promise.resolve(null))
-      .then(stats => {
-        // if (stats)
+      .then(async stats => {
+        stats.map(_stats => {
+          const server = _stats.assets.reduce((bool, asset) => {
+            if (/server/.test(asset.name)) bool = true
+            return bool
+          }, false)
 
-        generator.render('/routes', '/static').then(() => {
-          log.info('built', `in ${(Date.now() - time) / 1000}s`)
+          if (server) {
+            allstats[1] = _stats
+          } else {
+            allstats[0] = _stats
+          }
         })
+
+        log({
+          msg: null,
+          stats: allstats
+        })
+
+        await generator.render('/routes', '/static')
+        exit()
       })
       .catch(e => {
-        log.error(e.message)
+        log({ error: e.message })
       })
   })
 
 prog
   .command('watch')
   .action(() => {
-    log.info('watching...')
+    log({ msg: 'watch' })
 
     let server
     const configs = []
@@ -106,7 +122,8 @@ prog
     if (clientEntry) configs.push(createConfig({
       entry: clientEntry,
       env: config.env,
-      alias: config.alias
+      alias: config.alias,
+      banner: require('./util/clientReloader.js')(PORT)
     }))
 
     if (serverEntry) configs.push(createConfig({
@@ -117,16 +134,36 @@ prog
 
     function serve () {
       if (!server) {
-        server = createServer(path.join(cwd, '/static/server.js'))
+        server = createServer(path.join(cwd, '/static/server.js'), PORT)
         server.init()
       }
     }
 
     generator.watch('/routes', '/static')
 
+    let allstats = []
+
     if (configs.length) {
       spitball(configs).watch((e, stats) => {
-        if (e) return log.error(e.message)
+        if (e) return log({ error: e.message })
+
+        stats.map(_stats => {
+          const server = _stats.assets.reduce((bool, asset) => {
+            if (/server/.test(asset.name)) bool = true
+            return bool
+          }, false)
+
+          if (server) {
+            allstats[1] = _stats
+          } else {
+            allstats[0] = _stats
+          }
+        })
+
+        log({
+          msg: null,
+          stats: allstats
+        })
 
         server && server.update()
 
