@@ -11,7 +11,11 @@ function req (file) {
   try {
     mod = require(file)
     mod = mod.default || mod
-  } catch (e) {}
+  } catch (e) {
+    log(state => ({
+      error: state.error.concat(e)
+    }))
+  }
 
   return mod
 }
@@ -25,6 +29,11 @@ module.exports = function createServer (file, port) {
       return active
     },
     update () {
+      log({
+        error: [],
+        warn: [],
+        log: [],
+      })
       try {
         delete require.cache[file]
       } catch (e) {}
@@ -39,15 +48,15 @@ module.exports = function createServer (file, port) {
           .use(require('compression')())
           .use(require('serve-static')(path.join(cwd, 'static')))
           .use((req, res, next) => {
-            if (this.app) {
-              this.app(req, res)
-            } else {
-              res.writeHead(404, {
-                'Content-Type': 'text/plain'
-              })
-              res.write('hypr')
-              res.end()
-            }
+            if (!this.app) return next()
+            this.app(req, res, next)
+          })
+          .use((req, res) => {
+            res.writeHead(404, {
+              'Content-Type': 'text/plain'
+            })
+            res.write('hypr')
+            res.end()
           })
       )
 
@@ -56,9 +65,11 @@ module.exports = function createServer (file, port) {
       })
 
       this.server.listen(port, e => {
-        if (e) return log({ error: e.message })
+        if (e) return log(state => ({
+          error: state.error.concat(e)
+        }))
 
-        log({ server: port })
+        log({ server: [ port ] })
 
         active = true
       })

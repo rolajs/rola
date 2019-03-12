@@ -14,6 +14,10 @@ module.exports = function createConfig ({ entry, watch, env, alias, banner }) {
     env: env || {},
     alias: alias || {},
     node,
-    banner: '/** built with hypr */' + banner
+    banner: node ? (
+      `require('source-map-support').install();`
+    ) : (
+      '/** built with hypr */'
+    ) + banner || ''
   }
 }

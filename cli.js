@@ -1,11 +1,15 @@
 #! /usr/bin/env node
 'use strict'
 
+/**
+ * fresh console
+ */
+console.clear()
+
 const fs = require('fs-extra')
 const path = require('path')
 const exit = require('exit')
 const onExit = require('exit-hook')
-const write = require('log-update')
 
 const spitball = require('spitball')
 const biti = require('biti')
@@ -41,7 +45,18 @@ try {
   clientEntry = require.resolve(path.join(cwd, 'client.js'))
 } catch (e) {}
 
-// `require('source-map-support').install();`
+let server
+
+function serve () {
+  if (!server) {
+    server = createServer(path.join(cwd, '/static/server.js'), PORT)
+    server.init()
+
+    onExit(() => {
+      server && server.close()
+    })
+  }
+}
 
 const generator = biti({
   env: config.env,
@@ -58,13 +73,15 @@ generator.on('rendered', pages => {
   log({ static: pages })
 })
 generator.on('error', e => {
-  log({ error: e.message || e })
+  log(state => ({
+    error: state.error.concat(e)
+  }))
 })
 
 prog
   .command('build')
   .action(() => {
-    log({ msg: 'build' })
+    log({ actions: [ 'build' ] })
 
     const configs = []
 
@@ -98,24 +115,29 @@ prog
         })
 
         log({
-          msg: null,
+          actions: [],
           stats: allstats
         })
 
+        if (serverEntry) serve()
+
         await generator.render('/routes', '/static')
+
         exit()
       })
       .catch(e => {
-        log({ error: e.message })
+        log(state => ({
+          error: state.error.concat(e)
+        }))
       })
   })
 
 prog
   .command('watch')
   .action(() => {
-    log({ msg: 'watch' })
+    log({ actions: [ 'watch' ] })
 
-    let server
+    let compiled = false
     const configs = []
 
     if (clientEntry) configs.push(createConfig({
@@ -131,28 +153,21 @@ prog
       alias: config.alias
     }))
 
-    function serve () {
-      if (!server) {
-        server = createServer(path.join(cwd, '/static/server.js'), PORT)
-        server.init()
-      }
-    }
-
-    generator.watch('/routes', '/static')
-
     let allstats = []
 
     if (configs.length) {
       spitball(configs).watch((e, stats) => {
-        if (e) return log({ error: e.message })
+        if (e) return log(state => ({
+          error: state.error.concat(e)
+        }))
 
         stats.map(_stats => {
-          const server = _stats.assets.reduce((bool, asset) => {
+          const isServer = _stats.assets.reduce((bool, asset) => {
             if (/server/.test(asset.name)) bool = true
             return bool
           }, false)
 
-          if (server) {
+          if (isServer) {
             allstats[1] = _stats
           } else {
             allstats[0] = _stats
@@ -160,21 +175,33 @@ prog
         })
 
         log({
-          msg: null,
+          actions: [],
           stats: allstats
         })
 
         server && server.update()
 
         serve()
+
+        if (!compiled) {
+          generator.watch('/routes', '/static')
+
+          if (!process.env.DEBUG) {
+            ;['log', 'warn', 'error'].map(type => {
+              console[type] = (...args) => {
+                log(state => ({
+                  [type]: state[type].concat(args)
+                }))
+              }
+            })
+          }
+
+          compiled = true
+        }
       })
     } else {
       serve()
     }
-
-    onExit(() => {
-      server && server.close()
-    })
   })
 
 if (!process.argv.slice(2).length) {
