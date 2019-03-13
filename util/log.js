@@ -214,9 +214,11 @@ module.exports = logger({
   },
   static: {
     format (files) {
-      return files.map(file => {
-        return c.gray('static') + '  ' + file
-      })
+      return [
+        files.map(file => {
+          return c.gray('static') + '  ' + file
+        })
+      ]
     }
   },
   server: {

@@ -5,13 +5,15 @@ export const pathname = '*'
 export function load (state, req) {
   return {
     status: 404,
-    meta: {
-      title: '404 Not Found'
+    state: {
+      meta: {
+        title: '404 Not Found'
+      }
     }
   }
 }
 
-export function view (props) {
+export function view ({ pathname, state }) {
   return (
     <h1>404 Not Found</h1>
   )

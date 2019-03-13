@@ -1,4 +1,4 @@
-![repo-banner](https://user-images.githubusercontent.com/4732330/54079281-cd216400-42a7-11e9-92bf-5c81a9f4438f.png)
+![repo-banner](https://user-images.githubusercontent.com/4732330/54318359-74f6a480-45bc-11e9-8548-d7b12b08257f.png)
 
 ```
 npm i hypr -g

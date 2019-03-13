@@ -9,19 +9,19 @@ export function config () {
 
 export function load (state, req) {
   return {
-    meta: {
+    state: {
       title: 'home - hypr - the react toolkit',
-    },
-    props: {
-      title: 'home - hypr - the react toolkit',
+      meta: {
+        title: 'home - hypr - the react toolkit',
+      },
     }
   }
 }
 
-export function view (props) {
+export function view ({ pathname, state }) {
   return (
     <App>
-      <h1>{props.title}</h1>
+      <h1>{state.title}</h1>
     </App>
   )
 }

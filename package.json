@@ -39,7 +39,7 @@
   "dependencies": {
     "@picostate/react": "^1.1.0",
     "ansi-colors": "^3.2.3",
-    "biti": "^2.3.0",
+    "biti": "^2.4.0",
     "commander": "^2.19.0",
     "compression": "^1.7.3",
     "connect": "^3.6.6",
