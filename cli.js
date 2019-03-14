@@ -1,10 +1,14 @@
 #! /usr/bin/env node
 'use strict'
 
+const log = require('./util/log.js')
+
 /**
  * fresh console
  */
 console.clear()
+
+log({ actions: [ 'initializing...' ] })
 
 const fs = require('fs-extra')
 const path = require('path')
@@ -15,7 +19,6 @@ const spitball = require('spitball')
 const biti = require('biti')
 
 const pkg = require('./package.json')
-const log = require('./util/log.js')
 const createServer = require('./util/createServer.js')
 const createConfig = require('./util/createConfig.js')
 

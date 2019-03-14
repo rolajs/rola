@@ -6,17 +6,34 @@ npm i hypr -g
 <br />
 <br />
 
-> This project is *beta*. I welcome all ideas, critiques, and PRs :)
+> This project is *alpha*, so I don't recommend using it in production *yet*. I
+> welcome all ideas, critiques, and PRs :)
 
 <br />
 
 ## features
-- server rendering
-- static rendering
-- client-side application
-- css compilation
+- static page generation
+- server side rendering
+- client-side application bundle
+- css compilation w/ PostCSS
 - routing
 - state management
+- builds to lambda function
+- "hello world" 50kb gzipped
+- pick and choose build type
+  - client + static
+  - static + SSR
+  - SSR + API
+  - SSR + client
+  - static
+  - etc
+
+## beta roadmap
+- production server for non lambda envs
+- prefetch route API
+- plugins
+  - think like better css-in-js support, sass, babel config, etc
+- named 404.html support
 
 ## usage
 ```
@@ -33,8 +50,8 @@ hypr watch
 import React from 'react'
 
 export const pathname = '/'
-export function view (props) {
-  return <h1>{props.title}</h1>
+export function view () {
+  return <h1>Hello World</h1>
 }
 ```
 
@@ -74,20 +91,21 @@ import React from 'react'
 export const pathname = '/'
 export function config () {
   return {
-    props: { title: 'homepage' }
+    state: { title: 'homepage' }
   }
 }
-export function view (props) {
-  return <h1>{props.title}</h1>
+export function view ({ state }) {
+  return <h1>{state.title}</h1>
 }
 ```
 
 ## data loading
 A `load()` export will be resolved on both the server and client before
-rendering the view.
+rendering the view. The returned object should match
+[biti](https://github.com/estrattonbailey/biti) API as well. Any props on the
+`state` object returned will be merged with application state.
 
-During a static render, load is not called, so you might want to re-purpose it
-for static rendering as well. Or a combo thereof.
+During a static render, `load` is not called.
 
 **routes/Home.js**
 ```javascript
@@ -99,11 +117,11 @@ export function config () {
 }
 export function load (state, req) {
   return {
-    props: { title: 'loaded title' }
+    state: { title: 'loaded title' }
   }
 }
-export function view (props) {
-  return <h1>{props.title}</h1>
+export function view ({ state }) {
+  return <h1>{state.title}</h1>
 }
 ```
 
@@ -122,13 +140,13 @@ export function config () {
 }
 export function load (state, req) {
   return {
-    props: { title: 'loaded title' }
+    state: { title: 'loaded title' }
   }
 }
-export function view (props) {
+export function view ({ state }) {
   return (
     <>
-      <h1>{props.title}</h1>
+      <h1>{state.title}</h1>
 
       <nav>
         <Link href='/'>home</Link>
@@ -144,10 +162,28 @@ export function view (props) {
 pass state to individual components. Refer to the
 [picostate](https://github.com/estrattonbailey/picostate) docs for more info.
 
+**components/ChangeTitle.js**
+```javascript
+import React from 'react'
+import { withState } from 'hypr'
+
+export default withState(state => ({
+  myTitle: state.title
+}))(
+  function ChangeTitle ({ myTitle, hydrate }) {
+    return (
+      <button onClick={() => {
+        hydrate({ title: 'new title' })()
+      }}>update title</button>
+    )
+  }
+)
+```
 **routes/Home.js**
 ```javascript
 import React from 'react'
 import { Link, withState } from 'hypr'
+import ChangeTitle from '@/components/ChangeTitle.js'
 
 export const pathname = '/'
 export function config () {
@@ -155,33 +191,24 @@ export function config () {
 }
 export function load (state, req) {
   return {
-    props: { title: 'loaded title' }
+    state: { title: 'loaded title' }
   }
 }
-export withState(state => ({
-  myTitle: state.title
-}))(
-  function view (props) {
-    return (
-      <>
-        <h1>{props.myTitle}</h1>
+export function view ({ state }) {
+  return (
+    <>
+      <h1>{state.myTitle}</h1>
 
-        <button onClick={() => {
-          props.hydrate({ title: 'new title' })()
-        }}>update title</button>
+      <ChangeTitle />
 
-        <nav>
-          <Link href='/'>home</Link>
-          <Link href='/about'>about</Link>
-        </nav>
-      </>
-    )
-  }
-)
+      <nav>
+        <Link href='/'>home</Link>
+        <Link href='/about'>about</Link>
+      </nav>
+    </>
+  )
+}
 ```
-
-## roadmap
-- lambda function support
 
 ## motivation
 This will be a blog post, but think *[Next](https://nextjs.org/) plus [Gatsby](https://www.gatsbyjs.org/).*
