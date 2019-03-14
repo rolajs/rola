@@ -43,6 +43,13 @@ hypr build
 hypr watch
 ```
 
+<br/>
+
+![hypr cli](https://user-images.githubusercontent.com/4732330/54396235-ac328780-4688-11e9-86b7-6596ad5ca93f.gif)
+
+<br/>
+<br/>
+
 ## setup
 
 **routes/Home.js**
