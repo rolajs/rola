@@ -2,7 +2,7 @@
   "name": "yepyep",
   "version": "0.0.1",
   "description": "",
-  "main": "dist/yep.js",
+  "main": "dist/yepyep.js",
   "files": [
     "dist",
     "util",
