@@ -9,6 +9,7 @@
     "yep-static": "cli.js"
   },
   "dependencies": {
+    "@yepyep/compiler": "^0.0.1",
     "ansi-colors": "^3.2.3",
     "chokidar": "^1.7.0",
     "commander": "^2.9.0",
@@ -21,10 +22,8 @@
     "module-alias": "^2.1.0",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
-    "recursive-readdir": "^2.2.2",
-    "@yepyep/compiler": "0.0.1"
+    "recursive-readdir": "^2.2.2"
   },
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/estrattonbailey/yep.git"
