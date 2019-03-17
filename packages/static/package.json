@@ -1,0 +1,36 @@
+{
+  "name": "@yepyep/static",
+  "version": "0.0.1",
+  "description": "Static page generation for yep.",
+  "author": "estrattonbailey",
+  "license": "MIT",
+  "main": "index.js",
+  "bin": {
+    "yep-static": "cli.js"
+  },
+  "dependencies": {
+    "ansi-colors": "^3.2.3",
+    "chokidar": "^1.7.0",
+    "commander": "^2.9.0",
+    "deepmerge": "^3.2.0",
+    "exit": "^0.1.2",
+    "exit-hook": "^2.0.0",
+    "fs-extra": "^2.1.2",
+    "log-update": "^2.3.0",
+    "matched": "^3.0.1",
+    "module-alias": "^2.1.0",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1",
+    "recursive-readdir": "^2.2.2",
+    "@yepyep/compiler": "0.0.1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/estrattonbailey/yep.git"
+  },
+  "bugs": {
+    "url": "https://github.com/estrattonbailey/yep/issues"
+  },
+  "homepage": "https://github.com/estrattonbailey/yep"
+}

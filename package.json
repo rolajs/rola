@@ -1,0 +1,10 @@
+{
+  "name": "root",
+  "private": true,
+  "scripts": {
+    "publish": "NPM_CONFIG_OTP= lerna publish"
+  },
+  "devDependencies": {
+    "lerna": "^3.13.1"
+  }
+}
