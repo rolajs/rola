@@ -1,6 +1,6 @@
 {
   "name": "@yepyep/static",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Static page generation for yep.",
   "author": "estrattonbailey",
   "license": "MIT",
@@ -9,7 +9,7 @@
     "yep-static": "cli.js"
   },
   "dependencies": {
-    "@yepyep/compiler": "^0.0.1",
+    "@yepyep/compiler": "^0.0.2",
     "ansi-colors": "^3.2.3",
     "chokidar": "^1.7.0",
     "commander": "^2.9.0",

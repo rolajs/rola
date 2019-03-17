@@ -1,6 +1,6 @@
 {
   "name": "yepyep",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/yepyep.js",
   "files": [
@@ -38,7 +38,7 @@
   "homepage": "https://github.com/estrattonbailey/yep#readme",
   "dependencies": {
     "@picostate/react": "^1.1.0",
-    "@yepyep/compiler": "^0.0.1",
+    "@yepyep/compiler": "^0.0.2",
     "ansi-colors": "^3.2.3",
     "biti": "^2.4.0",
     "commander": "^2.19.0",
