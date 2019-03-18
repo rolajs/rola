@@ -12,7 +12,7 @@ const c = require('ansi-colors')
 const cwd = process.cwd()
 const pkg = require('./package.json')
 const rolaCompiler = require('./index.js')
-const css = require('./macros/css.js')
+const postcss = require('@rola/plugin-postcss')
 
 const prog = require('commander')
   .version(pkg.version)
@@ -43,7 +43,7 @@ function mergeConfig (inputs) {
     out: prog.out || cwd,
     reload: prog.reload || false,
     macros: [
-      css()
+      postcss()
     ]
   } : {}
 

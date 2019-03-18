@@ -1,0 +1,29 @@
+{
+  "name": "@rola/plugin-postcss",
+  "version": "0.2.1",
+  "description": "Enable PostCSS for rola.",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/estrattonbailey/rola.git"
+  },
+  "author": "estrattonbailey",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/estrattonbailey/rola/issues"
+  },
+  "homepage": "https://github.com/estrattonbailey/rola#readme",
+  "dependencies": {
+    "css-loader": "^2.1.0",
+    "cssnano": "^4.1.10",
+    "mini-css-extract-plugin": "^0.5.0",
+    "postcss": "^7.0.14",
+    "postcss-cssnext": "^3.1.0",
+    "postcss-discard-comments": "^4.0.2",
+    "postcss-import": "^12.0.1",
+    "postcss-loader": "^3.0.0",
+    "postcss-nested": "^3.0.0"
+  },
+  "gitHead": "d0688096c5e3398a448d76fc53b4df384e6001ad"
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@rola/plugin-sass",
+  "version": "0.2.1",
+  "description": "Enable SASS for rola.",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/estrattonbailey/rola.git"
+  },
+  "author": "estrattonbailey",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/estrattonbailey/rola/issues"
+  },
+  "homepage": "https://github.com/estrattonbailey/rola#readme",
+  "dependencies": {
+    "css-loader": "^2.1.0",
+    "cssnano": "^4.1.10",
+    "mini-css-extract-plugin": "^0.5.0",
+    "sass": "^1.17.3",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.20.3"
+  },
+  "gitHead": "d0688096c5e3398a448d76fc53b4df384e6001ad"
+}

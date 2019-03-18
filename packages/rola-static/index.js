@@ -4,7 +4,7 @@ const { watch } = require('chokidar')
 const onExit = require('exit-hook')
 const match = require('matched')
 const rolaCompiler = require('@rola/compiler')
-const node = require('@rola/compiler/macros/node')
+const node = require('@rola/plugin-node')
 
 const render = require('./lib/render.js')
 const ledger = require('./lib/fileLedger.js')

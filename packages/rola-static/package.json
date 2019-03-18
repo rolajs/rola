@@ -11,6 +11,8 @@
   "dependencies": {
     "@rola/compiler": "^0.2.1",
     "@rola/log": "^0.2.1",
+    "@rola/plugin-node": "^0.2.1",
+    "@rola/plugin-postcss": "^0.2.1",
     "ansi-colors": "^3.2.3",
     "async-exit-hook": "^2.0.1",
     "chokidar": "^1.7.0",

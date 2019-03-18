@@ -1,6 +1,6 @@
 const path = require('path')
-const node = require('@rola/compiler/macros/node')
-const css = require('@rola/compiler/macros/css')
+const node = require('@rola/plugin-node')
+const postcss = require('@rola/plugin-postcss')
 
 const cwd = process.cwd()
 
@@ -16,7 +16,7 @@ module.exports = function createConfig ({ entry, watch, env, alias, banner, macr
     env: env || {},
     alias: alias || {},
     macros: [].concat(macros || []).concat([
-      css(),
+      postcss(),
       isNode && node()
     ].filter(Boolean)),
     banner: node ? (

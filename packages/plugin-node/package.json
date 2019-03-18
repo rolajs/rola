@@ -1,0 +1,19 @@
+{
+  "name": "@rola/plugin-node",
+  "version": "0.2.1",
+  "description": "Compile node with rola.",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/estrattonbailey/rola.git"
+  },
+  "author": "estrattonbailey",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/estrattonbailey/rola/issues"
+  },
+  "homepage": "https://github.com/estrattonbailey/rola#readme",
+  "dependencies": {},
+  "gitHead": "d0688096c5e3398a448d76fc53b4df384e6001ad"
+}
