@@ -9,8 +9,8 @@
     "rola-static": "cli.js"
   },
   "dependencies": {
-    "@rola/compiler": "^0.0.2",
-    "@rola/log": "^0.0.2",
+    "@rola/compiler": "^0.2.0",
+    "@rola/log": "^0.2.0",
     "ansi-colors": "^3.2.3",
     "async-exit-hook": "^2.0.1",
     "chokidar": "^1.7.0",

@@ -40,9 +40,9 @@
   "homepage": "https://github.com/estrattonbailey/rola#readme",
   "dependencies": {
     "@picostate/react": "^1.1.0",
-    "@rola/compiler": "^0.0.2",
-    "@rola/log": "^0.0.2",
-    "@rola/static": "^0.0.2",
+    "@rola/compiler": "^0.2.0",
+    "@rola/log": "^0.2.0",
+    "@rola/static": "^0.2.0",
     "ansi-colors": "^3.2.3",
     "biti": "^2.4.0",
     "commander": "^2.19.0",

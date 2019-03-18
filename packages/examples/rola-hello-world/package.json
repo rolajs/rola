@@ -9,6 +9,6 @@
   "dependencies": {
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
-    "rola": "0.0.2"
+    "rola": "^0.2.0"
   }
 }
