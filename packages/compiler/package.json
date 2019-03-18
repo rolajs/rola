@@ -1,6 +1,6 @@
 {
   "name": "@rola/compiler",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Compiler abstraction for rola.",
   "main": "index.js",
   "bin": {
