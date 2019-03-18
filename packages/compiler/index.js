@@ -1,6 +1,5 @@
 const path = require('path')
 const exit = require('exit')
-const onExit = require('exit-hook')
 const webpack = require('webpack')
 
 const { createConfig } = require('./lib/config.js')
@@ -10,60 +9,12 @@ const { on, emit } = require('./lib/emitter.js')
 
 const cwd = process.cwd()
 
-function watch (confs) {
-  let port = 4000
+module.exports = confs => {
+  confs = [].concat(confs)
+
+  let compiler
   const servers = {}
   const sockets = {}
-
-  const configs = confs
-    .map(conf => {
-      if (conf.reload) {
-        conf.__port = port++
-        conf.banner = conf.banner || ''
-        conf.banner += clientReloader(conf.__port)
-      }
-
-      return conf
-    })
-    .map(conf => createConfig(conf, true))
-    .map(([ conf, wc ]) => {
-      const hash = Object.keys(wc.entry).join(':')
-
-      if (conf.reload) {
-        servers[hash] = require('http').createServer((req, res) => {
-          res.writeHead(200, { 'Content-Type': 'text/plain' })
-          res.write('socket running...')
-          res.end()
-        }).listen(conf.__port)
-
-        sockets[hash] = require('socket.io')(servers[hash], {
-          serveClient: false
-        })
-      }
-
-      process.env.DEBUG && console.log(JSON.stringify(wc, null, '  '))
-
-      return wc
-    })
-
-  const compiler = webpack(configs).watch({}, (e, stats) => {
-    if (e) return emit('error', e)
-
-    const formatted = formatStats(stats)
-
-    formatted.map(stats => {
-      const hash = stats.assets
-        .filter(asset => /\.js$/.test(asset.name))
-        .map(asset => path.basename(asset.name, '.js'))
-        .join(':')
-
-      if (sockets[hash]) {
-        sockets[hash].emit('refresh')
-      }
-    })
-
-    emit('stats', formatted)
-  })
 
   function closeServer () {
     for (let hash in servers) {
@@ -74,60 +25,95 @@ function watch (confs) {
     emit('close')
   }
 
-  onExit(closeServer)
-
-  return {
-    close () {
-      return new Promise(r => {
-        compiler.close(() => {
-          closeServer()
-          r()
-        })
-      })
-    }
-  }
-}
-
-function build (confs) {
-  const configs = confs
-    .map(conf => createConfig(conf, false))
-    .map(([ conf, wc ]) => {
-      wc.mode = 'production'
-
-      process.env.DEBUG && console.log(JSON.stringify(wc, null, '  '))
-
-      return wc
-    })
-
-  return new Promise((res, rej) => {
-    webpack(configs).run((e, stats) => {
-      if (e) {
-        emit('error', e)
-        rej(e)
-        return
-      }
-
-      const formatted = formatStats(stats)
-
-      emit('stats', formatted)
-      emit('done', formatted)
-      res(formatted)
-    })
-  })
-}
-
-module.exports = confs => {
-  confs = [].concat(confs)
-
   return {
     on,
+    close () {
+      closeServer()
+      return Promise.resolve(compiler ? new Promise(r => compiler.close(r)) : null)
+    },
     build () {
       emit('build')
-      return build(confs)
+
+      const configs = confs
+        .map(conf => createConfig(conf, false))
+        .map(([ conf, wc ]) => {
+          wc.mode = 'production'
+
+          process.env.DEBUG && console.log(JSON.stringify(wc, null, '  '))
+
+          return wc
+        })
+
+      return new Promise((res, rej) => {
+        webpack(configs).run((e, stats) => {
+          if (e) {
+            emit('error', e)
+            rej(e)
+            return
+          }
+
+          const formatted = formatStats(stats)
+
+          emit('stats', formatted)
+          emit('done', formatted)
+          res(formatted)
+        })
+      })
     },
     watch () {
       emit('watch')
-      return watch(confs)
+
+      let port = 4000
+
+      const configs = confs
+        .map(conf => {
+          if (conf.reload) {
+            conf.__port = port++
+            conf.banner = conf.banner || ''
+            conf.banner += clientReloader(conf.__port)
+          }
+
+          return conf
+        })
+        .map(conf => createConfig(conf, true))
+        .map(([ conf, wc ]) => {
+          const hash = Object.keys(wc.entry).join(':')
+
+          if (conf.reload) {
+            servers[hash] = require('http').createServer((req, res) => {
+              res.writeHead(200, { 'Content-Type': 'text/plain' })
+              res.write('socket running...')
+              res.end()
+            }).listen(conf.__port)
+
+            sockets[hash] = require('socket.io')(servers[hash], {
+              serveClient: false
+            })
+          }
+
+          process.env.DEBUG && console.log(JSON.stringify(wc, null, '  '))
+
+          return wc
+        })
+
+      compiler = webpack(configs).watch({}, (e, stats) => {
+        if (e) return emit('error', e)
+
+        const formatted = formatStats(stats)
+
+        formatted.map(stats => {
+          const hash = stats.assets
+            .filter(asset => /\.js$/.test(asset.name))
+            .map(asset => path.basename(asset.name, '.js'))
+            .join(':')
+
+          if (sockets[hash]) {
+            sockets[hash].emit('refresh')
+          }
+        })
+
+        emit('stats', formatted)
+      })
     }
   }
 }

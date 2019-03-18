@@ -1,7 +1,7 @@
 const c = require('ansi-colors')
 const createStore = require('picostate')
 const output = process.env.DEBUG ? console.log : require('log-update')
-const pkg = require('../package.json')
+const pkg = require('./package.json')
 
 function cond (args) {
   return args && args
@@ -162,7 +162,7 @@ function logger (opts) {
 
 module.exports = logger({
   indent: 2,
-  banner: `${c.bgBlue(` yep `)} v${pkg.version}`,
+  banner: `${c.bgBlue(` rola `)} v${pkg.version}`,
   log: {
     filter: filterUnique,
     format (logs) {

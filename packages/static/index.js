@@ -3,7 +3,8 @@ const path = require('path')
 const { watch } = require('chokidar')
 const onExit = require('exit-hook')
 const match = require('matched')
-const yepCompiler = require('@yepyep/compiler')
+const rolaCompiler = require('@rola/compiler')
+const node = require('@rola/compiler/macros/node')
 
 const render = require('./lib/render.js')
 const ledger = require('./lib/fileLedger.js')
@@ -15,7 +16,7 @@ function abs (p) {
   return path.join(cwd, p.replace(cwd, ''))
 }
 
-module.exports = function yepStatic ({
+module.exports = function rolaStatic ({
   env,
   alias,
   filter,
@@ -23,6 +24,9 @@ module.exports = function yepStatic ({
   html
 } = {}) {
   require('./lib/env.js')({ env, alias })
+
+  let compiler
+  let watcher
 
   const tmp = path.join(cwd, '.cache')
 
@@ -40,8 +44,12 @@ module.exports = function yepStatic ({
 
   return {
     on,
+    close () {
+      watcher && watcher.close()
+      return Promise.resolve(compiler ? compiler.close() : null)
+    },
     async render (src, dest) {
-      return yepCompiler({
+      return rolaCompiler({
         in: /\.js$/.test(src) ? src : path.join(src, '*.js'),
         out: {
           path: tmp,
@@ -49,7 +57,9 @@ module.exports = function yepStatic ({
         },
         env,
         alias,
-        node: true
+        macros: [
+          node()
+        ]
       })
         .build()
         .then(stats => {
@@ -79,7 +89,7 @@ module.exports = function yepStatic ({
       let compiler
       let restarting = false
 
-      const watcher = watch(abs(src), {
+      watcher = watch(abs(src), {
         ignoreInitial: true
       })
         .on('all', async (ev, page) => {
@@ -105,7 +115,7 @@ module.exports = function yepStatic ({
       function createCompiler () {
         const pages = match.sync(abs(src))
 
-        compiler = yepCompiler(pages.map(page => ({
+        compiler = rolaCompiler(pages.map(page => ({
           in: page,
           out: {
             path: tmp,
@@ -113,10 +123,16 @@ module.exports = function yepStatic ({
           },
           env,
           alias,
-          node: true
-        }))).watch((e, stats) => {
-          if (e) return emit('error', e)
+          macros: [
+            node()
+          ]
+        })))
 
+        compiler.on('error', e => {
+          emit('error', e)
+        })
+
+        compiler.on('stats', stats => {
           if (restarting) return
 
           const pages = getCompiledFiles(stats)
@@ -127,16 +143,11 @@ module.exports = function yepStatic ({
             { filter, wrap, html }
           )
         })
+
+        compiler.watch()
       }
 
       createCompiler()
-
-      return {
-        async close () {
-          watcher.close()
-          await compiler.close()
-        }
-      }
     }
   }
 }

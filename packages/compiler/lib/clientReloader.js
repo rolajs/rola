@@ -9,7 +9,7 @@ module.exports = function clientReloader (port) {
           var socket = io('http://localhost:${port}', {
             reconnectionAttempts: 3
           })
-          socket.on('connect', () => console.log('yep connected'))
+          socket.on('connect', () => console.log('rola connected'))
           socket.on('refresh', () => {
             global.location.reload()
           })
@@ -18,7 +18,7 @@ module.exports = function clientReloader (port) {
           })
           socket.on('reconnect_failed', e => {
             if (disconnected) return
-            console.error("yep - connection to server on :${port} failed")
+            console.error("rola - connection to server on :${port} failed")
           })
         }
         document.head.appendChild(socketio)

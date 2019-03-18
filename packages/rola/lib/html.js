@@ -11,7 +11,7 @@ export default function html ({ state, view }) {
         <meta charset='utf-8'>
         <meta name='viewport' content='width=device-width,initial-scale=1'>
 
-        <title>${meta.title || 'yep'}</title>
+        <title>${meta.title || 'rola'}</title>
 
         <link rel='stylesheet' href='/client.css' />
 
@@ -22,7 +22,7 @@ export default function html ({ state, view }) {
         <div id='root'>${view}</div>
 
         <script>
-          window.__yepyep = ${stringify(state)}
+          window.__rola = ${stringify(state)}
         </script>
         <script src='/client.js'></script>
       </body>

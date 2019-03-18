@@ -80,7 +80,7 @@ export default function server (routes, initialState = {}, options = {}) {
       }).catch(e => {
         res.statusCode = 500
         res.setHeader('Content-Type', 'text/plain')
-        res.end('yep error')
+        res.end('rola error')
         console.log(e)
       })
   }

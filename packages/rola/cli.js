@@ -1,22 +1,22 @@
 #! /usr/bin/env node
 'use strict'
 
-const log = require('./util/log.js')
+const log = require('@rola/log')
 
 /**
  * fresh console
  */
 console.clear()
 
-log({ actions: [ 'initializing...' ] })
+log({ actions: [ 'initializing' ] })
 
 const fs = require('fs-extra')
 const path = require('path')
 const exit = require('exit')
 const onExit = require('exit-hook')
 
-const yepCompiler = require('@yepyep/compiler')
-const yepStatic = require('@yepyep/static')
+const rolaCompiler = require('@rola/compiler')
+const rolaStatic = require('@rola/static')
 
 const pkg = require('./package.json')
 const createServer = require('./util/createServer.js')
@@ -34,7 +34,7 @@ const prog = require('commander')
   .version(pkg.version)
   .option('-c, --config <path>', 'specify the path to your config file')
 
-const configpath = path.join(cwd, prog.config || 'yep.config.js')
+const configpath = path.join(cwd, prog.config || 'rola.config.js')
 const config = fs.existsSync(configpath) ? require(configpath) : {}
 
 let clientEntry
@@ -61,7 +61,7 @@ function serve () {
   }
 }
 
-const generator = yepStatic({
+const generator = rolaStatic({
   env: config.env,
   alias: config.alias,
   filter (routes) {
@@ -91,18 +91,20 @@ prog
     if (clientEntry) configs.push(createConfig({
       entry: clientEntry,
       env: config.env,
-      alias: config.alias
+      alias: config.alias,
+      macros: config.macros
     }))
 
     if (serverEntry) configs.push(createConfig({
       entry: serverEntry,
       env: config.env,
-      alias: config.alias
+      alias: config.alias,
+      macros: config.macros
     }))
 
     let allstats = []
 
-    ;(configs.length ? yepCompiler(configs).build() : Promise.resolve(null))
+    ;(configs.length ? rolaCompiler(configs).build() : Promise.resolve(null))
       .then(async stats => {
         stats.map(_stats => {
           const server = _stats.assets.reduce((bool, asset) => {
@@ -159,11 +161,15 @@ prog
     let allstats = []
 
     if (configs.length) {
-      yepCompiler(configs).watch((e, stats) => {
-        if (e) return log(state => ({
+      const compiler = rolaCompiler(configs)
+
+      compiler.on('error', e => {
+        log(state => ({
           error: state.error.concat(e)
         }))
+      })
 
+      compiler.on('stats', stats => {
         stats.map(_stats => {
           const isServer = _stats.assets.reduce((bool, asset) => {
             if (/server/.test(asset.name)) bool = true
@@ -202,6 +208,8 @@ prog
           compiled = true
         }
       })
+
+      compiler.watch()
     } else {
       serve()
     }

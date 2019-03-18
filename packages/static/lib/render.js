@@ -85,7 +85,7 @@ module.exports = async function render (pages, dest, options) {
             dir.split(dest)[1] || '/'
           )
         } catch (e) {
-          e.message = `yep error rendering ${pathname} -> ${e.message}`
+          e.message = `rola error rendering ${pathname} -> ${e.message}`
           emit('error', e)
         }
       }

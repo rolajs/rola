@@ -1,3 +1,3 @@
-module.exports = ({ content }) => {
-  return `<!DOCTYPE html>` + content
+module.exports = ({ view }) => {
+  return `<!DOCTYPE html>` + view
 }

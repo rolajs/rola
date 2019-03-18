@@ -1,22 +1,22 @@
 {
-  "name": "@yepyep/compiler",
-  "version": "0.0.2",
-  "description": "Compiler abstraction for yep.",
+  "name": "@rola/compiler",
+  "version": "0.2.0",
+  "description": "Compiler abstraction for rola.",
   "main": "index.js",
   "bin": {
-    "yep-compiler": "./cli.js"
+    "rola-compiler": "./cli.js"
   },
   "scripts": {},
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/estrattonbailey/yep.git"
+    "url": "git+ssh://git@github.com/estrattonbailey/rola.git"
   },
   "author": "estrattonbailey",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/estrattonbailey/yep/issues"
+    "url": "https://github.com/estrattonbailey/rola/issues"
   },
-  "homepage": "https://github.com/estrattonbailey/yep#readme",
+  "homepage": "https://github.com/estrattonbailey/rola#readme",
   "dependencies": {
     "@babel/core": "^7.3.4",
     "@babel/plugin-proposal-class-properties": "^7.3.4",

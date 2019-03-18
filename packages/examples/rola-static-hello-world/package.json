@@ -1,0 +1,15 @@
+{
+  "name": "rola-static-hello-world",
+  "private": true,
+  "scripts": {
+    "start": "rola-static watch routes/ build/",
+    "build": "rola-static render routes/ build/"
+  },
+  "author": "estrattonbailey",
+  "dependencies": {
+    "@rola/static": "0.0.2",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "rola": "0.0.2"
+  }
+}

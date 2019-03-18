@@ -95,7 +95,7 @@ function createConfig (conf, watch) {
     })
   ].filter(Boolean))
 
-  conf.macros.map(mac => mac(wc, { watch }))
+  ;[].concat(conf.macros || []).map(mac => mac(wc, { watch }))
 
   return [
     conf,

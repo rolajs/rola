@@ -1,15 +1,9 @@
-![repo banner](https://user-images.githubusercontent.com/4732330/54318360-74f6a480-45bc-11e9-8d5c-20c99e6a586b.png)
+# @rola/static
+Static file generation for rola or your project.
 
 ```bash
-npm i biti -g
+npm i @rola/static -g
 ```
-
-<br />
-<br />
-
-> 👀 Looking for a static page generation *plus* a client-side app? Try 👉 [hypr](https://github.com/estrattonbailey/hypr) :)
-
-<br />
 
 ## Features
 - easy static page generation
@@ -19,12 +13,12 @@ npm i biti -g
 
 ## Usage
 ```bash
-biti watch pages/ static/
+rola-static watch pages/ static/
 ```
 
 ## Getting started
-`biti` is pretty simple. It operates on a single directory of pages, which each
-define and export properties and methods that `biti` uses to render the page.
+`rola-static` is pretty simple. It operates on a single directory of pages, which each
+define and export properties and methods that `rola-static` uses to render the page.
 
 For the examples here, we'll use `/pages` as our pages directory, but you could
 call it anything.
@@ -162,11 +156,11 @@ export function view ({ state, pathname }) {
 ```
 
 ## Configuration
-`biti` supports minimal configuration, and otherwise falls back to smart
+`rola-static` supports minimal configuration, and otherwise falls back to smart
 defaults. To define a config for all rendering tasks, you can create a
-`biti.config.js` file.
+`rola.config.js` file.
 
-`biti` supports the following properties on the config file:
+`rola-static` supports the following properties on the config file:
 - `env` - object - properties on this object will be attached to `process.env`,
   as well as defined *globally* within the compilation.
 - `alias` - object - module import aliases
@@ -184,7 +178,7 @@ module.exports = {
 ```
 
 #### Default config
-By default, `biti` defines a single alias `@` that points to `process.cwd()`.
+By default, `rola-static` defines a single alias `@` that points to `process.cwd()`.
 You can use it throughout your templates like this:
 
 ```javascript
@@ -192,43 +186,43 @@ import Component from '@/src/components/Component.js'
 ```
 
 ## CLI
-`biti` only has two commands: `render` and `watch`.
+`rola-static` only has two commands: `render` and `watch`.
 
 Both follow the same pattern:
 
 ```bash
-biti <command> <src> <dest>
+rola-static <command> <src> <dest>
 ```
 
 For example:
 
 ```bash
-biti render /pages /static
+rola-static render /pages /static
 ```
 
 These commands also accept globs as the `src` property, allowing you to specify
 individual pages or directories.
 
 ```bash
-biti render /pages/about-us.js /static
-biti render /pages/*.js /static
-biti render /pages/marketing-site/*.js /static
-biti render /pages/**/*.js /static
+rola-static render /pages/about-us.js /static
+rola-static render /pages/*.js /static
+rola-static render /pages/marketing-site/*.js /static
+rola-static render /pages/**/*.js /static
 ```
 
 ## API
-Using `biti` programmatically is virtually the same as using the CLI, only
+Using `rola-static` programmatically is virtually the same as using the CLI, only
 you'll need to pass your configuration object manually.
 
 ```javascript
-const biti = require('biti')
+const rola = require('@rola/static')
 
 const config = {
   env: { ... },
   alias: { ... }
 }
 
-const app = biti(config)
+const app = rola(config)
 ```
 
 Both `render` and `watch` have the following signature:
@@ -252,7 +246,7 @@ app.watch('/src', '/static')
 ```
 
 ### API Events
-A `biti` instance emits a few helpful events as well.
+A `rola-static` instance emits a few helpful events as well.
 
 #### render
 After rendering a single page.

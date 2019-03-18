@@ -1,15 +1,15 @@
 {
-  "name": "yepyep",
-  "version": "0.0.2",
+  "name": "rola",
+  "version": "0.2.0",
   "description": "",
-  "main": "dist/yepyep.js",
+  "main": "dist/rola.js",
   "files": [
     "dist",
     "util",
     "cli.js"
   ],
   "bin": {
-    "yep": "./cli.js"
+    "rola": "./cli.js"
   },
   "scripts": {
     "build": "npm run build:index && npm run build:internals",
@@ -21,10 +21,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/estrattonbailey/yep.git"
+    "url": "git+ssh://git@github.com/estrattonbailey/rola.git"
   },
   "keywords": [
-    "generator",
+    "spa",
+    "single page app",
+    "static site generator",
     "react",
     "server side rendering",
     "website",
@@ -33,12 +35,14 @@
   "author": "estrattonbailey",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/estrattonbailey/yep/issues"
+    "url": "https://github.com/estrattonbailey/rola/issues"
   },
-  "homepage": "https://github.com/estrattonbailey/yep#readme",
+  "homepage": "https://github.com/estrattonbailey/rola#readme",
   "dependencies": {
     "@picostate/react": "^1.1.0",
-    "@yepyep/compiler": "^0.0.2",
+    "@rola/compiler": "^0.0.2",
+    "@rola/log": "^0.0.2",
+    "@rola/static": "^0.0.2",
     "ansi-colors": "^3.2.3",
     "biti": "^2.4.0",
     "commander": "^2.19.0",

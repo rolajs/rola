@@ -18,7 +18,7 @@ export default function client (routes, initialState = {}, options = {}) {
 
   const [ route, params ] = router(location)
 
-  const serverState = parse(JSON.stringify(window.__yep))
+  const serverState = parse(JSON.stringify(window.__rola))
 
   store.hydrate({
     ...serverState,

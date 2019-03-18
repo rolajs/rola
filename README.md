@@ -1,15 +1,13 @@
-# yep ~~hypr~~
+![repo-banner](https://user-images.githubusercontent.com/4732330/54534195-3cf7b480-4962-11e9-87bf-f04e83f61198.png)
 
 ```
-npm i yepyep -g
+npm i rola -g
 ```
 <br />
 <br />
 
 > This project is *alpha*, so I don't recommend using it in production *yet*. I
 > welcome all ideas, critiques, and PRs :)
->
-> Also, I'm searching for a name. If you have any ideas plz share!
 
 <br />
 
@@ -39,10 +37,10 @@ npm i yepyep -g
 
 ## usage
 ```
-yep build
+rola build
 ```
 ```
-yep watch
+rola watch
 ```
 
 ## setup
@@ -68,7 +66,7 @@ export default [ Home ]
 **client.js**
 ```javascript
 import React from 'react'
-import { client } from 'yepyep'
+import { client } from 'rola'
 import routes from '@routes.js'
 
 client(routes, { title: 'hello world' })(document.getElementById('root'))
@@ -77,7 +75,7 @@ client(routes, { title: 'hello world' })(document.getElementById('root'))
 **server.js**
 ```javascript
 import React from 'react'
-import { server } from 'yepyep'
+import { server } from 'rola'
 import routes from '@routes.js'
 
 export default server(routes, { title: 'hello world' })
@@ -128,13 +126,13 @@ export function view ({ state }) {
 ```
 
 ## routing
-`yepyep` comes with routing built in. Use the `Link` export to navigate throughout
+`rola` comes with routing built in. Use the `Link` export to navigate throughout
 your app.
 
 **routes/Home.js**
 ```javascript
 import React from 'react'
-import { Link } from 'yepyep'
+import { Link } from 'rola'
 
 export const pathname = '/'
 export function config () {
@@ -160,14 +158,14 @@ export function view ({ state }) {
 ```
 
 ## state
-`yepyep` comes with state management built in also. Use the `withState` export to
+`rola` comes with state management built in also. Use the `withState` export to
 pass state to individual components. Refer to the
 [picostate](https://github.com/estrattonbailey/picostate) docs for more info.
 
 **components/ChangeTitle.js**
 ```javascript
 import React from 'react'
-import { withState } from 'yepyep'
+import { withState } from 'rola'
 
 export default withState(state => ({
   myTitle: state.title
@@ -184,7 +182,7 @@ export default withState(state => ({
 **routes/Home.js**
 ```javascript
 import React from 'react'
-import { Link, withState } from 'yepyep'
+import { Link, withState } from 'rola'
 import ChangeTitle from '@/components/ChangeTitle.js'
 
 export const pathname = '/'
@@ -218,9 +216,5 @@ This will be a blog post, but think *[Next](https://nextjs.org/) plus [Gatsby](h
 ## contributing
 Wowee would I welcome some help :)
 
-## the name
-Massive thanks to [idmitriev](https://github.com/idmitriev) for passing on the
-name, very kind of them :)
-
 ## license
-MIT &copy; 2019 Eric Bailey
+MIT License © [Eric Bailey](https://estrattonbailey.com)

@@ -1,0 +1,25 @@
+{
+  "name": "@rola/log",
+  "version": "0.2.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/estrattonbailey/rola.git"
+  },
+  "keywords": [],
+  "author": "estrattonbailey",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/estrattonbailey/rola/issues"
+  },
+  "homepage": "https://github.com/estrattonbailey/rola#readme",
+  "dependencies": {
+    "ansi-colors": "^3.2.3",
+    "log-update": "^2.3.0",
+    "picostate": "^1.4.0"
+  },
+  "devDependencies": {},
+  "gitHead": "d0688096c5e3398a448d76fc53b4df384e6001ad"
+}

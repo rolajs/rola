@@ -1,16 +1,18 @@
 {
-  "name": "@yepyep/static",
-  "version": "0.0.2",
-  "description": "Static page generation for yep.",
+  "name": "@rola/static",
+  "version": "0.2.0",
+  "description": "Static page generation for rola.",
   "author": "estrattonbailey",
   "license": "MIT",
   "main": "index.js",
   "bin": {
-    "yep-static": "cli.js"
+    "rola-static": "cli.js"
   },
   "dependencies": {
-    "@yepyep/compiler": "^0.0.2",
+    "@rola/compiler": "^0.0.2",
+    "@rola/log": "^0.0.2",
     "ansi-colors": "^3.2.3",
+    "async-exit-hook": "^2.0.1",
     "chokidar": "^1.7.0",
     "commander": "^2.9.0",
     "deepmerge": "^3.2.0",
@@ -26,11 +28,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/estrattonbailey/yep.git"
+    "url": "https://github.com/estrattonbailey/rola.git"
   },
   "bugs": {
-    "url": "https://github.com/estrattonbailey/yep/issues"
+    "url": "https://github.com/estrattonbailey/rola/issues"
   },
-  "homepage": "https://github.com/estrattonbailey/yep",
+  "homepage": "https://github.com/estrattonbailey/rola",
   "gitHead": "d0688096c5e3398a448d76fc53b4df384e6001ad"
 }

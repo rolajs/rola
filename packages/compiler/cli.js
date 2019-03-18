@@ -4,13 +4,14 @@
 const fs = require('fs')
 const path = require('path')
 const exit = require('exit')
+const onExit = require('exit-hook')
 const match = require('matched')
 const log = require('log-update')
 const c = require('ansi-colors')
 
 const cwd = process.cwd()
 const pkg = require('./package.json')
-const yepCompiler = require('./index.js')
+const rolaCompiler = require('./index.js')
 const css = require('./macros/css.js')
 
 const prog = require('commander')
@@ -21,7 +22,7 @@ const prog = require('commander')
 let config = {}
 
 try {
-  config = require(path.join(cwd, 'yep.config.js'))
+  config = require(path.join(cwd, 'rola.config.js'))
 } catch (e) {}
 
 function mergeConfig (inputs) {
@@ -69,7 +70,7 @@ function mergeConfig (inputs) {
 }
 
 function output (errors = [], stats = []) {
-  const banner = `${c[errors.length ? 'bgRed' : 'bgBlue'](c.white(' yep '))} v${pkg.version}`
+  const banner = `${c[errors.length ? 'bgRed' : 'bgBlue'](c.white(' rola '))} v${pkg.version}`
 
   log(`
   ${banner}
@@ -94,7 +95,7 @@ prog
   .command('watch [inputs...]')
   .action(inputs => {
     output()
-    const compiler = yepCompiler(mergeConfig(inputs))
+    const compiler = rolaCompiler(mergeConfig(inputs))
     compiler.on('error', e => {
       output(e)
     })
@@ -102,13 +103,14 @@ prog
       output([], stats)
     })
     compiler.watch()
+    onExit(() => compiler.close())
   })
 
 prog
   .command('build [inputs...]')
   .action(inputs => {
     output()
-    const compiler = yepCompiler(mergeConfig(inputs))
+    const compiler = rolaCompiler(mergeConfig(inputs))
     compiler.on('error', e => {
       output(e)
     })
