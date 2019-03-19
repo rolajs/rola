@@ -57,19 +57,19 @@ module.exports = async function render (pages, dest, options) {
         }
 
         try {
-          let component = route.view(context)
+          let app = route.view(context)
 
           options.plugins
             .filter(p => p.wrapApp)
             .map(p => {
               try {
-                component = p.wrapApp({ component, context })
+                app = p.wrapApp({ app, context })
               } catch (e) {
                 emit('error', e)
               }
             })
 
-          const view = renderToString(component)
+          const view = renderToString(app)
 
           options.plugins
             .filter(p => p.appDidRender)

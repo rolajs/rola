@@ -64,7 +64,7 @@ module.exports = function rolaStatic ({
         alias,
         plugins: [
           node()
-        ]
+        ].concat(plugins || [])
       })
         .build()
         .then(stats => {
@@ -130,7 +130,7 @@ module.exports = function rolaStatic ({
           alias,
           plugins: [
             node()
-          ]
+          ].concat(plugins || [])
         })))
 
         compiler.on('error', e => {

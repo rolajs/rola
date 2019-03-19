@@ -4,11 +4,11 @@ import styledComponents from '@rola/plugin-styled-components'
 
 export default {
   plugins: [
-    document(({ state, view, style }) => {
+    document(({ context, view }) => {
       return `<!DOCTYPE html>
         <html>
           <head>
-            ${style}
+            ${context.style}
           </head>
           <body>
             ${view}

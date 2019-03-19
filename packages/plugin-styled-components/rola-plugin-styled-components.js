@@ -6,18 +6,18 @@ const sheets = new Map()
 
 export default (options = {}) => {
   return {
-    createConfig ({ config, context }) {
-      config.plugins.push([
-        'babel-plugin-styled-components',
-        { ssr: true }
-      ])
-    },
-    wrapApp ({ component, context }) {
+    // createConfig ({ config, context }) {
+    //   config.module.rules[0].use[0].options.plugins.push([
+    //     'babel-plugin-styled-components',
+    //     { ssr: true }
+    //   ])
+    // },
+    wrapApp ({ app, context }) {
       const sheet = new ServerStyleSheet()
 
       sheets.set(context.pathname, sheet)
 
-      return <StyleSheetManager sheet={sheet.instance}>{component}</StyleSheetManager>
+      return <StyleSheetManager sheet={sheet.instance}>{app}</StyleSheetManager>
     },
     appDidRender ({ context }) {
       const sheet = sheets.get(context.pathname)
