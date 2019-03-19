@@ -1,34 +1,32 @@
+const fs = require('fs-extra')
 const path = require('path')
-const compiler = require('@rola/compiler')
+const { transformSync } = require('@babel/core')
 const log = require('@rola/log')
-const node = require('@rola/plugin-node')
 
 module.exports = async function getConfig () {
   const cwd = process.cwd()
 
   try {
-    const configfile = path.resolve(cwd, './rola.config.js')
+    const infile = path.resolve(cwd, './rola.config.js')
+    const outfile = path.join(cwd, '.cache', 'rola.config.js')
 
-    if (!configfile) return {}
+    if (!infile) return {}
 
-    const app = compiler({
-      in: configfile,
-      out: {
-        path: path.resolve(cwd, '.cache'),
-        filename: 'rola.config.js',
-        libraryTarget: 'commonjs2'
-      },
+    const { code } = transformSync(fs.readFileSync(infile), {
       plugins: [
-        node()
+        require.resolve('@babel/plugin-syntax-object-rest-spread'),
+        require.resolve('@babel/plugin-proposal-class-properties'),
+        require.resolve('fast-async')
+      ],
+      presets: [
+        require.resolve('@babel/preset-env'),
+        require.resolve('@babel/preset-react')
       ]
     })
 
-    app.on('error', e => log(state => ({ error: state.error.concat(e) })))
-    app.on('warn', e => log(state => ({ warn: state.warn.concat(e) })))
+    fs.outputFileSync(outfile, code)
 
-    await app.build()
-
-    return require(path.resolve(cwd, '.cache/rola.config.js')).default
+    return require(outfile).default
   } catch (e) {
     log(state => ({ error: state.error.concat(e) }))
     return {}
