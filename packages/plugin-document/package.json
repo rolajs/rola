@@ -1,6 +1,6 @@
 {
   "name": "@rola/plugin-document",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Replace rola document.",
   "main": "index.js",
   "scripts": {},
