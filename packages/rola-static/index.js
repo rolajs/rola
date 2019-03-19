@@ -21,7 +21,8 @@ module.exports = function rolaStatic ({
   alias,
   filter,
   wrap,
-  html
+  html,
+  plugins = []
 } = {}) {
   require('./lib/env.js')({ env, alias })
 
@@ -68,7 +69,7 @@ module.exports = function rolaStatic ({
           return render(
             pages,
             abs(dest),
-            { filter, wrap, html }
+            { filter, wrap, html, plugins }
           ).then(() => {
             fs.removeSync(tmp)
           })
@@ -140,7 +141,7 @@ module.exports = function rolaStatic ({
           render(
             pages,
             abs(dest),
-            { filter, wrap, html }
+            { filter, wrap, html, plugins }
           )
         })
 

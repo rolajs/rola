@@ -46,33 +46,50 @@ module.exports = async function render (pages, dest, options) {
 
       let currentpaths = []
 
-      for (let { pathname, state, view } of routes) {
-        const dir = path.join(dest, pathname)
+      for (let route of routes) {
+        const dir = path.join(dest, route.pathname)
 
-        currentpaths.push(pathname)
+        currentpaths.push(route.pathname)
 
-        const props = {
-          state,
-          pathname
+        const state = {
+          state: route.state,
+          pathname: route.pathname
         }
 
         try {
-          const content = renderToString(
-            options.wrap ? (
-              React.createElement(
-                options.wrap.default || options.wrap,
-                props,
-                view(props)
-              )
-            ) : view(props)
-          )
+          let component = options.wrap ? (
+            React.createElement(
+              options.wrap.default || options.wrap,
+              state,
+              route.view(state)
+            )
+          ) : route.view(state)
+
+          options.plugins
+            .filter(p => p.onStaticRender)
+            .map(p => {
+              emit('actions', [p])
+              try {
+                component = p.onStaticRender({ component, state })
+              } catch (e) {
+                emit('error', e)
+              }
+            })
+
+          const view = renderToString(component)
+
+          const createDocument = options.plugins
+            .filter(p => p.createDocument)
+            .map(p => p.createDocument)
+            .concat(defaulthtml)
+
+          if (createDocument.length > 2) {
+            log(state => ({ warn: state.warn.concat('multiple plugins defined a createDocument method, applying first instance') }))
+          }
 
           await fs.outputFile(
             path.join(dir, 'index.html'),
-            (options.html || defaulthtml)({
-              state: props,
-              view: content
-            }),
+            createDocument[0]({ state, view }),
             e => {
               if (e) {
                 emit('error', e)
@@ -85,7 +102,7 @@ module.exports = async function render (pages, dest, options) {
             dir.split(dest)[1] || '/'
           )
         } catch (e) {
-          e.message = `rola error rendering ${pathname} -> ${e.message}`
+          e.message = `rola error rendering ${route.pathname} -> ${e.message}`
           emit('error', e)
         }
       }
