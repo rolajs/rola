@@ -1,14 +1,14 @@
 {
   "name": "@rola/util",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Internal utilities for rola.",
   "author": "estrattonbailey",
   "license": "MIT",
   "main": "index.js",
   "dependencies": {
-    "@rola/compiler": "^0.2.3",
+    "@rola/compiler": "^0.2.4",
     "@rola/log": "^0.2.2",
-    "@rola/plugin-node": "^0.2.2"
+    "@rola/plugin-node": "^0.2.4"
   },
   "repository": {
     "type": "git",
