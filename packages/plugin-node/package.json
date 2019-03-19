@@ -1,6 +1,6 @@
 {
   "name": "@rola/plugin-node",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Compile node with rola.",
   "main": "index.js",
   "scripts": {},
