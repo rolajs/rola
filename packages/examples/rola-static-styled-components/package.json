@@ -8,11 +8,11 @@
   "author": "estrattonbailey",
   "dependencies": {
     "@rola/plugin-document": "^0.2.7",
-    "@rola/plugin-styled-components": "^0.2.7",
-    "@rola/static": "^0.2.7",
+    "@rola/plugin-styled-components": "^0.2.8",
+    "@rola/static": "^0.2.8",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
-    "rola": "^0.2.7",
+    "rola": "^0.2.8",
     "styled-components": "^4.1.3"
   }
 }
