@@ -13,6 +13,7 @@
     "@rola/log": "^0.2.7",
     "@rola/plugin-node": "^0.2.8",
     "@rola/plugin-postcss": "^0.2.8",
+    "@rola/util": "^0.2.8",
     "ansi-colors": "^3.2.3",
     "async-exit-hook": "^2.0.1",
     "chokidar": "^1.7.0",

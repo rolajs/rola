@@ -1,5 +1,5 @@
 {
-  "name": "rola-hello-world",
+  "name": "rola-test",
   "private": true,
   "scripts": {
     "start": "rola watch",
@@ -7,8 +7,10 @@
   },
   "author": "estrattonbailey",
   "dependencies": {
+    "@rola/plugin-document": "^0.2.7",
+    "@rola/plugin-postcss": "^0.2.8",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
-    "rola": "^0.2.0"
+    "rola": "^0.2.10"
   }
 }

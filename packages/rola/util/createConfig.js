@@ -1,10 +1,9 @@
 const path = require('path')
 const node = require('@rola/plugin-node')
-const postcss = require('@rola/plugin-postcss')
 
 const cwd = process.cwd()
 
-module.exports = function createConfig ({ entry, watch, env, alias, banner, macros }) {
+module.exports = function createConfig ({ entry, watch, env, alias, banner, plugins }) {
   const isNode = /server/.test(entry)
 
   return {
@@ -15,8 +14,7 @@ module.exports = function createConfig ({ entry, watch, env, alias, banner, macr
     } : path.join(cwd, 'static'),
     env: env || {},
     alias: alias || {},
-    macros: [].concat(macros || []).concat([
-      postcss(),
+    plugins: [].concat(plugins || []).concat([
       isNode && node()
     ].filter(Boolean)),
     banner: node ? (

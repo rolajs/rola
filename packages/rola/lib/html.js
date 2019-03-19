@@ -1,9 +1,7 @@
 import tags from 'html-meta-tags'
 import { stringify } from 'flatted/cjs'
 
-export default function html ({ state, view }) {
-  const meta = state.meta || {}
-
+export default function html ({ context, view }) {
   return `
     <!DOCTYPE html>
     <html>
@@ -11,18 +9,16 @@ export default function html ({ state, view }) {
         <meta charset='utf-8'>
         <meta name='viewport' content='width=device-width,initial-scale=1'>
 
-        <title>${meta.title || 'rola'}</title>
+        <title>rola</title>
 
         <link rel='stylesheet' href='/client.css' />
-
-        ${tags(meta)}
       </head>
 
       <body>
         <div id='root'>${view}</div>
 
         <script>
-          window.__rola = ${stringify(state)}
+          window.__rola = ${stringify(context)}
         </script>
         <script src='/client.js'></script>
       </body>

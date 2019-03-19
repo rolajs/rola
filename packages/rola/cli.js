@@ -14,9 +14,11 @@ const fs = require('fs-extra')
 const path = require('path')
 const exit = require('exit')
 const onExit = require('exit-hook')
+const React = require('react')
 
 const rolaCompiler = require('@rola/compiler')
 const rolaStatic = require('@rola/static')
+const { getConfig } = require('@rola/util')
 
 const pkg = require('./package.json')
 const createServer = require('./util/createServer.js')
@@ -32,10 +34,6 @@ const PORT = process.env.PORT || 3000
 const cwd = process.cwd()
 const prog = require('commander')
   .version(pkg.version)
-  .option('-c, --config <path>', 'specify the path to your config file')
-
-const configpath = path.join(cwd, prog.config || 'rola.config.js')
-const config = fs.existsSync(configpath) ? require(configpath) : {}
 
 let clientEntry
 let serverEntry
@@ -61,30 +59,45 @@ function serve () {
   }
 }
 
-const generator = rolaStatic({
-  env: config.env,
-  alias: config.alias,
-  filter (routes) {
-    return routes.filter(r => !!r.config)
-  },
-  wrap: App,
-  html (props) {
-    return (config.html || html)(props)
-  }
-})
-generator.on('rendered', pages => {
-  log({ static: pages })
-})
-generator.on('error', e => {
-  log(state => ({
-    error: state.error.concat(e)
-  }))
-})
+function createGenerator (config) {
+  const generator = rolaStatic({
+    env: config.env,
+    alias: config.alias,
+    plugins: [
+      {
+        wrapApp ({ app, context }) {
+          return React.createElement(App, context, app)
+        }
+      },
+      {
+        createDocument (props) {
+          return html(props)
+        }
+      }
+    ],
+    filter (routes) {
+      return routes.filter(r => !!r.config)
+    }
+  })
+
+  generator.on('rendered', pages => {
+    log({ static: pages })
+  })
+  generator.on('error', e => {
+    log(state => ({
+      error: state.error.concat(e)
+    }))
+  })
+
+  return generator
+}
 
 prog
   .command('build')
-  .action(() => {
+  .action(async () => {
     log({ actions: [ 'build' ] })
+
+    const config = await getConfig()
 
     const configs = []
 
@@ -92,14 +105,14 @@ prog
       entry: clientEntry,
       env: config.env,
       alias: config.alias,
-      macros: config.macros
+      plugins: config.plugins
     }))
 
     if (serverEntry) configs.push(createConfig({
       entry: serverEntry,
       env: config.env,
       alias: config.alias,
-      macros: config.macros
+      plugins: config.plugins
     }))
 
     let allstats = []
@@ -126,7 +139,7 @@ prog
 
         if (serverEntry) serve()
 
-        await generator.render('/routes', '/static')
+        await createGenerator(config).render('/routes', '/static')
 
         exit()
       })
@@ -139,8 +152,10 @@ prog
 
 prog
   .command('watch')
-  .action(() => {
+  .action(async () => {
     log({ actions: [ 'watch' ] })
+
+    const config = await getConfig()
 
     let compiled = false
     const configs = []
@@ -149,13 +164,15 @@ prog
       entry: clientEntry,
       env: config.env,
       alias: config.alias,
-      banner: require('./util/clientReloader.js')(PORT)
+      banner: require('./util/clientReloader.js')(PORT),
+      plugins: config.plugins
     }))
 
     if (serverEntry) configs.push(createConfig({
       entry: serverEntry,
       env: config.env,
-      alias: config.alias
+      alias: config.alias,
+      plugins: config.plugins
     }))
 
     let allstats = []
@@ -193,17 +210,7 @@ prog
         serve()
 
         if (!compiled) {
-          generator.watch('/routes', '/static')
-
-          if (!process.env.DEBUG) {
-            ;['log', 'warn', 'error'].map(type => {
-              console[type] = (...args) => {
-                log(state => ({
-                  [type]: state[type].concat(args)
-                }))
-              }
-            })
-          }
+          createGenerator(config).watch('/routes', '/static')
 
           compiled = true
         }

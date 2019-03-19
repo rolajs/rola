@@ -1,6 +1,7 @@
 const path = require('path')
 const compiler = require('@rola/compiler')
 const log = require('@rola/log')
+const node = require('@rola/plugin-node')
 
 module.exports = async function getConfig () {
   const cwd = process.cwd()
@@ -16,7 +17,10 @@ module.exports = async function getConfig () {
         path: path.resolve(cwd, '.cache'),
         filename: 'rola.config.js',
         libraryTarget: 'commonjs2'
-      }
+      },
+      plugins: [
+        node()
+      ]
     })
 
     app.on('error', e => log(state => ({ error: state.error.concat(e) })))
