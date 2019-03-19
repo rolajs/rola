@@ -1,6 +1,6 @@
 {
   "name": "@rola/compiler",
-  "version": "0.2.8",
+  "version": "0.2.11",
   "description": "Compiler abstraction for rola.",
   "main": "index.js",
   "bin": {
@@ -25,8 +25,8 @@
     "@babel/plugin-transform-react-jsx": "^7.3.0",
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
-    "@rola/plugin-postcss": "^0.2.8",
-    "@rola/util": "^0.2.8",
+    "@rola/plugin-postcss": "^0.2.11",
+    "@rola/util": "^0.2.11",
     "acorn": "^6.1.1",
     "ansi-colors": "^3.2.4",
     "babel-loader": "^8.0.5",

@@ -1,6 +1,6 @@
 {
   "name": "@rola/plugin-postcss",
-  "version": "0.2.8",
+  "version": "0.2.11",
   "description": "Enable PostCSS for rola.",
   "main": "index.js",
   "repository": {
