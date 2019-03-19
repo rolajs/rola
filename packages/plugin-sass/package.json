@@ -1,6 +1,6 @@
 {
   "name": "@rola/plugin-sass",
-  "version": "0.2.11",
+  "version": "0.3.0",
   "description": "Enable SASS for rola.",
   "main": "index.js",
   "scripts": {},
