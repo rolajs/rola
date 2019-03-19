@@ -1,7 +1,6 @@
 const fs = require('fs-extra')
 const path = require('path')
 const { transformSync } = require('@babel/core')
-const log = require('@rola/log')
 
 module.exports = async function getConfig () {
   const cwd = process.cwd()
@@ -28,7 +27,7 @@ module.exports = async function getConfig () {
 
     return require(outfile).default
   } catch (e) {
-    log(state => ({ error: state.error.concat(e) }))
+    console.error(e)
     return {}
   }
 }

@@ -1,5 +1,3 @@
-const { emit } = require('./emitter.js')
-
 function formatStats (stats) {
   return [].concat(stats.stats || stats).map(stat => {
     const { startTime, endTime } = stat
@@ -8,15 +6,9 @@ function formatStats (stats) {
       modules: false
     })
 
-    if (stat.hasErrors()) {
-      emit('error', json.errors)
-    }
-
-    if (stat.hasWarnings()) {
-      emit('warn', json.warnings)
-    }
-
     return {
+      errors: stats.hasErrors() ? json.errors : null,
+      warnings: stats.hasWarnings() ? json.warnings : null,
       duration: (endTime - startTime) / 1000,
       assets: json.assets.map(({ name, size }) => {
         return {

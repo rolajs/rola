@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-const log = require('@rola/log')
+const log = require('@rola/log')()
 
 log({ actions: [ 'initializing' ] })
 

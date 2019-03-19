@@ -5,11 +5,12 @@ const webpack = require('webpack')
 const { createConfig } = require('./lib/createConfig.js')
 const { formatStats } = require('./lib/stats.js')
 const clientReloader = require('./lib/clientReloader.js')
-const { on, emit } = require('./lib/emitter.js')
 
 const cwd = process.cwd()
 
 module.exports = confs => {
+  const { on, emit } = require('./lib/emitter.js')()
+
   confs = [].concat(confs)
 
   let compiler
@@ -53,6 +54,11 @@ module.exports = confs => {
           }
 
           const formatted = formatStats(stats)
+
+          formatted.map(({ errors, warnings }) => {
+            if (errors && errors.length) emit('error', errors)
+            if (warnings && warnings.length) emit('warn', warnings)
+          })
 
           emit('stats', formatted)
           emit('done', formatted)
@@ -101,8 +107,11 @@ module.exports = confs => {
 
         const formatted = formatStats(stats)
 
-        formatted.map(stats => {
-          const hash = stats.assets
+        formatted.map(({ assets, errors, warnings }) => {
+          if (errors && errors.length) emit('error', errors)
+          if (warnings && warnings.length) emit('warn', warnings)
+
+          const hash = assets
             .filter(asset => /\.js$/.test(asset.name))
             .map(asset => path.basename(asset.name, '.js'))
             .join(':')

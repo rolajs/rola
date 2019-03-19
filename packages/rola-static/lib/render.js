@@ -2,7 +2,6 @@ const React = require('react')
 const fs = require('fs-extra')
 const path = require('path')
 const { renderToString } = require('react-dom/server')
-const log = require('@rola/log')
 const getRoutes = require('./getRoutes.js')
 const loadRoutes = require('./loadRoutes.js')
 const defaulthtml = require('./html.js')
@@ -89,7 +88,7 @@ module.exports = async function render (pages, dest, options) {
             .concat(defaulthtml)
 
           if (createDocument.length > 2) {
-            log(state => ({ warn: state.warn.concat('multiple plugins defined a createDocument method, applying first instance') }))
+            console.warn('multiple plugins defined a createDocument method, applying first instance')
           }
 
           await fs.outputFile(

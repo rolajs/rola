@@ -12,9 +12,7 @@ function req (file) {
     mod = require(file)
     mod = mod.default || mod
   } catch (e) {
-    log(state => ({
-      error: state.error.concat(e)
-    }))
+    console.error(e)
   }
 
   return mod
@@ -29,11 +27,6 @@ module.exports = function createServer (file, port) {
       return active
     },
     update () {
-      log({
-        error: [],
-        warn: [],
-        log: [],
-      })
       try {
         delete require.cache[file]
       } catch (e) {}
@@ -65,12 +58,7 @@ module.exports = function createServer (file, port) {
       })
 
       this.server.listen(port, e => {
-        if (e) return log(state => ({
-          error: state.error.concat(e)
-        }))
-
-        log({ server: [ port ] })
-
+        if (e) return console.log(e)
         active = true
       })
     },

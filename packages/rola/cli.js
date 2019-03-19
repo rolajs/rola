@@ -52,6 +52,7 @@ function serve () {
   if (!server) {
     server = createServer(path.join(cwd, '/static/server.js'), PORT)
     server.init()
+    log({ server: [ PORT ] })
 
     onExit(() => {
       server && server.close()
@@ -202,6 +203,9 @@ prog
 
         log({
           actions: [],
+          error: [],
+          warn: [],
+          log: [],
           stats: allstats
         })
 

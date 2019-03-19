@@ -17,7 +17,7 @@ module.exports = function createConfig ({ entry, watch, env, alias, banner, plug
     plugins: [].concat(plugins || []).concat([
       isNode && node()
     ].filter(Boolean)),
-    banner: node ? (
+    banner: isNode ? (
       `require('source-map-support').install();`
     ) : (
       '/** built with rola */'
