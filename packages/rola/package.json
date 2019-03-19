@@ -12,7 +12,6 @@
     "rola": "./cli.js"
   },
   "scripts": {
-    "prepublish": "npm run build",
     "build": "npm run build:index && npm run build:internals",
     "build:index": "microbundle build -i index.js -o dist -f cjs --target web --jsx React.createElement",
     "build:internals": "microbundle build lib/App.js lib/html.js -o dist -f cjs --jsx React.createElement",
@@ -67,5 +66,5 @@
   "devDependencies": {
     "microbundle": "^0.11.0"
   },
-  "gitHead": "4434c323f34e9874c350578bc49cc80d112c491a"
+  "gitHead": "570605c164cc377cf02c6819a29398857ca7bb7c"
 }
