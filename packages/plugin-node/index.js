@@ -1,6 +1,6 @@
 module.exports = (options = {}) => {
   return {
-    createConfig (config, ctx) {
+    createConfig ({ config, context }) {
       config.target = 'node'
 
       config.node = Object.assign({

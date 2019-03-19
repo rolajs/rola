@@ -2,7 +2,7 @@ const ExtractCSS = require('mini-css-extract-plugin')
 
 module.exports = (options = {}) => {
   return {
-    createConfig (config, ctx) {
+    createConfig ({ config, context }) {
       config.module.rules.push({
         test: /\.css$/,
         exclude: /node_modules/,
@@ -20,7 +20,7 @@ module.exports = (options = {}) => {
                   warnForDeprecations: false
                 }),
                 require('postcss-discard-comments'),
-                ctx.watch && require('cssnano')
+                context.watch && require('cssnano')
               ].filter(Boolean)
             }
           }
