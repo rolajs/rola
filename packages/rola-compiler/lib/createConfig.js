@@ -97,7 +97,10 @@ function createConfig (conf, watch) {
 
   ;[].concat(conf.plugins || [])
     .filter(p => p.createConfig)
-    .map(p => p.createConfig(wc, { watch }))
+    .map(p => p.createConfig({
+      config: wc,
+      context: { watch }
+    }))
 
   return [
     conf,

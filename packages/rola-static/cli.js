@@ -46,8 +46,6 @@ prog
 
     const config = await getConfig()
 
-    // throw JSON.stringify(config)
-
     const app = rolaStatic(config)
 
     app.on('error', e => log(state => ({ error: state.error.concat(e) })))

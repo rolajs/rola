@@ -51,32 +51,36 @@ module.exports = async function render (pages, dest, options) {
 
         currentpaths.push(route.pathname)
 
-        const state = {
+        let context = {
           state: route.state,
           pathname: route.pathname
         }
 
         try {
-          let component = options.wrap ? (
-            React.createElement(
-              options.wrap.default || options.wrap,
-              state,
-              route.view(state)
-            )
-          ) : route.view(state)
+          let component = route.view(context)
 
           options.plugins
-            .filter(p => p.onStaticRender)
+            .filter(p => p.wrapApp)
             .map(p => {
-              emit('actions', [p])
               try {
-                component = p.onStaticRender({ component, state })
+                component = p.wrapApp({ component, context })
               } catch (e) {
                 emit('error', e)
               }
             })
 
           const view = renderToString(component)
+
+          options.plugins
+            .filter(p => p.appDidRender)
+            .map(p => {
+              try {
+                const props = p.appDidRender({ context })
+                context = Object.assign({}, context, props)
+              } catch (e) {
+                emit('error', e)
+              }
+            })
 
           const createDocument = options.plugins
             .filter(p => p.createDocument)
@@ -89,7 +93,7 @@ module.exports = async function render (pages, dest, options) {
 
           await fs.outputFile(
             path.join(dir, 'index.html'),
-            createDocument[0]({ state, view }),
+            createDocument[0]({ context, view }),
             e => {
               if (e) {
                 emit('error', e)

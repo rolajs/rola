@@ -62,7 +62,7 @@ module.exports = function rolaStatic ({
         },
         env,
         alias,
-        macros: [
+        plugins: [
           node()
         ]
       })
@@ -128,7 +128,7 @@ module.exports = function rolaStatic ({
           },
           env,
           alias,
-          macros: [
+          plugins: [
             node()
           ]
         })))

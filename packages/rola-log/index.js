@@ -115,7 +115,6 @@ function logger (opts) {
         return line
       })
       .flat(2)
-      // .filter(line => !/^\n$/.test(line))
       .map(line => {
         const indent = Array(opts.indent || 2).join(' ')
         if (/^\n/.test(line)) {
@@ -127,7 +126,7 @@ function logger (opts) {
       .join('\n')
 
     output(process.env.DEBUG ? (
-      console.log(JSON.stringify(state, null, '  '))
+      JSON.stringify(state, null, '  ')
     ) : (
       str
     ))
@@ -160,7 +159,7 @@ function logger (opts) {
   }
 }
 
-module.exports = logger({
+const log = logger({
   indent: 2,
   banner: `${c.bgBlue(` rola `)} v${pkg.version}`,
   log: {
@@ -229,3 +228,15 @@ module.exports = logger({
     }
   }
 })
+
+if (!process.env.DEBUG) {
+  ;['log', 'warn', 'error'].map(type => {
+    console[type] = (...args) => {
+      log(state => ({
+        [type]: state[type].concat(args)
+      }))
+    }
+  })
+}
+
+module.exports = log
