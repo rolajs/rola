@@ -1,6 +1,6 @@
 {
   "name": "rola",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "",
   "main": "dist/rola.js",
   "files": [
@@ -40,9 +40,9 @@
   "homepage": "https://github.com/estrattonbailey/rola#readme",
   "dependencies": {
     "@picostate/react": "^1.1.0",
-    "@rola/compiler": "^0.2.7",
+    "@rola/compiler": "^0.2.8",
     "@rola/log": "^0.2.7",
-    "@rola/static": "^0.2.7",
+    "@rola/static": "^0.2.8",
     "ansi-colors": "^3.2.3",
     "biti": "^2.4.0",
     "commander": "^2.19.0",
