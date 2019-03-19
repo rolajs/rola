@@ -39,19 +39,24 @@ let clientEntry
 let serverEntry
 
 try {
-  serverEntry = require.resolve(path.join(cwd, 'server.js'))
+  clientEntry = require.resolve(path.join(cwd, 'client.js'))
 } catch (e) {}
 
 try {
-  clientEntry = require.resolve(path.join(cwd, 'client.js'))
+  serverEntry = require.resolve(path.join(cwd, 'server.js'))
 } catch (e) {}
 
 let server
 
 function serve () {
   if (!server) {
-    server = createServer(path.join(cwd, '/static/server.js'), PORT)
+    server = createServer({
+      file: path.join(cwd, '/static/server.js'),
+      port: PORT
+    })
+
     server.init()
+
     log({ server: [ PORT ] })
 
     onExit(() => {

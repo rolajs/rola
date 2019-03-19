@@ -53,7 +53,7 @@ module.exports = function rolaStatic ({
       watcher && watcher.close()
       return Promise.resolve(compiler ? compiler.close() : null)
     },
-    async render (src, dest) {
+    async render (src, dest, options = {}) {
       return rolaCompiler({
         in: /\.js$/.test(src) ? src : path.join(src, '*.js'),
         out: {
@@ -75,21 +75,21 @@ module.exports = function rolaStatic ({
             abs(dest),
             { filter, wrap, html, plugins }
           ).then(() => {
-            fs.removeSync(tmp)
+            options.cleanup !== false && fs.removeSync(tmp)
           })
         })
         .catch(e => {
           emit('error', e)
         })
     },
-    async watch (src, dest) {
+    async watch (src, dest, options = {}) {
       src = /\.js$/.test(src) ? src : path.join(src, '*.js'),
 
       onExit(() => {
         fs.removeSync(tmp)
       })
 
-      await this.render(src, dest)
+      await this.render(src, dest, { cleanup: false })
 
       let compiler
       let restarting = false

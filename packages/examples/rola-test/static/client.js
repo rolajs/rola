@@ -160,16 +160,17 @@ var e = t(__webpack_require__(/*! react-dom */ "../../rola/node_modules/react-do
     r = __webpack_require__(/*! flatted/esm */ "../../rola/node_modules/flatted/esm/index.js"),
     n = __webpack_require__(/*! matchit */ "../../rola/node_modules/matchit/lib/matchit.mjs"),
     o = __webpack_require__(/*! @picostate/react */ "../../rola/node_modules/@picostate/react/dist/picostate-react.es.js"),
-    a = t(__webpack_require__(/*! react-dom/server */ "../../rola/node_modules/react-dom/server.browser.js")),
-    i = t(__webpack_require__(/*! picostate */ "../../rola/node_modules/picostate/dist/picostate.es.js"));
+    i = t(__webpack_require__(/*! react-dom/server */ "../../rola/node_modules/react-dom/server.browser.js")),
+    a = t(__webpack_require__(/*! picostate */ "../../rola/node_modules/picostate/dist/picostate.es.js"));
 
 __webpack_require__(/*! deepmerge */ "../../rola/node_modules/deepmerge/dist/umd.js"), __webpack_require__(/*! html-meta-tags */ "../../rola/node_modules/html-meta-tags/index.js");
 
 var c = __webpack_require__(/*! flatted/cjs */ "../../rola/node_modules/flatted/cjs/index.js"),
-    s = t(__webpack_require__(/*! nanoclass */ "../../rola/node_modules/nanoclass/dist/nanoclass.es.js")),
+    s = t(__webpack_require__(/*! @/rola.plugins.js */ "./rola.plugins.js")),
+    l = t(__webpack_require__(/*! nanoclass */ "../../rola/node_modules/nanoclass/dist/nanoclass.es.js")),
     u = t(__webpack_require__(/*! react */ "../../rola/node_modules/react/index.js"));
 
-function l(t, e) {
+function d(t, e) {
   void 0 === e && (e = []);
   var r = t.map(function (t) {
     return n.parse(t[0]);
@@ -183,52 +184,52 @@ function l(t, e) {
   };
 }
 
-var d = i({});
+var p = a({});
 
-function p(t, e) {
-  var r = "function" == typeof t ? t(d.state) : t;
-  r = r.replace(window.location.origin, ""), d.hydrate({
+function f(t, e) {
+  var r = "function" == typeof t ? t(p.state) : t;
+  r = r.replace(window.location.origin, ""), p.hydrate({
     location: r
   })(function () {
     e(r);
   });
 }
 
-var f = {
+var h = {
   get state() {
-    return d.state;
+    return p.state;
   },
 
   replaceState: function replaceState(t) {
-    p(t, function (t) {
+    f(t, function (t) {
       window.history.replaceState({}, "", t);
     });
   },
   pushState: function pushState(t, e) {
-    p(t, function (t) {
+    f(t, function (t) {
       !e && window.history.pushState({}, "", t);
     });
   }
 },
-    h = i({}),
-    v = o.connect,
-    m = function (t) {
+    v = a({}),
+    m = o.connect,
+    y = function (t) {
   function e(e) {
     var r = this;
     t.call(this, e), this.state = {
       children: e.children.pop ? e.children[0] : e.children
-    }, this.currentLocation = e.location, d.listen(function (t) {
+    }, this.currentLocation = e.location, p.listen(function (t) {
       var n = t.location,
           o = e.router(n),
-          a = o[0],
-          i = o[1];
-      if (n !== r.currentLocation) return a.redirect ? f.pushState(a.redirect.to) : void e.resolve({
+          i = o[0],
+          a = o[1];
+      if (n !== r.currentLocation) return i.redirect ? h.pushState(i.redirect.to) : void e.resolve({
         location: n,
-        params: i,
-        route: a
+        params: a,
+        route: i
       }, function () {
         r.currentLocation = n, r.setState({
-          children: a.view
+          children: i.view
         });
       });
     });
@@ -236,52 +237,52 @@ var f = {
 
   return t && (e.__proto__ = t), (e.prototype = Object.create(t && t.prototype)).constructor = e, e.prototype.componentDidMount = function () {
     window.addEventListener("popstate", function (t) {
-      t.target.window && f.pushState(t.target.location.href, !0);
+      t.target.window && h.pushState(t.target.location.href, !0);
     });
   }, e.prototype.render = function () {
     var t = this.state.children;
-    return "function" == typeof t ? u.createElement(t, h.state) : t;
+    return "function" == typeof t ? u.createElement(t, v.state) : t;
   }, e;
 }(u.Component);
 
-function y(t) {
+function w(t) {
   return u.createElement(o.Provider, {
     store: t.store
-  }, u.createElement(m, {
+  }, u.createElement(y, {
     router: t.router,
     location: t.location,
     resolve: t.resolve
   }, t.children));
 }
 
-function w(t) {
+function g(t) {
   return "\n    <!DOCTYPE html>\n    <html>\n      <head>\n        <meta charset='utf-8'>\n        <meta name='viewport' content='width=device-width,initial-scale=1'>\n\n        <title>rola</title>\n\n        <link rel='stylesheet' href='/client.css' />\n      </head>\n\n      <body>\n        <div id='root'>" + t.view + "</div>\n\n        <script>\n          window.__rola = " + c.stringify(t.context) + "\n        <\/script>\n        <script src='/client.js'><\/script>\n      </body>\n    </html>\n  ";
 }
 
-function g(t, e, r, n) {
+function O(t, e, r, n) {
   void 0 === n && (n = 302), t.writeHead(n, {
     Location: e,
     Referer: r
   }), t.end();
 }
 
-var O = function (t) {
+var x = function (t) {
   function e(e) {
     var r = this;
     t.call(this, e), this.state = {
       children: e.children.pop ? e.children[0] : e.children
-    }, this.currentLocation = e.location, d.listen(function (t) {
+    }, this.currentLocation = e.location, p.listen(function (t) {
       var n = t.location,
           o = e.router(n),
-          a = o[0],
-          i = o[1];
-      if (n !== r.currentLocation) return a.redirect ? f.pushState(a.redirect.to) : void e.resolve({
+          i = o[0],
+          a = o[1];
+      if (n !== r.currentLocation) return i.redirect ? h.pushState(i.redirect.to) : void e.resolve({
         location: n,
-        params: i,
-        route: a
+        params: a,
+        route: i
       }, function () {
         r.currentLocation = n, r.setState({
-          children: a.view
+          children: i.view
         });
       });
     });
@@ -289,17 +290,17 @@ var O = function (t) {
 
   return t && (e.__proto__ = t), (e.prototype = Object.create(t && t.prototype)).constructor = e, e.prototype.componentDidMount = function () {
     window.addEventListener("popstate", function (t) {
-      t.target.window && f.pushState(t.target.location.href, !0);
+      t.target.window && h.pushState(t.target.location.href, !0);
     });
   }, e.prototype.render = function () {
     var t = this.state.children;
-    return "function" == typeof t ? u.createElement(t, h.state) : t;
+    return "function" == typeof t ? u.createElement(t, v.state) : t;
   }, e;
 }(u.Component);
 
 exports.server = function (t, e, r) {
   void 0 === e && (e = {}), void 0 === r && (r = {});
-  var n = l(t.map(function (t) {
+  var n = d(t.map(function (t) {
     return [t.pathname, function (t, e) {
       var r = {};
 
@@ -310,8 +311,8 @@ exports.server = function (t, e, r) {
       return r;
     }(t, ["pathname"])];
   }));
-  return r.html = r.html || w, function (t, o, c) {
-    var s = i({}),
+  return r.html = r.html || g, console.log(JSON.stringify(s)), function (t, o, c) {
+    var s = a({}),
         l = n(t.url),
         d = l[0],
         p = l[1];
@@ -322,23 +323,23 @@ exports.server = function (t, e, r) {
     void 0 === h && (h = function h() {});
     var v = d.view,
         m = d.redirect;
-    return m ? g(o, m) : (s.hydrate(Object.assign(e, f, {
+    return m ? O(o, m) : (s.hydrate(Object.assign(e, f, {
       router: {
         location: t.url,
         params: p
       }
     })), Promise.resolve(h(s.state, t)).then(function (e) {
       void 0 === e && (e = {});
-      var i = e.redirect,
+      var a = e.redirect,
           c = e.cache,
           l = e.status,
           d = e.meta,
           p = e.state;
-      if (void 0 === p && (p = {}), i) return g(o, i);
+      if (void 0 === p && (p = {}), a) return O(o, a);
       o.statusCode = l || 200, o.setHeader("Content-Type", "text/html"), o.setHeader("Cache-Control", "string" == typeof c ? c : !1 === c ? "no-cache, no-store, must-revalidate" : "public, max-age=" + (c || 86400)), s.hydrate(p), o.end(r.html({
         state: s.state,
         meta: d,
-        view: a.renderToString(u.createElement(y, {
+        view: i.renderToString(u.createElement(w, {
           store: s,
           router: n,
           location: t.url
@@ -350,8 +351,8 @@ exports.server = function (t, e, r) {
   };
 }, exports.client = function (t, n, o) {
   void 0 === n && (n = {}), void 0 === o && (o = {});
-  var a = window.location.href.replace(window.location.origin, ""),
-      i = l(t.map(function (t) {
+  var i = window.location.href.replace(window.location.origin, ""),
+      a = d(t.map(function (t) {
     return [t.pathname, function (t, e) {
       var r = {};
 
@@ -362,36 +363,36 @@ exports.server = function (t, e, r) {
       return r;
     }(t, ["pathname"])];
   })),
-      c = i(a),
-      s = c[0],
-      d = c[1],
-      p = r.parse(JSON.stringify(window.__rola));
-  return h.hydrate(Object.assign({}, p, n, {
+      c = a(i),
+      l = c[0],
+      p = c[1],
+      f = r.parse(JSON.stringify(window.__rola));
+  return v.hydrate(Object.assign({}, f, n, {
     router: {
-      location: a,
-      params: d
+      location: i,
+      params: p
     }
-  })), function (t) {
-    e.hydrate(u.createElement(y, {
-      store: h,
-      router: i,
-      location: a,
+  })), console.log(s), function (t) {
+    e.hydrate(u.createElement(w, {
+      store: v,
+      router: a,
+      location: i,
       resolve: function resolve(t, e) {
         var r = t.route;
-        h.hydrate({
+        v.hydrate({
           router: {
             location: t.location,
             params: t.params
           }
         });
         var n = r.load;
-        void 0 === n && (n = function n() {}), Promise.resolve(n(h.state)).then(function (t) {
+        void 0 === n && (n = function n() {}), Promise.resolve(n(v.state)).then(function (t) {
           var r = t.redirect,
               n = t.state;
-          if (r) return f.pushState(r.to);
-          var a = n.meta || {};
-          h.hydrate(n), Promise.resolve(o.resolve ? o.resolve(h.state) : null).then(function () {
-            document.title = a.title || document.title, e();
+          if (r) return h.pushState(r.to);
+          var i = n.meta || {};
+          v.hydrate(n), Promise.resolve(o.resolve ? o.resolve(v.state) : null).then(function () {
+            document.title = i.title || document.title, e();
           }).catch(function (t) {
             console.error("options.resolve failed", t);
           });
@@ -399,21 +400,21 @@ exports.server = function (t, e, r) {
           console.error("route.load failed", t.message || t);
         });
       }
-    }, s.view(h.state)), t);
+    }, l.view(v.state)), t);
   };
 }, exports.withHistory = function (t) {
   return function (e) {
     return u.createElement(t, Object.assign({}, {
-      history: f
+      history: h
     }, e));
   };
-}, exports.history = f, exports.withState = v, exports.store = h, exports.Link = function (t) {
+}, exports.history = h, exports.withState = m, exports.store = v, exports.Link = function (t) {
   var e = t.children,
       r = t.href,
       n = t.className,
       o = t.target,
-      a = t.download,
-      i = function (t, e) {
+      i = t.download,
+      a = function (t, e) {
     var r = {};
 
     for (var n in t) {
@@ -422,17 +423,17 @@ exports.server = function (t, e, r) {
 
     return r;
   }(t, ["children", "href", "className", "target", "download"]),
-      c = s([n, f.location === r && "active"]),
-      l = {};
+      c = l([n, h.location === r && "active"]),
+      s = {};
 
-  return o && (l.target = o), a && (l.download = a), u.createElement("a", Object.assign({}, {
+  return o && (s.target = o), i && (s.download = i), u.createElement("a", Object.assign({}, {
     href: r,
     className: c,
     onClick: function onClick(t) {
-      t.ctrlKey || t.metaKey || t.altKey || t.shiftKey || t.defaultPrevented || "_blank" === l.target || l.download || /mailto|tel/.test(r) || /^(https?:)?\/\//.test(r) || (t.preventDefault(), f.pushState(r));
+      t.ctrlKey || t.metaKey || t.altKey || t.shiftKey || t.defaultPrevented || "_blank" === s.target || s.download || /mailto|tel/.test(r) || /^(https?:)?\/\//.test(r) || (t.preventDefault(), h.pushState(r));
     }
-  }, l, i), e);
-}, exports.Router = O;
+  }, s, a), e);
+}, exports.Router = x;
 
 /***/ }),
 
@@ -32605,6 +32606,29 @@ if (false) {} else {
 
 /***/ }),
 
+/***/ "./rola.plugins.js":
+/*!*************************!*\
+  !*** ./rola.plugins.js ***!
+  \*************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+/* harmony default export */ __webpack_exports__["default"] = ([{
+  wrapApp: function wrapApp(_ref) {
+    var app = _ref.app;
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "taco"
+    }, app);
+  }
+}]);
+
+/***/ }),
+
 /***/ "./routes.js":
 /*!*******************!*\
   !*** ./routes.js ***!
@@ -32702,13 +32726,12 @@ function view(_ref) {
 /*!************************!*\
   !*** ./routes/home.js ***!
   \************************/
-/*! exports provided: pathname, config, load, view */
+/*! exports provided: pathname, load, view */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pathname", function() { return pathname; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "config", function() { return config; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "load", function() { return load; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "view", function() { return view; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
@@ -32716,10 +32739,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_App_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/components/App.js */ "./components/App.js");
 
 
-var pathname = '/';
-function config() {
-  return load();
-}
+var pathname = '/'; // export function config () {
+//   return load()
+// }
+
 function load(state, req) {
   return {
     state: {
@@ -32730,10 +32753,9 @@ function load(state, req) {
     }
   };
 }
-function view(_ref) {
-  var pathname = _ref.pathname,
-      state = _ref.state;
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_App_js__WEBPACK_IMPORTED_MODULE_1__["default"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, state.title));
+function view(props) {
+  console.log(JSON.stringify(props));
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_App_js__WEBPACK_IMPORTED_MODULE_1__["default"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Hello"));
 }
 
 /***/ }),

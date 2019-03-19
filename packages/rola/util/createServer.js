@@ -3,8 +3,6 @@ const http = require('http')
 
 const cwd = process.cwd()
 
-const log = require('./log.js')
-
 function req (file) {
   let mod = null
 
@@ -18,8 +16,9 @@ function req (file) {
   return mod
 }
 
-module.exports = function createServer (file, port) {
+module.exports = function createServer ({ file, port }) {
   let active = false
+
   return {
     server: null,
     app: null,

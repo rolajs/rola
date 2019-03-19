@@ -29,7 +29,7 @@ export default function server (routes, initialState = {}, options = {}) {
       return next()
     }
 
-    const {
+    let {
       state: initialRouteState = {},
       load = () => {},
       view: View,
