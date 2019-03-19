@@ -10,37 +10,16 @@ const path = require('path')
 const exit = require('exit')
 const onExit = require('async-exit-hook')
 
-const compiler = require('@rola/compiler')
 const pkg = require('./package.json')
 const cwd = process.cwd()
+
+const compiler = require('@rola/compiler')
+const { getConfig } = require('@rola/util')
 
 const prog = require('commander')
   .version(pkg.version)
 
-// const config = fs.existsSync(configfile) ? require(configfile) : {}
-
 const rolaStatic = require('./index.js')
-
-async function getConfig () {
-  const cwd = process.cwd()
-  const configfile = path.resolve(cwd, './rola.config.js')
-
-  await compiler({
-    in: configfile,
-    out: {
-      path: path.resolve(cwd, '.cache'),
-      filename: 'rola.config.js',
-      libraryTarget: 'commonjs2'
-    }
-  }).build()
-
-  try {
-    return require(path.resolve(cwd, '.cache/rola.config.js')).default
-  } catch (e) {
-    log(state => ({ error: state.error.concat(e) }))
-    return config
-  }
-}
 
 prog
   .command('render <src> <dest>')

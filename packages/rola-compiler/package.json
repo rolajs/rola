@@ -26,6 +26,7 @@
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
     "@rola/plugin-postcss": "^0.2.3",
+    "@rola/util": "^0.2.3",
     "acorn": "^6.1.1",
     "ansi-colors": "^3.2.4",
     "babel-loader": "^8.0.5",

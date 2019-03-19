@@ -1,0 +1,22 @@
+{
+  "name": "@rola/util",
+  "version": "0.2.3",
+  "description": "Internal utilities for rola.",
+  "author": "estrattonbailey",
+  "license": "MIT",
+  "main": "index.js",
+  "dependencies": {
+    "@rola/compiler": "^0.2.3",
+    "@rola/log": "^0.2.2",
+    "@rola/plugin-node": "^0.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/estrattonbailey/rola.git"
+  },
+  "bugs": {
+    "url": "https://github.com/estrattonbailey/rola/issues"
+  },
+  "homepage": "https://github.com/estrattonbailey/rola",
+  "gitHead": "d0688096c5e3398a448d76fc53b4df384e6001ad"
+}

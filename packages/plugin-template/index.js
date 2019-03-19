@@ -1,6 +1,6 @@
-const ExtractCSS = require('mini-css-extract-plugin')
+import ExtractCSS from 'mini-css-extract-plugin'
 
-module.exports = (options = {}) => {
+export default function PluginPostCSS (options = {}) {
   return {
     createConfig (config, ctx) {
       config.module.rules.push({

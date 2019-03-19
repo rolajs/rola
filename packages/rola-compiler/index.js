@@ -2,7 +2,7 @@ const path = require('path')
 const exit = require('exit')
 const webpack = require('webpack')
 
-const { createConfig } = require('./lib/config.js')
+const { createConfig } = require('./lib/createConfig.js')
 const { formatStats } = require('./lib/stats.js')
 const clientReloader = require('./lib/clientReloader.js')
 const { on, emit } = require('./lib/emitter.js')

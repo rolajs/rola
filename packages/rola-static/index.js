@@ -31,6 +31,10 @@ module.exports = function rolaStatic ({
 
   const tmp = path.join(cwd, '.cache')
 
+  /**
+   * uses compiled asset filenames to find
+   * the compiled filepaths
+   */
   function getCompiledFiles (stats) {
     return  stats
       .reduce((pages, stats) => {

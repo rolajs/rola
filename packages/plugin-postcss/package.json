@@ -3,7 +3,6 @@
   "version": "0.2.3",
   "description": "Enable PostCSS for rola.",
   "main": "index.js",
-  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/estrattonbailey/rola.git"
@@ -23,7 +22,8 @@
     "postcss-discard-comments": "^4.0.2",
     "postcss-import": "^12.0.1",
     "postcss-loader": "^3.0.0",
-    "postcss-nested": "^3.0.0"
+    "postcss-nested": "^3.0.0",
+    "webpack": "^4.29.6"
   },
   "gitHead": "d0688096c5e3398a448d76fc53b4df384e6001ad"
 }

@@ -1,0 +1,17 @@
+{
+  "name": "rola-hello-world",
+  "private": true,
+  "scripts": {
+    "start": "rola-compiler watch",
+    "build": "rola-compiler build"
+  },
+  "author": "estrattonbailey",
+  "dependencies": {
+    "@rola/compiler": "^0.2.3",
+    "@rola/plugin-node": "^0.2.2",
+    "@rola/plugin-postcss": "^0.2.3",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "rola": "^0.2.3"
+  }
+}
