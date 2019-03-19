@@ -1,14 +1,10 @@
 import React from 'react'
+import document from '@rola/plugin-document'
 
 export default {
   plugins: [
-    {
-      createDocument ({ state, view }) {
-        return `<!DOCTYPE html>${view}`
-      },
-      onStaticRender ({ component, state }) {
-        return component
-      }
-    }
+    document(({ state, view }) => {
+      return `<!DOCTYPE html>${view}`
+    })
   ]
 }
