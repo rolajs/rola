@@ -12,6 +12,7 @@
     "rola": "./cli.js"
   },
   "scripts": {
+    "prepublish": "npm run build",
     "build": "npm run build:index && npm run build:internals",
     "build:index": "microbundle build -i index.js -o dist -f cjs --target web --jsx React.createElement",
     "build:internals": "microbundle build lib/App.js lib/html.js -o dist -f cjs --jsx React.createElement",

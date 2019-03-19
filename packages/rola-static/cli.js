@@ -33,7 +33,7 @@ prog
 
     const app = rolaStatic(config)
 
-    app.on('error', e => log(state => ({ errors: state.errors.concat(e) })))
+    app.on('error', e => log(state => ({ error: state.error.concat(e) })))
     app.on('rendered', pages => {
       log({ static: pages })
     })
@@ -47,7 +47,7 @@ prog
 
     log({ actions: [ 'watching' ] })
 
-    app.on('error', e => log(state => ({ errors: state.errors.concat(e) })))
+    app.on('error', e => log(state => ({ error: state.error.concat(e) })))
     app.on('rendered', pages => {
       log({ static: pages })
     })
