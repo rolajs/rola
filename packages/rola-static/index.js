@@ -20,9 +20,8 @@ module.exports = function rolaStatic ({
   env,
   alias,
   filter,
-  wrap,
-  html,
-  plugins = []
+  macros,
+  plugins
 } = {}) {
   require('./lib/env.js')({ env, alias })
 
@@ -62,9 +61,9 @@ module.exports = function rolaStatic ({
         },
         env,
         alias,
-        plugins: [
+        macros: [
           node()
-        ].concat(plugins || [])
+        ].concat(macros || [])
       })
         .build()
         .then(stats => {
@@ -73,7 +72,7 @@ module.exports = function rolaStatic ({
           return render(
             pages,
             abs(dest),
-            { filter, wrap, html, plugins }
+            { filter, plugins }
           ).then(() => {
             options.cleanup !== false && fs.removeSync(tmp)
           })
@@ -128,9 +127,9 @@ module.exports = function rolaStatic ({
           },
           env,
           alias,
-          plugins: [
+          macros: [
             node()
-          ].concat(plugins || [])
+          ].concat(macros || [])
         })))
 
         compiler.on('error', e => {
@@ -145,7 +144,7 @@ module.exports = function rolaStatic ({
           render(
             pages,
             abs(dest),
-            { filter, wrap, html, plugins }
+            { filter, plugins }
           )
         })
 

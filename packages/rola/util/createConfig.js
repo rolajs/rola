@@ -3,7 +3,7 @@ const node = require('@rola/plugin-node')
 
 const cwd = process.cwd()
 
-module.exports = function createConfig ({ entry, watch, env, alias, banner, plugins }) {
+module.exports = function createConfig ({ entry, watch, env, alias, banner, macros }) {
   const isNode = /server/.test(entry)
 
   return {
@@ -14,7 +14,7 @@ module.exports = function createConfig ({ entry, watch, env, alias, banner, plug
     } : path.join(cwd, 'static'),
     env: env || {},
     alias: alias || {},
-    plugins: [].concat(plugins || []).concat([
+    macros: [].concat(macros || []).concat([
       isNode && node()
     ].filter(Boolean)),
     banner: isNode ? (

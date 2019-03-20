@@ -7,6 +7,8 @@ import matcher from './matcher.js'
 import html from './html.js'
 import Hypr from './Hypr.js'
 
+import plugins from '@/rola.plugins.js'
+
 function redir (res, Location, Referer, status = 302) {
   res.writeHead(status, { Location, Referer })
   res.end()
@@ -32,7 +34,7 @@ export default function server (routes, initialState = {}, options = {}) {
     let {
       state: initialRouteState = {},
       load = () => {},
-      view: View,
+      view,
       redirect
     } = route
 
@@ -50,7 +52,7 @@ export default function server (routes, initialState = {}, options = {}) {
     ))
 
     return Promise.resolve(load(store.state, req))
-      .then(({ redirect, cache, status, meta, state = {} } = {}) => {
+      .then(({ redirect, cache, status, pathname, state = {} } = {}) => {
         if (redirect) return redir(res, redirect)
 
         res.statusCode = status || 200
@@ -68,12 +70,25 @@ export default function server (routes, initialState = {}, options = {}) {
 
         store.hydrate(state)
 
-        res.end(options.html({
+        let context = {
           state: store.state,
-          meta,
+          pathname: route.pathname || pathname
+        }
+
+        ;(plugins || [])
+          .filter(p => p.wrapApp)
+          .map(p => {
+            view = p.wrapApp({
+              app: view(context),
+              context
+            })
+          })
+
+        res.end(options.html({
+          context,
           view: ReactDOMServer.renderToString(
             <Hypr store={store} router={router} location={req.url}>
-              <View {...store.state} />
+              {view(context)}
             </Hypr>
           )
         }))

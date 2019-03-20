@@ -8,6 +8,8 @@ import { history, withHistory } from './history.js'
 import { store } from './state.js'
 import Hypr from './Hypr.js'
 
+import plugins from '@/rola.plugins.js'
+
 export default function client (routes, initialState = {}, options = {}) {
   const location = window.location.href.replace(window.location.origin, '')
 
@@ -18,16 +20,32 @@ export default function client (routes, initialState = {}, options = {}) {
 
   const [ route, params ] = router(location)
 
-  const serverState = parse(JSON.stringify(window.__rola))
+  const serverContext = parse(JSON.stringify(window.__rola))
 
-  store.hydrate({
-    ...serverState,
-    ...initialState,
+  store.hydrate(Object.assign({}, serverContext.state, initialState, {
     router: {
       location,
       params
     }
-  })
+  }))
+
+  let view = route.view
+
+  const context = {
+    state: store.state,
+    pathname: window.location.pathname
+  }
+
+  ;(plugins || [])
+    .filter(p => p.wrapApp)
+    .map(p => {
+      view = p.wrapApp({
+        app: view(context),
+        context
+      })
+    })
+
+  console.log(JSON.stringify(context))
 
   return function render (root) {
     ReactDOM.hydrate((
@@ -59,7 +77,24 @@ export default function client (routes, initialState = {}, options = {}) {
               Promise.resolve(options.resolve ? options.resolve(store.state) : null)
                 .then(() => {
                   document.title = meta.title || document.title
-                  done()
+
+                  let view = route.view
+
+                  const context = {
+                    state: store.state,
+                    pathname: route.pathname
+                  }
+
+                  ;(plugins || [])
+                    .filter(p => p.wrapApp)
+                    .map(p => {
+                      view = p.wrapApp({
+                        app: view(context),
+                        context
+                      })
+                    })
+
+                  done(view)
                 })
                 .catch(e => {
                   console.error('options.resolve failed', e)
@@ -69,7 +104,7 @@ export default function client (routes, initialState = {}, options = {}) {
               console.error('route.load failed', e.message || e)
             })
         }}>
-        {route.view(store.state)}
+          {view(context)}
       </Hypr>
     ), root)
   }

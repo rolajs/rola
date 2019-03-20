@@ -3,7 +3,7 @@ import { Link } from 'rola'
 
 export default function App (props) {
   return (
-    <div>
+    <div id='foo'>
       <nav>
         <Link href='/'>/</Link><br />
         <Link href='/about'>/about</Link><br />

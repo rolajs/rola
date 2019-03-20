@@ -65,10 +65,11 @@ function serve () {
   }
 }
 
-function createGenerator (config) {
+function createGenerator ({ config, plugins }) {
   const generator = rolaStatic({
     env: config.env,
     alias: config.alias,
+    macros: config.macros,
     plugins: [
       {
         wrapApp ({ app, context }) {
@@ -80,7 +81,7 @@ function createGenerator (config) {
           return html(props)
         }
       }
-    ],
+    ].concat(plugins),
     filter (routes) {
       return routes.filter(r => !!r.config)
     }
@@ -103,7 +104,7 @@ prog
   .action(async () => {
     log({ actions: [ 'build' ] })
 
-    const config = await getConfig()
+    const { config, plugins } = await getConfig()
 
     const configs = []
 
@@ -111,14 +112,14 @@ prog
       entry: clientEntry,
       env: config.env,
       alias: config.alias,
-      plugins: config.plugins
+      macros: config.macros
     }))
 
     if (serverEntry) configs.push(createConfig({
       entry: serverEntry,
       env: config.env,
       alias: config.alias,
-      plugins: config.plugins
+      macros: config.macros
     }))
 
     let allstats = []
@@ -145,7 +146,7 @@ prog
 
         if (serverEntry) serve()
 
-        await createGenerator(config).render('/routes', '/static')
+        await createGenerator({ config, plugins }).render('/routes', '/static')
 
         exit()
       })
@@ -161,7 +162,7 @@ prog
   .action(async () => {
     log({ actions: [ 'watch' ] })
 
-    const config = await getConfig()
+    const { config, plugins } = await getConfig()
 
     let compiled = false
     const configs = []
@@ -171,14 +172,14 @@ prog
       env: config.env,
       alias: config.alias,
       banner: require('./util/clientReloader.js')(PORT),
-      plugins: config.plugins
+      macros: config.macros
     }))
 
     if (serverEntry) configs.push(createConfig({
       entry: serverEntry,
       env: config.env,
       alias: config.alias,
-      plugins: config.plugins
+      macros: config.macros
     }))
 
     let allstats = []
@@ -219,7 +220,7 @@ prog
         serve()
 
         if (!compiled) {
-          createGenerator(config).watch('/routes', '/static')
+          createGenerator({ config, plugins }).watch('/routes', '/static')
 
           compiled = true
         }

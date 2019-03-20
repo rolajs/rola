@@ -3,9 +3,9 @@ import App from '@/components/App.js'
 
 export const pathname = '/'
 
-// export function config () {
-//   return load()
-// }
+export function config () {
+  return load()
+}
 
 export function load (state, req) {
   return {
@@ -18,11 +18,10 @@ export function load (state, req) {
   }
 }
 
-export function view (props) {
-  console.log(JSON.stringify(props))
+export function view ({ pathname, state }) {
   return (
     <App>
-      <h1>Hello</h1>
+      <h1>{state.title}</h1>
     </App>
   )
 }

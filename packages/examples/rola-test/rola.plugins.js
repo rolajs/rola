@@ -2,8 +2,10 @@ import React from 'react'
 
 export default [
   {
-    wrapApp ({ app }) {
-      return <div className='taco'>{app}</div>
+    wrapApp ({ app, context }) {
+      return props => (
+        <div className='taco'>{app}</div>
+      )
     }
   }
 ]

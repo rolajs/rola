@@ -28,9 +28,12 @@ prog
 
     log({ actions: [ 'rendering' ] })
 
-    const config = await getConfig()
+    const { config, plugins } = await getConfig()
 
-    const app = rolaStatic(config)
+    const app = rolaStatic({
+      ...config,
+      plugins
+    })
 
     app.on('error', e => log(state => ({ error: state.error.concat(e) })))
     app.on('rendered', pages => {
@@ -44,9 +47,12 @@ prog
   .action(async (src, dest) => {
     log({ actions: [ 'watching' ] })
 
-    const config = await getConfig()
+    const { config, plugins } = await getConfig()
 
-    const app = rolaStatic(config)
+    const app = rolaStatic({
+      ...config,
+      plugins
+    })
 
     app.on('error', e => log(state => ({ error: state.error.concat(e) })))
     app.on('rendered', pages => {

@@ -18,9 +18,9 @@ export default class Router extends React.Component {
       if (location === this.currentLocation) return
       if (route.redirect) return history.pushState(route.redirect.to)
 
-      props.resolve({ location, params, route }, () => {
+      props.resolve({ location, params, route }, children => {
         this.currentLocation = location
-        this.setState({ children: route.view })
+        this.setState({ children })
       })
     })
   }

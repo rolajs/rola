@@ -95,7 +95,7 @@ function createConfig (conf, watch) {
     })
   ].filter(Boolean))
 
-  ;[].concat(conf.plugins || [])
+  ;[].concat(conf.macros || [])
     .filter(p => p.createConfig)
     .map(p => p.createConfig({
       config: wc,
