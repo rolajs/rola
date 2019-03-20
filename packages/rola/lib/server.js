@@ -76,9 +76,9 @@ export default function server (routes, initialState = {}, options = {}) {
         }
 
         ;(plugins || [])
-          .filter(p => p.wrapApp)
+          .filter(p => p.createRoot)
           .map(p => {
-            view = p.wrapApp({
+            view = p.createRoot({
               app: view(context),
               context
             })

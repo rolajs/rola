@@ -60,10 +60,10 @@ module.exports = async function render (pages, dest, options) {
           let app = route.view(context)
 
           options.plugins
-            .filter(p => p.wrapApp)
+            .filter(p => p.createRoot)
             .map(p => {
               try {
-                app = p.wrapApp({ app, context })
+                app = p.createRoot({ app, context })
               } catch (e) {
                 emit('error', e)
               }

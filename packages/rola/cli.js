@@ -72,7 +72,8 @@ function createGenerator ({ config, plugins }) {
     macros: config.macros,
     plugins: [
       {
-        wrapApp ({ app, context }) {
+        createRoot ({ app, context }) {
+          // TODO this is a jsx fragment
           return React.createElement(App, context, app)
         }
       },
