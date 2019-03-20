@@ -12,12 +12,8 @@
     "rola": "./cli.js"
   },
   "scripts": {
-    "build": "npm run build:index && npm run build:internals",
-    "build:index": "microbundle build -i index.js -o dist -f cjs --target web --jsx React.createElement",
-    "build:internals": "microbundle build lib/App.js lib/html.js -o dist -f cjs --jsx React.createElement",
-    "watch:index": "microbundle watch -i index.js -o dist -f cjs --target web --jsx React.createElement --compress false",
-    "watch:internals": "microbundle watch lib/App.js lib/html.js util/logger.js -o dist -f cjs --jsx React.createElement --compress false",
-    "watch": "npm run watch:index & npm run watch:internals"
+    "build": "bili index.js lib/App.js --format cjs --out-dir dist --minify",
+    "watch": "bili index.js lib/App.js --format cjs --out-dir dist --watch"
   },
   "repository": {
     "type": "git",
@@ -66,7 +62,7 @@
     "webpack": "^4.29.6"
   },
   "devDependencies": {
-    "microbundle": "^0.11.0"
+    "bili": "^4.7.1"
   },
   "gitHead": "570605c164cc377cf02c6819a29398857ca7bb7c"
 }

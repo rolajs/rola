@@ -4,7 +4,7 @@ import matcher from './matcher.js'
 import Hypr from './Hypr.js'
 
 /**
- * this is passed to rolaStatic as a wrapper
+ * this is passed to rolaStatic as a plugin
  */
 export default function HyprApp ({ state = {}, pathname, children }) {
   /**

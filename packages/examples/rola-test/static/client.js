@@ -143,6 +143,316 @@ module.exports = g;
 
 /***/ }),
 
+/***/ "../../rola-util/createDocument.js":
+/*!**********************************************************************************!*\
+  !*** /Users/estrattonbailey/Sites/oss/rola/packages/rola-util/createDocument.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+var defaultHead = [['charset', "<meta charset='utf-8'>"], ['viewport', "<meta name='viewport' content='width=device-width,initial-scale=1'>"]];
+var defaultBody = [];
+
+module.exports = function createDocument(_ref) {
+  var context = _ref.context,
+      handlers = _ref.handlers;
+  var head = new Map();
+  var body = new Map();
+  var processed = handlers.map(function (handler) {
+    return handler({
+      context: context
+    });
+  });
+  processed.forEach(function () {
+    var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    defaultHead.concat(data.head || []).forEach(function (line) {
+      var _concat$reverse = [].concat(line).reverse(),
+          _concat$reverse2 = _slicedToArray(_concat$reverse, 2),
+          val = _concat$reverse2[0],
+          key = _concat$reverse2[1];
+
+      key = key || val;
+      if (head.has(key)) return;
+      head.set(key, val);
+    });
+    defaultBody.concat(data.body || []).forEach(function (line) {
+      var _concat$reverse3 = [].concat(line).reverse(),
+          _concat$reverse4 = _slicedToArray(_concat$reverse3, 2),
+          val = _concat$reverse4[0],
+          key = _concat$reverse4[1];
+
+      key = key || val;
+      if (body.has(key)) return;
+      body.set(key, val);
+    });
+  });
+  return {
+    head: Array.from(head.values()),
+    body: Array.from(body.values())
+  };
+};
+
+/***/ }),
+
+/***/ "../../rola-util/document.js":
+/*!****************************************************************************!*\
+  !*** /Users/estrattonbailey/Sites/oss/rola/packages/rola-util/document.js ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var tags = __webpack_require__(/*! html-meta-tags */ "../../rola-util/node_modules/html-meta-tags/index.js");
+
+var _require = __webpack_require__(/*! flatted/cjs */ "../../rola-util/node_modules/flatted/cjs/index.js"),
+    stringify = _require.stringify;
+
+module.exports = function html(_ref) {
+  var head = _ref.head,
+      body = _ref.body,
+      view = _ref.view,
+      context = _ref.context;
+  var state = context.state;
+  var meta = state.meta || {};
+  return "\n    <!DOCTYPE html>\n    <html>\n      <head>\n        <title>".concat(meta.title || 'rola', "</title>\n        ").concat(head.join(''), "\n        ").concat(tags(meta), "\n        <link rel='stylesheet' href='/client.css' />\n      </head>\n\n      <body>\n        <div id='root'>").concat(view, "</div>\n        ").concat(body.join(''), "\n        <script>\n          window.__rola = ").concat(stringify(context), "\n        </script>\n        <script src='/client.js'></script>\n      </body>\n    </html>\n  ");
+};
+
+/***/ }),
+
+/***/ "../../rola-util/node_modules/flatted/cjs/index.js":
+/*!**************************************************************************************************!*\
+  !*** /Users/estrattonbailey/Sites/oss/rola/packages/rola-util/node_modules/flatted/cjs/index.js ***!
+  \**************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var Flatted = (function (Primitive, primitive) {
+
+  /*!
+   * ISC License
+   *
+   * Copyright (c) 2018, Andrea Giammarchi, @WebReflection
+   *
+   * Permission to use, copy, modify, and/or distribute this software for any
+   * purpose with or without fee is hereby granted, provided that the above
+   * copyright notice and this permission notice appear in all copies.
+   *
+   * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+   * REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+   * AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+   * INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+   * LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+   * OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+   * PERFORMANCE OF THIS SOFTWARE.
+   */
+
+  var Flatted = {
+
+    parse: function parse(text, reviver) {
+      var input = JSON.parse(text, Primitives).map(primitives);
+      var value = input[0];
+      var $ = reviver || noop;
+      var tmp = typeof value === 'object' && value ?
+                  revive(input, new Set, value, $) :
+                  value;
+      return $.call({'': tmp}, '', tmp);
+    },
+
+    stringify: function stringify(value, replacer, space) {
+      for (var
+        firstRun,
+        known = new Map,
+        input = [],
+        output = [],
+        $ = replacer && typeof replacer === typeof input ?
+              function (k, v) {
+                if (k === '' || -1 < replacer.indexOf(k)) return v;
+              } :
+              (replacer || noop),
+        i = +set(known, input, $.call({'': value}, '', value)),
+        replace = function (key, value) {
+          if (firstRun) {
+            firstRun = !firstRun;
+            return value;
+            // this was invoking twice each root object
+            // return i < 1 ? value : $.call(this, key, value);
+          }
+          var after = $.call(this, key, value);
+          switch (typeof after) {
+            case 'object':
+              if (after === null) return after;
+            case primitive:
+              return known.get(after) || set(known, input, after);
+          }
+          return after;
+        };
+        i < input.length; i++
+      ) {
+        firstRun = true;
+        output[i] = JSON.stringify(input[i], replace, space);
+      }
+      return '[' + output.join(',') + ']';
+    }
+
+  };
+
+  return Flatted;
+
+  function noop(key, value) {
+    return value;
+  }
+
+  function revive(input, parsed, output, $) {
+    return Object.keys(output).reduce(
+      function (output, key) {
+        var value = output[key];
+        if (value instanceof Primitive) {
+          var tmp = input[value];
+          if (typeof tmp === 'object' && !parsed.has(tmp)) {
+            parsed.add(tmp);
+            output[key] = $.call(output, key, revive(input, parsed, tmp, $));
+          } else {
+            output[key] = $.call(output, key, tmp);
+          }
+        } else
+          output[key] = $.call(output, key, value);
+        return output;
+      },
+      output
+    );
+  }
+
+  function set(known, input, value) {
+    var index = Primitive(input.push(value) - 1);
+    known.set(value, index);
+    return index;
+  }
+
+  // the two kinds of primitives
+  //  1. the real one
+  //  2. the wrapped one
+
+  function primitives(value) {
+    return value instanceof Primitive ? Primitive(value) : value;
+  }
+
+  function Primitives(key, value) {
+    return typeof value === primitive ? new Primitive(value) : value;
+  }
+
+}(String, 'string'));
+module.exports = Flatted;
+
+
+/***/ }),
+
+/***/ "../../rola-util/node_modules/html-meta-tags/index.js":
+/*!*****************************************************************************************************!*\
+  !*** /Users/estrattonbailey/Sites/oss/rola/packages/rola-util/node_modules/html-meta-tags/index.js ***!
+  \*****************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var keys = Object.keys
+
+function flatten (array) {
+  return array.reduce(function (previous, current) {
+    return previous.concat(current)
+  })
+}
+
+function processStandard (data) {
+  return keys(data)
+    .filter(function (key) {
+      return !['twitter', 'og'].includes(key)
+    })
+    .map(function (key) {
+      var value = data[key]
+
+      return {
+        name: key,
+        content: Array.isArray(value) ? value.join(', ').trim() : value
+      }
+    })
+}
+
+function processOptional () {
+  return [{ charset: 'utf-8' }]
+}
+
+function processPrefixed (data, prefix) {
+  var attribute = /^og/i.test(prefix) ? 'property' : 'name'
+
+  var defaults = ['description', 'image', 'title']
+    .map(function (key) {
+      // Bypass key if not defined or if defined under a prefix
+      if (!data[key] || (data[prefix] && data[prefix].hasOwnProperty(key))) {
+        return null
+      }
+      return { [attribute]: `${prefix}:${key}`, content: data[key] }
+    })
+    .filter(function (item) {
+      return item !== null
+    })
+
+  var prefixed = data[prefix]
+    ? keys(data[prefix]).map(function (key) {
+      return { [attribute]: `${prefix}:${key}`, content: data[prefix][key] }
+    })
+    : []
+
+  return flatten([defaults, prefixed])
+}
+
+function render (data) {
+  return data
+    .map(function (node) {
+      return keys(node)
+        .reduce(function (_, key) {
+          return `${_} ${key}="${node[key]}"`
+        }, '<meta')
+        .concat('>')
+    })
+    .join('\n')
+}
+
+module.exports = function (data, _options) {
+  var options = Object.assign(
+    {
+      shouldIgnoreCharset: false
+    },
+    _options
+  )
+
+  var tree = []
+
+  if (!options.shouldIgnoreCharset) {
+    tree.push(processOptional(data))
+  }
+
+  tree.push(processStandard(data))
+
+  if (!options.shouldIgnoreTwitter) {
+    tree.push(processPrefixed(data, 'twitter'))
+  }
+
+  if (!options.shouldIgnoreOpenGraph) {
+    tree.push(processPrefixed(data, 'og'))
+  }
+
+  return render(flatten(tree))
+}
+
+
+/***/ }),
+
 /***/ "../../rola/dist/rola.js":
 /*!************************************************************************!*\
   !*** /Users/estrattonbailey/Sites/oss/rola/packages/rola/dist/rola.js ***!
@@ -166,11 +476,13 @@ var e = t(__webpack_require__(/*! react-dom */ "../../rola/node_modules/react-do
 __webpack_require__(/*! deepmerge */ "../../rola/node_modules/deepmerge/dist/umd.js"), __webpack_require__(/*! html-meta-tags */ "../../rola/node_modules/html-meta-tags/index.js");
 
 var c = __webpack_require__(/*! flatted/cjs */ "../../rola/node_modules/flatted/cjs/index.js"),
-    s = t(__webpack_require__(/*! @/rola.plugins.js */ "./rola.plugins.js")),
-    u = t(__webpack_require__(/*! nanoclass */ "../../rola/node_modules/nanoclass/dist/nanoclass.es.js")),
-    l = t(__webpack_require__(/*! react */ "../../rola/node_modules/react/index.js"));
+    u = t(__webpack_require__(/*! @rola/util/createDocument.js */ "../../rola-util/createDocument.js")),
+    s = t(__webpack_require__(/*! @rola/util/document.js */ "../../rola-util/document.js")),
+    l = t(__webpack_require__(/*! @/rola.plugins.js */ "./rola.plugins.js")),
+    d = t(__webpack_require__(/*! nanoclass */ "../../rola/node_modules/nanoclass/dist/nanoclass.es.js")),
+    p = t(__webpack_require__(/*! react */ "../../rola/node_modules/react/index.js"));
 
-function d(t, e) {
+function f(t, e) {
   void 0 === e && (e = []);
   var r = t.map(function (t) {
     return n.parse(t[0]);
@@ -184,46 +496,46 @@ function d(t, e) {
   };
 }
 
-var p = i({});
+var h = i({});
 
-function f(t, e) {
-  var r = "function" == typeof t ? t(p.state) : t;
-  r = r.replace(window.location.origin, ""), p.hydrate({
+function v(t, e) {
+  var r = "function" == typeof t ? t(h.state) : t;
+  r = r.replace(window.location.origin, ""), h.hydrate({
     location: r
   })(function () {
     e(r);
   });
 }
 
-var h = {
+var m = {
   get state() {
-    return p.state;
+    return h.state;
   },
 
   replaceState: function replaceState(t) {
-    f(t, function (t) {
+    v(t, function (t) {
       window.history.replaceState({}, "", t);
     });
   },
   pushState: function pushState(t, e) {
-    f(t, function (t) {
+    v(t, function (t) {
       !e && window.history.pushState({}, "", t);
     });
   }
 },
-    v = i({}),
-    m = o.connect,
-    w = function (t) {
+    w = i({}),
+    y = o.connect,
+    g = function (t) {
   function e(e) {
     var r = this;
     t.call(this, e), this.state = {
       children: e.children.pop ? e.children[0] : e.children
-    }, this.currentLocation = e.location, p.listen(function (t) {
+    }, this.currentLocation = e.location, h.listen(function (t) {
       var n = t.location,
           o = e.router(n),
           a = o[0],
           i = o[1];
-      if (n !== r.currentLocation) return a.redirect ? h.pushState(a.redirect.to) : void e.resolve({
+      if (n !== r.currentLocation) return a.redirect ? m.pushState(a.redirect.to) : void e.resolve({
         location: n,
         params: i,
         route: a
@@ -237,46 +549,46 @@ var h = {
 
   return t && (e.__proto__ = t), (e.prototype = Object.create(t && t.prototype)).constructor = e, e.prototype.componentDidMount = function () {
     window.addEventListener("popstate", function (t) {
-      t.target.window && h.pushState(t.target.location.href, !0);
+      t.target.window && m.pushState(t.target.location.href, !0);
     });
   }, e.prototype.render = function () {
     var t = this.state.children;
-    return "function" == typeof t ? l.createElement(t, v.state) : t;
+    return "function" == typeof t ? p.createElement(t, w.state) : t;
   }, e;
-}(l.Component);
+}(p.Component);
 
-function y(t) {
-  return l.createElement(o.Provider, {
+function x(t) {
+  return p.createElement(o.Provider, {
     store: t.store
-  }, l.createElement(w, {
+  }, p.createElement(g, {
     router: t.router,
     location: t.location,
     resolve: t.resolve
   }, t.children));
 }
 
-function g(t) {
+function O(t) {
   return "\n    <!DOCTYPE html>\n    <html>\n      <head>\n        <meta charset='utf-8'>\n        <meta name='viewport' content='width=device-width,initial-scale=1'>\n\n        <title>rola</title>\n\n        <link rel='stylesheet' href='/client.css' />\n      </head>\n\n      <body>\n        <div id='root'>" + t.view + "</div>\n\n        <script>\n          window.__rola = " + c.stringify(t.context) + "\n        <\/script>\n        <script src='/client.js'><\/script>\n      </body>\n    </html>\n  ";
 }
 
-function x(t, e, r, n) {
+function j(t, e, r, n) {
   void 0 === n && (n = 302), t.writeHead(n, {
     Location: e,
     Referer: r
   }), t.end();
 }
 
-var O = function (t) {
+var b = function (t) {
   function e(e) {
     var r = this;
     t.call(this, e), this.state = {
       children: e.children.pop ? e.children[0] : e.children
-    }, this.currentLocation = e.location, p.listen(function (t) {
+    }, this.currentLocation = e.location, h.listen(function (t) {
       var n = t.location,
           o = e.router(n),
           a = o[0],
           i = o[1];
-      if (n !== r.currentLocation) return a.redirect ? h.pushState(a.redirect.to) : void e.resolve({
+      if (n !== r.currentLocation) return a.redirect ? m.pushState(a.redirect.to) : void e.resolve({
         location: n,
         params: i,
         route: a
@@ -290,17 +602,17 @@ var O = function (t) {
 
   return t && (e.__proto__ = t), (e.prototype = Object.create(t && t.prototype)).constructor = e, e.prototype.componentDidMount = function () {
     window.addEventListener("popstate", function (t) {
-      t.target.window && h.pushState(t.target.location.href, !0);
+      t.target.window && m.pushState(t.target.location.href, !0);
     });
   }, e.prototype.render = function () {
     var t = this.state.children;
-    return "function" == typeof t ? l.createElement(t, v.state) : t;
+    return "function" == typeof t ? p.createElement(t, w.state) : t;
   }, e;
-}(l.Component);
+}(p.Component);
 
 exports.server = function (t, e, r) {
   void 0 === e && (e = {}), void 0 === r && (r = {});
-  var n = d(t.map(function (t) {
+  var n = f(t.map(function (t) {
     return [t.pathname, function (t, e) {
       var r = {};
 
@@ -311,59 +623,68 @@ exports.server = function (t, e, r) {
       return r;
     }(t, ["pathname"])];
   }));
-  return r.html = r.html || g, function (t, o, c) {
-    var u = i({}),
+  return r.html = r.html || O, function (t, r, o) {
+    var c = i({}),
         d = n(t.url),
-        p = d[0],
-        f = d[1];
-    if (!p) return c();
-    var h = p.state;
-    void 0 === h && (h = {});
-    var v = p.load;
-    void 0 === v && (v = function v() {});
-    var m = p.view,
-        w = p.redirect;
-    return w ? x(o, w) : (u.hydrate(Object.assign(e, h, {
+        f = d[0],
+        h = d[1];
+    if (!f) return o();
+    var v = f.state;
+    void 0 === v && (v = {});
+    var m = f.load;
+    void 0 === m && (m = function m() {});
+    var w = f.view,
+        y = f.redirect;
+    return y ? j(r, y) : (c.hydrate(Object.assign(e, v, {
       router: {
         location: t.url,
-        params: f
+        params: h
       }
-    })), Promise.resolve(v(u.state, t)).then(function (e) {
+    })), Promise.resolve(m(c.state, t)).then(function (e) {
       void 0 === e && (e = {});
-      var i = e.redirect,
-          c = e.cache,
+      var o = e.redirect,
+          i = e.cache,
           d = e.status,
-          f = e.pathname,
-          h = e.state;
-      if (void 0 === h && (h = {}), i) return x(o, i);
-      o.statusCode = d || 200, o.setHeader("Content-Type", "text/html"), o.setHeader("Cache-Control", "string" == typeof c ? c : !1 === c ? "no-cache, no-store, must-revalidate" : "public, max-age=" + (c || 86400)), u.hydrate(h);
-      var v = {
-        state: u.state,
-        pathname: p.pathname || f
+          h = e.pathname,
+          v = e.state;
+      if (void 0 === v && (v = {}), o) return j(r, o);
+      r.statusCode = d || 200, r.setHeader("Content-Type", "text/html"), r.setHeader("Cache-Control", "string" == typeof i ? i : !1 === i ? "no-cache, no-store, must-revalidate" : "public, max-age=" + (i || 86400)), c.hydrate(v);
+      var m = {
+        state: c.state,
+        pathname: f.pathname || h
       };
-      (s || []).filter(function (t) {
+      (l || []).filter(function (t) {
         return t.createRoot;
       }).map(function (t) {
-        m = t.createRoot({
-          app: m(v),
-          context: v
+        w = t.createRoot({
+          app: w(m),
+          context: m
         });
-      }), o.end(r.html({
-        context: v,
-        view: a.renderToString(l.createElement(y, {
-          store: u,
+      });
+      var y = u({
+        context: m,
+        handlers: l.filter(function (t) {
+          return t.createDocument;
+        }).map(function (t) {
+          return t.createDocument;
+        })
+      });
+      r.end(s(Object.assign(y, {
+        context: m,
+        view: a.renderToString(p.createElement(x, {
+          store: c,
           router: n,
           location: t.url
-        }, m(v)))
-      }));
+        }, w(m)))
+      })));
     }).catch(function (t) {
-      o.statusCode = 500, o.setHeader("Content-Type", "text/plain"), o.end("rola error"), console.log(t);
+      r.statusCode = 500, r.setHeader("Content-Type", "text/plain"), r.end("rola error"), console.log(t);
     }));
   };
 }, exports.client = function (t, n, o) {
   void 0 === n && (n = {}), void 0 === o && (o = {});
   var a = window.location.href.replace(window.location.origin, ""),
-      i = d(t.map(function (t) {
+      i = f(t.map(function (t) {
     return [t.pathname, function (t, e) {
       var r = {};
 
@@ -376,53 +697,53 @@ exports.server = function (t, e, r) {
   })),
       c = i(a),
       u = c[0],
-      p = c[1],
-      f = r.parse(JSON.stringify(window.__rola));
-  v.hydrate(Object.assign({}, f.state, n, {
+      s = c[1],
+      d = r.parse(JSON.stringify(window.__rola));
+  w.hydrate(Object.assign({}, d.state, n, {
     router: {
       location: a,
-      params: p
+      params: s
     }
   }));
-  var m = u.view,
-      w = {
-    state: v.state,
+  var h = u.view,
+      v = {
+    state: w.state,
     pathname: window.location.pathname
   };
-  return (s || []).filter(function (t) {
+  return (l || []).filter(function (t) {
     return t.createRoot;
   }).map(function (t) {
-    m = t.createRoot({
-      app: m(w),
-      context: w
+    h = t.createRoot({
+      app: h(v),
+      context: v
     });
   }), function (t) {
-    e.hydrate(l.createElement(y, {
-      store: v,
+    e.hydrate(p.createElement(x, {
+      store: w,
       router: i,
       location: a,
       resolve: function resolve(t, e) {
         var r = t.route;
-        v.hydrate({
+        w.hydrate({
           router: {
             location: t.location,
             params: t.params
           }
         });
         var n = r.load;
-        void 0 === n && (n = function n() {}), Promise.resolve(n(v.state)).then(function (t) {
+        void 0 === n && (n = function n() {}), Promise.resolve(n(w.state)).then(function (t) {
           var n = t.redirect,
               a = t.state;
-          if (n) return h.pushState(n.to);
+          if (n) return m.pushState(n.to);
           var i = a.meta || {};
-          v.hydrate(a), Promise.resolve(o.resolve ? o.resolve(v.state) : null).then(function () {
+          w.hydrate(a), Promise.resolve(o.resolve ? o.resolve(w.state) : null).then(function () {
             document.title = i.title || document.title;
             var t = r.view,
                 n = {
-              state: v.state,
+              state: w.state,
               pathname: r.pathname
             };
-            (s || []).filter(function (t) {
+            (l || []).filter(function (t) {
               return t.createRoot;
             }).map(function (e) {
               t = e.createRoot({
@@ -437,15 +758,15 @@ exports.server = function (t, e, r) {
           console.error("route.load failed", t.message || t);
         });
       }
-    }, m(w)), t);
+    }, h(v)), t);
   };
 }, exports.withHistory = function (t) {
   return function (e) {
-    return l.createElement(t, Object.assign({}, {
-      history: h
+    return p.createElement(t, Object.assign({}, {
+      history: m
     }, e));
   };
-}, exports.history = h, exports.withState = m, exports.store = v, exports.Link = function (t) {
+}, exports.history = m, exports.withState = y, exports.store = w, exports.Link = function (t) {
   var e = t.children,
       r = t.href,
       n = t.className,
@@ -460,17 +781,17 @@ exports.server = function (t, e, r) {
 
     return r;
   }(t, ["children", "href", "className", "target", "download"]),
-      c = u([n, h.location === r && "active"]),
-      s = {};
+      c = d([n, m.location === r && "active"]),
+      u = {};
 
-  return o && (s.target = o), a && (s.download = a), l.createElement("a", Object.assign({}, {
+  return o && (u.target = o), a && (u.download = a), p.createElement("a", Object.assign({}, {
     href: r,
     className: c,
     onClick: function onClick(t) {
-      t.ctrlKey || t.metaKey || t.altKey || t.shiftKey || t.defaultPrevented || "_blank" === s.target || s.download || /mailto|tel/.test(r) || /^(https?:)?\/\//.test(r) || (t.preventDefault(), h.pushState(r));
+      t.ctrlKey || t.metaKey || t.altKey || t.shiftKey || t.defaultPrevented || "_blank" === u.target || u.download || /mailto|tel/.test(r) || /^(https?:)?\/\//.test(r) || (t.preventDefault(), m.pushState(r));
     }
-  }, s, i), e);
-}, exports.Router = O;
+  }, u, i), e);
+}, exports.Router = b;
 
 /***/ }),
 
@@ -32658,9 +32979,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
 /* harmony default export */ __webpack_exports__["default"] = ([{
-  createRoot: function createRoot(_ref) {
-    var app = _ref.app,
-        context = _ref.context;
+  createDocument: function createDocument(_ref) {
+    var context = _ref.context;
+    return {
+      head: ['<link></link>'],
+      body: ['<script></script>']
+    };
+  },
+  createRoot: function createRoot(_ref2) {
+    var app = _ref2.app,
+        context = _ref2.context;
     return function (props) {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "taco"

@@ -4,9 +4,10 @@ const path = require('path')
 const { renderToString } = require('react-dom/server')
 const getRoutes = require('./getRoutes.js')
 const loadRoutes = require('./loadRoutes.js')
-const defaulthtml = require('./html.js')
 const ledger = require('./fileLedger.js')
 const { emit } = require('./emitter.js')
+
+const { document: doc, createDocument } = require('@rola/util')
 
 /**
  * accepts a `src` directory or array of `pages`
@@ -85,18 +86,20 @@ module.exports = async function render (pages, dest, options) {
               }
             })
 
-          const createDocument = options.plugins
-            .filter(p => p.createDocument)
-            .map(p => p.createDocument)
-            .concat(defaulthtml)
-
-          if (createDocument.length > 2) {
-            console.warn('multiple plugins defined a createDocument method, applying first instance')
-          }
+          const tags = createDocument({
+            context,
+            handlers: options.plugins
+              .filter(p => p.createDocument)
+              .map(p => p.createDocument)
+          })
 
           await fs.outputFile(
             path.join(dir, 'index.html'),
-            createDocument[0]({ context, view }),
+            doc({
+              ...tags,
+              context,
+              view
+            }),
             e => {
               if (e) {
                 emit('error', e)

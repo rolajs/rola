@@ -1,13 +1,14 @@
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import createStore from 'picostate'
-import merge from 'deepmerge'
 
 import matcher from './matcher.js'
-import html from './html.js'
 import Hypr from './Hypr.js'
 
 import plugins from '@/rola.plugins.js'
+
+const createDocument = require('@rola/util/createDocument.js')
+const doc = require('@rola/util/document.js')
 
 function redir (res, Location, Referer, status = 302) {
   res.writeHead(status, { Location, Referer })
@@ -19,8 +20,6 @@ export default function server (routes, initialState = {}, options = {}) {
     pathname,
     route
   ]))
-
-  options.html = options.html || html
 
   return function handler (req, res, next) {
     const store = createStore({})
@@ -84,14 +83,23 @@ export default function server (routes, initialState = {}, options = {}) {
             })
           })
 
-        res.end(options.html({
+        const tags = createDocument({
           context,
-          view: ReactDOMServer.renderToString(
-            <Hypr store={store} router={router} location={req.url}>
-              {view(context)}
-            </Hypr>
-          )
-        }))
+          handlers: plugins
+            .filter(p => p.createDocument)
+            .map(p => p.createDocument)
+        })
+
+        res.end(
+          doc(Object.assign(tags, {
+            context,
+            view: ReactDOMServer.renderToString(
+              <Hypr store={store} router={router} location={req.url}>
+                {view(context)}
+              </Hypr>
+            )
+          }))
+        )
       }).catch(e => {
         res.statusCode = 500
         res.setHeader('Content-Type', 'text/plain')

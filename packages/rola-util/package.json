@@ -16,7 +16,9 @@
     "@rola/log": "^0.3.0",
     "babel-loader": "^8.0.5",
     "fast-async": "^6.3.8",
-    "fs-extra": "^7.0.1"
+    "flatted": "^2.0.0",
+    "fs-extra": "^7.0.1",
+    "html-meta-tags": "^1.1.0"
   },
   "repository": {
     "type": "git",

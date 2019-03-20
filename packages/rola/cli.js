@@ -28,7 +28,6 @@ const createConfig = require('./util/createConfig.js')
  * compiled components
  */
 const App = require('./dist/App.js')
-const html = require('./dist/html.js')
 
 const PORT = process.env.PORT || 3000
 const cwd = process.cwd()
@@ -74,11 +73,6 @@ function createGenerator ({ config, plugins }) {
       {
         createRoot ({ app, context }) {
           return props => React.createElement(App, context, app)
-        }
-      },
-      {
-        createDocument (props) {
-          return html(props)
         }
       }
     ].concat(plugins),
@@ -229,6 +223,7 @@ prog
       compiler.watch()
     } else {
       serve()
+      createGenerator({ config, plugins }).watch('/routes', '/static')
     }
   })
 

@@ -1,22 +1,23 @@
-import tags from 'html-meta-tags'
-import { stringify } from 'flatted/cjs'
+const tags = require('html-meta-tags')
+const { stringify } = require('flatted/cjs')
 
-export default function html ({ context, view }) {
+module.exports = function html ({ head, body, view, context }) {
+  const { state } = context
+  const meta = state.meta || {}
+
   return `
     <!DOCTYPE html>
     <html>
       <head>
-        <meta charset='utf-8'>
-        <meta name='viewport' content='width=device-width,initial-scale=1'>
-
-        <title>rola</title>
-
+        <title>${meta.title || 'rola'}</title>
+        ${head.join('')}
+        ${tags(meta)}
         <link rel='stylesheet' href='/client.css' />
       </head>
 
       <body>
         <div id='root'>${view}</div>
-
+        ${body.join('')}
         <script>
           window.__rola = ${stringify(context)}
         </script>
