@@ -170,7 +170,7 @@ var c = __webpack_require__(/*! flatted/cjs */ "../../rola/node_modules/flatted/
     u = t(__webpack_require__(/*! nanoclass */ "../../rola/node_modules/nanoclass/dist/nanoclass.es.js")),
     l = t(__webpack_require__(/*! react */ "../../rola/node_modules/react/index.js"));
 
-function p(t, e) {
+function d(t, e) {
   void 0 === e && (e = []);
   var r = t.map(function (t) {
     return n.parse(t[0]);
@@ -184,11 +184,11 @@ function p(t, e) {
   };
 }
 
-var d = i({});
+var p = i({});
 
 function f(t, e) {
-  var r = "function" == typeof t ? t(d.state) : t;
-  r = r.replace(window.location.origin, ""), d.hydrate({
+  var r = "function" == typeof t ? t(p.state) : t;
+  r = r.replace(window.location.origin, ""), p.hydrate({
     location: r
   })(function () {
     e(r);
@@ -197,7 +197,7 @@ function f(t, e) {
 
 var h = {
   get state() {
-    return d.state;
+    return p.state;
   },
 
   replaceState: function replaceState(t) {
@@ -218,7 +218,7 @@ var h = {
     var r = this;
     t.call(this, e), this.state = {
       children: e.children.pop ? e.children[0] : e.children
-    }, this.currentLocation = e.location, d.listen(function (t) {
+    }, this.currentLocation = e.location, p.listen(function (t) {
       var n = t.location,
           o = e.router(n),
           a = o[0],
@@ -271,7 +271,7 @@ var O = function (t) {
     var r = this;
     t.call(this, e), this.state = {
       children: e.children.pop ? e.children[0] : e.children
-    }, this.currentLocation = e.location, d.listen(function (t) {
+    }, this.currentLocation = e.location, p.listen(function (t) {
       var n = t.location,
           o = e.router(n),
           a = o[0],
@@ -300,7 +300,7 @@ var O = function (t) {
 
 exports.server = function (t, e, r) {
   void 0 === e && (e = {}), void 0 === r && (r = {});
-  var n = p(t.map(function (t) {
+  var n = d(t.map(function (t) {
     return [t.pathname, function (t, e) {
       var r = {};
 
@@ -313,16 +313,16 @@ exports.server = function (t, e, r) {
   }));
   return r.html = r.html || g, function (t, o, c) {
     var u = i({}),
-        p = n(t.url),
-        d = p[0],
-        f = p[1];
-    if (!d) return c();
-    var h = d.state;
+        d = n(t.url),
+        p = d[0],
+        f = d[1];
+    if (!p) return c();
+    var h = p.state;
     void 0 === h && (h = {});
-    var v = d.load;
+    var v = p.load;
     void 0 === v && (v = function v() {});
-    var m = d.view,
-        w = d.redirect;
+    var m = p.view,
+        w = p.redirect;
     return w ? x(o, w) : (u.hydrate(Object.assign(e, h, {
       router: {
         location: t.url,
@@ -332,19 +332,19 @@ exports.server = function (t, e, r) {
       void 0 === e && (e = {});
       var i = e.redirect,
           c = e.cache,
-          p = e.status,
+          d = e.status,
           f = e.pathname,
           h = e.state;
       if (void 0 === h && (h = {}), i) return x(o, i);
-      o.statusCode = p || 200, o.setHeader("Content-Type", "text/html"), o.setHeader("Cache-Control", "string" == typeof c ? c : !1 === c ? "no-cache, no-store, must-revalidate" : "public, max-age=" + (c || 86400)), u.hydrate(h);
+      o.statusCode = d || 200, o.setHeader("Content-Type", "text/html"), o.setHeader("Cache-Control", "string" == typeof c ? c : !1 === c ? "no-cache, no-store, must-revalidate" : "public, max-age=" + (c || 86400)), u.hydrate(h);
       var v = {
         state: u.state,
-        pathname: d.pathname || f
+        pathname: p.pathname || f
       };
       (s || []).filter(function (t) {
-        return t.wrapApp;
+        return t.createRoot;
       }).map(function (t) {
-        m = t.wrapApp({
+        m = t.createRoot({
           app: m(v),
           context: v
         });
@@ -363,7 +363,7 @@ exports.server = function (t, e, r) {
 }, exports.client = function (t, n, o) {
   void 0 === n && (n = {}), void 0 === o && (o = {});
   var a = window.location.href.replace(window.location.origin, ""),
-      i = p(t.map(function (t) {
+      i = d(t.map(function (t) {
     return [t.pathname, function (t, e) {
       var r = {};
 
@@ -376,12 +376,12 @@ exports.server = function (t, e, r) {
   })),
       c = i(a),
       u = c[0],
-      d = c[1],
+      p = c[1],
       f = r.parse(JSON.stringify(window.__rola));
   v.hydrate(Object.assign({}, f.state, n, {
     router: {
       location: a,
-      params: d
+      params: p
     }
   }));
   var m = u.view,
@@ -390,13 +390,13 @@ exports.server = function (t, e, r) {
     pathname: window.location.pathname
   };
   return (s || []).filter(function (t) {
-    return t.wrapApp;
+    return t.createRoot;
   }).map(function (t) {
-    m = t.wrapApp({
+    m = t.createRoot({
       app: m(w),
       context: w
     });
-  }), console.log(JSON.stringify(w)), function (t) {
+  }), function (t) {
     e.hydrate(l.createElement(y, {
       store: v,
       router: i,
@@ -423,13 +423,13 @@ exports.server = function (t, e, r) {
               pathname: r.pathname
             };
             (s || []).filter(function (t) {
-              return t.wrapApp;
+              return t.createRoot;
             }).map(function (e) {
-              t = e.wrapApp({
+              t = e.createRoot({
                 app: t(n),
                 context: n
               });
-            }), e(t);
+            }), e(t(n));
           }).catch(function (t) {
             console.error("options.resolve failed", t);
           });
@@ -32658,7 +32658,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
 /* harmony default export */ __webpack_exports__["default"] = ([{
-  wrapApp: function wrapApp(_ref) {
+  createRoot: function createRoot(_ref) {
     var app = _ref.app,
         context = _ref.context;
     return function (props) {

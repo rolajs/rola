@@ -73,8 +73,7 @@ function createGenerator ({ config, plugins }) {
     plugins: [
       {
         createRoot ({ app, context }) {
-          // TODO this is a jsx fragment
-          return React.createElement(App, context, app)
+          return props => React.createElement(App, context, app)
         }
       },
       {

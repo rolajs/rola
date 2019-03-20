@@ -57,19 +57,22 @@ module.exports = async function render (pages, dest, options) {
         }
 
         try {
-          let app = route.view(context)
+          let app = route.view
 
           options.plugins
             .filter(p => p.createRoot)
             .map(p => {
               try {
-                app = p.createRoot({ app, context })
+                app = p.createRoot({
+                  app: app(context),
+                  context
+                })
               } catch (e) {
                 emit('error', e)
               }
             })
 
-          const view = renderToString(app)
+          const view = renderToString(app(context))
 
           options.plugins
             .filter(p => p.appDidRender)

@@ -45,8 +45,6 @@ export default function client (routes, initialState = {}, options = {}) {
       })
     })
 
-  console.log(JSON.stringify(context))
-
   return function render (root) {
     ReactDOM.hydrate((
       <Hypr
@@ -94,7 +92,7 @@ export default function client (routes, initialState = {}, options = {}) {
                       })
                     })
 
-                  done(view)
+                  done(view(context))
                 })
                 .catch(e => {
                   console.error('options.resolve failed', e)
