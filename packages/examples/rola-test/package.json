@@ -7,10 +7,10 @@
   },
   "author": "estrattonbailey",
   "dependencies": {
-    "@rola/plugin-document": "^0.2.7",
-    "@rola/plugin-postcss": "^0.2.11",
+    "@rola/plugin-document": "^0.4.0",
+    "@rola/preset-postcss": "^0.4.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
-    "rola": "^0.2.11"
+    "rola": "^0.4.0"
   }
 }

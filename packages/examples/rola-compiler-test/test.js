@@ -4,22 +4,22 @@ const app = compiler([
   {
     in: './client.js',
     out: './build',
-    plugins: [
-      require('@rola/plugin-postcss')()
+    presets: [
+      require('@rola/preset-postcss')()
     ]
   },
   {
     in: './server.js',
     out: './build',
-    plugins: [
-      require('@rola/plugin-node')()
+    presets: [
+      require('@rola/preset-node')()
     ]
   },
   {
     in: './routes/*.js',
     out: './build/routes',
-    plugins: [
-      require('@rola/plugin-node')()
+    preset: [
+      require('@rola/preset-node')()
     ]
   }
 ])

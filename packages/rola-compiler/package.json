@@ -25,7 +25,7 @@
     "@babel/plugin-transform-react-jsx": "^7.3.0",
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
-    "@rola/plugin-postcss": "^0.4.0",
+    "@rola/preset-postcss": "^0.4.0",
     "@rola/util": "^0.4.0",
     "acorn": "^6.1.1",
     "ansi-colors": "^3.2.4",

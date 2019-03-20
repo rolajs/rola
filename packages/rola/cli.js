@@ -68,7 +68,7 @@ function createGenerator ({ config, plugins }) {
   const generator = rolaStatic({
     env: config.env,
     alias: config.alias,
-    macros: config.macros,
+    presets: config.presets,
     plugins: [
       {
         createRoot ({ app, context }) {
@@ -106,14 +106,14 @@ prog
       entry: clientEntry,
       env: config.env,
       alias: config.alias,
-      macros: config.macros
+      presets: config.presets
     }))
 
     if (serverEntry) configs.push(createConfig({
       entry: serverEntry,
       env: config.env,
       alias: config.alias,
-      macros: config.macros
+      presets: config.presets
     }))
 
     let allstats = []
@@ -166,14 +166,14 @@ prog
       env: config.env,
       alias: config.alias,
       banner: require('./util/clientReloader.js')(PORT),
-      macros: config.macros
+      presets: config.presets
     }))
 
     if (serverEntry) configs.push(createConfig({
       entry: serverEntry,
       env: config.env,
       alias: config.alias,
-      macros: config.macros
+      presets: config.presets
     }))
 
     let allstats = []

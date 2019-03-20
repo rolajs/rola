@@ -4,7 +4,7 @@ const { watch } = require('chokidar')
 const onExit = require('exit-hook')
 const match = require('matched')
 const rolaCompiler = require('@rola/compiler')
-const node = require('@rola/plugin-node')
+const node = require('@rola/preset-node')
 
 const render = require('./lib/render.js')
 const ledger = require('./lib/fileLedger.js')
@@ -20,7 +20,7 @@ module.exports = function rolaStatic ({
   env,
   alias,
   filter,
-  macros,
+  presets,
   plugins
 } = {}) {
   require('./lib/env.js')({ env, alias })
@@ -61,9 +61,9 @@ module.exports = function rolaStatic ({
         },
         env,
         alias,
-        macros: [
+        presets: [
           node()
-        ].concat(macros || [])
+        ].concat(presets || [])
       })
         .build()
         .then(stats => {
@@ -127,9 +127,9 @@ module.exports = function rolaStatic ({
           },
           env,
           alias,
-          macros: [
+          presets: [
             node()
-          ].concat(macros || [])
+          ].concat(presets || [])
         })))
 
         compiler.on('error', e => {

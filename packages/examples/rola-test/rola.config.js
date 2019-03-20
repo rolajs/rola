@@ -1,7 +1,7 @@
-import postcss from '@rola/plugin-postcss'
+import postcss from '@rola/preset-postcss'
 
 export default {
-  macros: [
+  presets: [
     postcss()
   ]
 }

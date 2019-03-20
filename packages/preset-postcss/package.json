@@ -1,9 +1,8 @@
 {
-  "name": "@rola/plugin-sass",
+  "name": "@rola/preset-postcss",
   "version": "0.4.0",
-  "description": "Enable SASS for rola.",
-  "main": "index.js",
-  "scripts": {},
+  "description": "Enable PostCSS for rola.",
+  "main": "rola-preset-postcss.js",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/estrattonbailey/rola.git"
@@ -18,9 +17,13 @@
     "css-loader": "^2.1.0",
     "cssnano": "^4.1.10",
     "mini-css-extract-plugin": "^0.5.0",
-    "sass": "^1.17.3",
-    "sass-loader": "^7.1.0",
-    "style-loader": "^0.20.3"
+    "postcss": "^7.0.14",
+    "postcss-cssnext": "^3.1.0",
+    "postcss-discard-comments": "^4.0.2",
+    "postcss-import": "^12.0.1",
+    "postcss-loader": "^3.0.0",
+    "postcss-nested": "^3.0.0",
+    "webpack": "^4.29.6"
   },
   "gitHead": "570605c164cc377cf02c6819a29398857ca7bb7c"
 }
