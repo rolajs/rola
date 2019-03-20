@@ -2,7 +2,7 @@
   "name": "rola",
   "version": "0.5.0",
   "description": "",
-  "main": "dist/rola.js",
+  "main": "dist/index.js",
   "files": [
     "dist",
     "util",

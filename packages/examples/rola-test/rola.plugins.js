@@ -4,18 +4,18 @@ export default [
   {
     createDocument ({ context }) {
       return {
-        head: [
-          ['viewport', `<meta name='viewport' content='width=device-width,initial-scale=1,user-scalable=no'>`]
-        ],
-        body: [
-          '<script></script>'
-        ]
+        head: context.style
       }
     },
-    createRoot ({ app, context }) {
-      return props => (
-        <div className='taco'>{app}</div>
-      )
-    }
+    postRender ({ context }) {
+      return {
+        style: [`<link rel='stylesheet' />`]
+      }
+    },
+    // preRender ({ context }) {
+    //   return {
+    //     style: `<link rel='stylesheet' />`
+    //   }
+    // }
   }
 ]

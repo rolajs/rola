@@ -7,8 +7,14 @@ import Hypr from './Hypr.js'
 
 import plugins from '@/rola.plugins.js'
 
-const createDocument = require('@rola/util/createDocument.js')
 const doc = require('@rola/util/document.js')
+const createDocument = require('@rola/util/createDocument.js')
+const postRender = require('@rola/util/postRender.js')
+const preRender = require('@rola/util/preRender.js')
+
+function clone (obj) {
+  return Object.assign({}, obj)
+}
 
 function redir (res, Location, Referer, status = 302) {
   res.writeHead(status, { Location, Referer })
@@ -54,6 +60,9 @@ export default function server (routes, initialState = {}, options = {}) {
       .then(({ redirect, cache, status, pathname, state = {} } = {}) => {
         if (redirect) return redir(res, redirect)
 
+        /**
+         * set default response headers
+         */
         res.statusCode = status || 200
         res.setHeader('Content-Type', 'text/html')
         res.setHeader(
@@ -67,8 +76,14 @@ export default function server (routes, initialState = {}, options = {}) {
           )
         )
 
+        /**
+         * add any loaded state to store
+         */
         store.hydrate(state)
 
+        /**
+         * create initial context
+         */
         let context = {
           state: store.state,
           pathname: route.pathname || pathname
@@ -78,27 +93,53 @@ export default function server (routes, initialState = {}, options = {}) {
           .filter(p => p.createRoot)
           .map(p => {
             view = p.createRoot({
-              app: view(context),
+              root: view(context),
               context
             })
           })
 
-        const tags = createDocument({
-          context,
-          handlers: plugins
-            .filter(p => p.createDocument)
-            .map(p => p.createDocument)
+        /**
+         * preRender hook
+         */
+        const preRenderData = preRender({
+          context: clone(context),
+          plugins
         })
 
+        context = Object.assign(clone(context), preRenderData)
+
+        /**
+         * render
+         */
+        const renderedView = ReactDOMServer.renderToString(
+          <Hypr store={store} router={router} location={req.url}>
+            {view(context)}
+          </Hypr>
+        )
+
+        /**
+         * postRender hook
+         */
+        const postRenderData = postRender({
+          context: clone(context),
+          plugins
+        })
+
+        context = Object.assign(clone(context), postRenderData)
+
+        /**
+         * create tags with new context
+         */
+        const tags = createDocument({
+          context,
+          plugins
+        })
+
+        /**
+         * return response
+         */
         res.end(
-          doc(Object.assign(tags, {
-            context,
-            view: ReactDOMServer.renderToString(
-              <Hypr store={store} router={router} location={req.url}>
-                {view(context)}
-              </Hypr>
-            )
-          }))
+          doc({ ...tags, context, view: renderedView })
         )
       }).catch(e => {
         res.statusCode = 500

@@ -71,8 +71,8 @@ function createGenerator ({ config, plugins }) {
     presets: config.presets,
     plugins: [
       {
-        createRoot ({ app, context }) {
-          return props => React.createElement(App, context, app)
+        createRoot ({ root, context }) {
+          return props => React.createElement(App, context, root)
         }
       }
     ].concat(plugins),

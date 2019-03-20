@@ -7,7 +7,16 @@ const loadRoutes = require('./loadRoutes.js')
 const ledger = require('./fileLedger.js')
 const { emit } = require('./emitter.js')
 
-const { document: doc, createDocument } = require('@rola/util')
+const {
+  document: doc,
+  createDocument,
+  preRender,
+  postRender
+} = require('@rola/util')
+
+function clone (obj) {
+  return Object.assign({}, obj)
+}
 
 /**
  * accepts a `src` directory or array of `pages`
@@ -52,20 +61,20 @@ module.exports = async function render (pages, dest, options) {
 
         currentpaths.push(route.pathname)
 
-        let context = {
-          state: route.state,
-          pathname: route.pathname
-        }
-
         try {
-          let app = route.view
+          let view = route.view
+
+          let context = {
+            state: route.state,
+            pathname: route.pathname
+          }
 
           options.plugins
             .filter(p => p.createRoot)
             .map(p => {
               try {
-                app = p.createRoot({
-                  app: app(context),
+                view = p.createRoot({
+                  root: view(clone(context)),
                   context
                 })
               } catch (e) {
@@ -73,33 +82,46 @@ module.exports = async function render (pages, dest, options) {
               }
             })
 
-          const view = renderToString(app(context))
+          /**
+           * preRender hook
+           */
+          const preRenderData = preRender({
+            context: clone(context),
+            plugins: options.plugins
+          })
 
-          options.plugins
-            .filter(p => p.appDidRender)
-            .map(p => {
-              try {
-                const props = p.appDidRender({ context })
-                context = Object.assign({}, context, props)
-              } catch (e) {
-                emit('error', e)
-              }
-            })
+          context = Object.assign(clone(context), preRenderData)
 
+          /**
+           * render
+           */
+          const renderedView = renderToString(
+            view(
+              clone(context)
+            )
+          )
+
+          /**
+           * postRender hook
+           */
+          const postRenderData = postRender({
+            context: clone(context),
+            plugins: options.plugins
+          })
+
+          context = Object.assign(clone(context), postRenderData)
+
+          /**
+           * create tags with new context
+           */
           const tags = createDocument({
-            context,
-            handlers: options.plugins
-              .filter(p => p.createDocument)
-              .map(p => p.createDocument)
+            context: clone(context),
+            plugins: options.plugins
           })
 
           await fs.outputFile(
             path.join(dir, 'index.html'),
-            doc({
-              ...tags,
-              context,
-              view
-            }),
+            doc({ ...tags, context, view: renderedView }),
             e => {
               if (e) {
                 emit('error', e)
