@@ -1,6 +1,6 @@
 {
   "name": "rola",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "",
   "main": "dist/rola.js",
   "files": [
@@ -36,11 +36,11 @@
   "homepage": "https://github.com/estrattonbailey/rola#readme",
   "dependencies": {
     "@picostate/react": "^1.1.0",
-    "@rola/compiler": "^0.3.0",
-    "@rola/log": "^0.3.0",
-    "@rola/plugin-node": "^0.3.0",
-    "@rola/static": "^0.3.0",
-    "@rola/util": "^0.3.0",
+    "@rola/compiler": "^0.4.0",
+    "@rola/log": "^0.4.0",
+    "@rola/plugin-node": "^0.4.0",
+    "@rola/static": "^0.4.0",
+    "@rola/util": "^0.4.0",
     "ansi-colors": "^3.2.3",
     "biti": "^2.4.0",
     "commander": "^2.19.0",
