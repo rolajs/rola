@@ -8,7 +8,11 @@ import { history, withHistory } from './history.js'
 import { store } from './state.js'
 import Hypr from './Hypr.js'
 
-import plugins from '@/rola.plugins.js'
+let plugins = []
+
+try {
+  plugins = require('@/rola.plugins.js')
+} catch (e) {}
 
 const createRoot = require('@rola/util/createRoot.js')
 

@@ -39,15 +39,11 @@ function transpile (file, outDir, options = {}) {
 
     return mod
   } catch (e) {
-    if (!options.quiet) {
-      console.error(`getModule for ${file} failed`)
-      console.error(e)
-    }
     return {}
   }
 }
 
-module.exports = function getModule (file, outDir) {
+module.exports = function getModule (file, outDir, options) {
   const { alias } = transpile(path.join(process.cwd(), 'rola.config.js'), null, { quiet: true })
 
   assert(path.isAbsolute(file), 'file needs to be an absolute path')
