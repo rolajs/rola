@@ -10,6 +10,12 @@ import Hypr from './Hypr.js'
 
 import plugins from '@/rola.plugins.js'
 
+const createRoot = require('@rola/util/createRoot.js')
+
+function clone (obj) {
+  return Object.assign({}, obj)
+}
+
 export default function client (routes, initialState = {}, options = {}) {
   const location = window.location.href.replace(window.location.origin, '')
 
@@ -36,14 +42,11 @@ export default function client (routes, initialState = {}, options = {}) {
     pathname: window.location.pathname
   }
 
-  ;(plugins || [])
-    .filter(p => p.createRoot)
-    .map(p => {
-      view = p.createRoot({
-        app: view(context),
-        context
-      })
-    })
+  view = createRoot({
+    root: view,
+    context: clone(context),
+    plugins
+  })
 
   return function render (root) {
     ReactDOM.hydrate((
@@ -83,14 +86,11 @@ export default function client (routes, initialState = {}, options = {}) {
                     pathname: route.pathname
                   }
 
-                  ;(plugins || [])
-                    .filter(p => p.createRoot)
-                    .map(p => {
-                      view = p.createRoot({
-                        app: view(context),
-                        context
-                      })
-                    })
+                  view = createRoot({
+                    root: view,
+                    context: clone(context),
+                    plugins
+                  })
 
                   done(view(context))
                 })

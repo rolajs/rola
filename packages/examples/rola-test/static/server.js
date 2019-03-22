@@ -150,6 +150,39 @@ module.exports = function createDocument(_ref) {
 
 /***/ }),
 
+/***/ "../../rola-util/createRoot.js":
+/*!******************************************************************************!*\
+  !*** /Users/estrattonbailey/Sites/oss/rola/packages/rola-util/createRoot.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function createRoot(_ref) {
+  var root = _ref.root,
+      context = _ref.context,
+      plugins = _ref.plugins;
+  var handlers = plugins.filter(function (p) {
+    return p.createRoot;
+  }).map(function (p) {
+    return p.createRoot;
+  });
+  return handlers.reduce(function (view, handler) {
+    try {
+      view = handler({
+        root: root(context),
+        context: context
+      });
+    } catch (e) {
+      console.error("createRoot failed");
+      console.error(e);
+    }
+
+    return view;
+  }, root);
+};
+
+/***/ }),
+
 /***/ "../../rola-util/document.js":
 /*!****************************************************************************!*\
   !*** /Users/estrattonbailey/Sites/oss/rola/packages/rola-util/document.js ***!
@@ -475,217 +508,173 @@ module.exports = function preRender(_ref) {
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-Object.defineProperty(exports, '__esModule', {
-  value: true
+function _interopDefault(e) {
+  return e && "object" == _typeof(e) && "default" in e ? e.default : e;
+}
+
+Object.defineProperty(exports, "__esModule", {
+  value: !0
 });
 
-function _interopDefault(ex) {
-  return ex && _typeof(ex) === 'object' && 'default' in ex ? ex['default'] : ex;
+var React = _interopDefault(__webpack_require__(/*! react */ "../../rola/node_modules/react/index.js")),
+    ReactDOM = _interopDefault(__webpack_require__(/*! react-dom */ "../../rola/node_modules/react-dom/index.js")),
+    createStore = _interopDefault(__webpack_require__(/*! picostate */ "../../rola/node_modules/picostate/dist/picostate.es.js")),
+    esm = __webpack_require__(/*! flatted/esm */ "../../rola/node_modules/flatted/esm/index.js"),
+    matchit = __webpack_require__(/*! matchit */ "../../rola/node_modules/matchit/lib/matchit.mjs"),
+    react = __webpack_require__(/*! @picostate/react */ "../../rola/node_modules/@picostate/react/dist/picostate-react.es.js"),
+    plugins = _interopDefault(__webpack_require__(/*! @/rola.plugins.js */ "./rola.plugins.js")),
+    ReactDOMServer = _interopDefault(__webpack_require__(/*! react-dom/server */ "../../rola/node_modules/react-dom/server.js")),
+    cx = _interopDefault(__webpack_require__(/*! nanoclass */ "../../rola/node_modules/nanoclass/dist/nanoclass.es.js"));
+
+function _classCallCheck(e, t) {
+  if (!(e instanceof t)) throw new TypeError("Cannot call a class as a function");
 }
 
-var React = _interopDefault(__webpack_require__(/*! react */ "../../rola/node_modules/react/index.js"));
-
-var ReactDOM = _interopDefault(__webpack_require__(/*! react-dom */ "../../rola/node_modules/react-dom/index.js"));
-
-var createStore = _interopDefault(__webpack_require__(/*! picostate */ "../../rola/node_modules/picostate/dist/picostate.es.js"));
-
-var esm = __webpack_require__(/*! flatted/esm */ "../../rola/node_modules/flatted/esm/index.js");
-
-var matchit = __webpack_require__(/*! matchit */ "../../rola/node_modules/matchit/lib/matchit.mjs");
-
-var react = __webpack_require__(/*! @picostate/react */ "../../rola/node_modules/@picostate/react/dist/picostate-react.es.js");
-
-var plugins = _interopDefault(__webpack_require__(/*! @/rola.plugins.js */ "./rola.plugins.js"));
-
-var ReactDOMServer = _interopDefault(__webpack_require__(/*! react-dom/server */ "../../rola/node_modules/react-dom/server.js"));
-
-var cx = _interopDefault(__webpack_require__(/*! nanoclass */ "../../rola/node_modules/nanoclass/dist/nanoclass.es.js"));
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
+function _defineProperties(e, t) {
+  for (var r = 0; r < t.length; r++) {
+    var o = t[r];
+    o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, o.key, o);
   }
 }
 
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
-  }
-}
-
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  return Constructor;
+function _createClass(e, t, r) {
+  return t && _defineProperties(e.prototype, t), r && _defineProperties(e, r), e;
 }
 
 function _extends() {
-  _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
+  return (_extends = Object.assign || function (e) {
+    for (var t = 1; t < arguments.length; t++) {
+      var r = arguments[t];
 
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
+      for (var o in r) {
+        Object.prototype.hasOwnProperty.call(r, o) && (e[o] = r[o]);
       }
     }
 
-    return target;
-  };
-
-  return _extends.apply(this, arguments);
+    return e;
+  }).apply(this, arguments);
 }
 
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function");
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
+function _inherits(e, t) {
+  if ("function" != typeof t && null !== t) throw new TypeError("Super expression must either be null or a function");
+  e.prototype = Object.create(t && t.prototype, {
     constructor: {
-      value: subClass,
-      writable: true,
-      configurable: true
+      value: e,
+      writable: !0,
+      configurable: !0
     }
-  });
-  if (superClass) _setPrototypeOf(subClass, superClass);
+  }), t && _setPrototypeOf(e, t);
 }
 
-function _getPrototypeOf(o) {
-  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-    return o.__proto__ || Object.getPrototypeOf(o);
-  };
-  return _getPrototypeOf(o);
+function _getPrototypeOf(e) {
+  return (_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function (e) {
+    return e.__proto__ || Object.getPrototypeOf(e);
+  })(e);
 }
 
-function _setPrototypeOf(o, p) {
-  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-
-  return _setPrototypeOf(o, p);
+function _setPrototypeOf(e, t) {
+  return (_setPrototypeOf = Object.setPrototypeOf || function (e, t) {
+    return e.__proto__ = t, e;
+  })(e, t);
 }
 
-function _objectWithoutPropertiesLoose(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  var sourceKeys = Object.keys(source);
-  var key, i;
+function _objectWithoutPropertiesLoose(e, t) {
+  if (null == e) return {};
+  var r,
+      o,
+      n = {},
+      a = Object.keys(e);
 
-  for (i = 0; i < sourceKeys.length; i++) {
-    key = sourceKeys[i];
-    if (excluded.indexOf(key) >= 0) continue;
-    target[key] = source[key];
+  for (o = 0; o < a.length; o++) {
+    r = a[o], t.indexOf(r) >= 0 || (n[r] = e[r]);
   }
 
-  return target;
+  return n;
 }
 
-function _objectWithoutProperties(source, excluded) {
-  if (source == null) return {};
+function _objectWithoutProperties(e, t) {
+  if (null == e) return {};
 
-  var target = _objectWithoutPropertiesLoose(source, excluded);
-
-  var key, i;
+  var r,
+      o,
+      n = _objectWithoutPropertiesLoose(e, t);
 
   if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+    var a = Object.getOwnPropertySymbols(e);
 
-    for (i = 0; i < sourceSymbolKeys.length; i++) {
-      key = sourceSymbolKeys[i];
-      if (excluded.indexOf(key) >= 0) continue;
-      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
-      target[key] = source[key];
+    for (o = 0; o < a.length; o++) {
+      r = a[o], t.indexOf(r) >= 0 || Object.prototype.propertyIsEnumerable.call(e, r) && (n[r] = e[r]);
     }
   }
 
-  return target;
+  return n;
 }
 
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
+function _assertThisInitialized(e) {
+  if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  return e;
 }
 
-function _possibleConstructorReturn(self, call) {
-  if (call && (_typeof(call) === "object" || typeof call === "function")) {
-    return call;
-  }
-
-  return _assertThisInitialized(self);
+function _possibleConstructorReturn(e, t) {
+  return !t || "object" != _typeof(t) && "function" != typeof t ? _assertThisInitialized(e) : t;
 }
 
-function _slicedToArray(arr, i) {
-  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
+function _slicedToArray(e, t) {
+  return _arrayWithHoles(e) || _iterableToArrayLimit(e, t) || _nonIterableRest();
 }
 
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr)) return arr;
+function _arrayWithHoles(e) {
+  if (Array.isArray(e)) return e;
 }
 
-function _iterableToArrayLimit(arr, i) {
-  var _arr = [];
-  var _n = true;
-  var _d = false;
-  var _e = undefined;
+function _iterableToArrayLimit(e, t) {
+  var r = [],
+      o = !0,
+      n = !1,
+      a = void 0;
 
   try {
-    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-      _arr.push(_s.value);
-
-      if (i && _arr.length === i) break;
+    for (var i, c = e[Symbol.iterator](); !(o = (i = c.next()).done) && (r.push(i.value), !t || r.length !== t); o = !0) {
+      ;
     }
-  } catch (err) {
-    _d = true;
-    _e = err;
+  } catch (e) {
+    n = !0, a = e;
   } finally {
     try {
-      if (!_n && _i["return"] != null) _i["return"]();
+      o || null == c.return || c.return();
     } finally {
-      if (_d) throw _e;
+      if (n) throw a;
     }
   }
 
-  return _arr;
+  return r;
 }
 
 function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance");
 }
 
-function matcher(routes) {
-  var matchers = routes.map(function (route) {
-    return matchit.parse(route[0]);
-  });
-  var dictionary = routes.reduce(function (dict, route) {
-    dict[route[0]] = route[1];
-    return dict;
+function matcher(e) {
+  var t = e.map(function (e) {
+    return matchit.parse(e[0]);
+  }),
+      r = e.reduce(function (e, t) {
+    return e[t[0]] = t[1], e;
   }, {});
-  return function route(path) {
-    var m = matchit.match(path, matchers);
-    if (!m.length) return [];
-    return [dictionary[m[0].old], matchit.exec(path, m)];
+  return function (e) {
+    var o = matchit.match(e, t);
+    return o.length ? [r[o[0].old], matchit.exec(e, o)] : [];
   };
 }
 
 var store = createStore({});
 
-function historyUpdater(url, cb) {
-  var location = typeof url === 'function' ? url(store.state) : url;
-  location = location.replace(window.location.origin, '');
-  store.hydrate({
-    location: location
+function historyUpdater(e, t) {
+  var r = "function" == typeof e ? e(store.state) : e;
+  r = r.replace(window.location.origin, ""), store.hydrate({
+    location: r
   })(function () {
-    cb(location);
+    t(r);
   });
 }
 
@@ -694,428 +683,309 @@ var history = {
     return store.state;
   },
 
-  replaceState: function replaceState(url) {
-    historyUpdater(url, function (sanitized) {
-      window.history.replaceState({}, '', sanitized);
+  replaceState: function replaceState(e) {
+    historyUpdater(e, function (e) {
+      window.history.replaceState({}, "", e);
     });
   },
-  pushState: function pushState(url, popstate) {
-    historyUpdater(url, function (sanitized) {
-      !popstate && window.history.pushState({}, '', sanitized);
+  pushState: function pushState(e, t) {
+    historyUpdater(e, function (e) {
+      !t && window.history.pushState({}, "", e);
     });
   }
 };
 
-function withHistory(Component) {
-  return function (props) {
-    return React.createElement(Component, _extends({
+function withHistory(e) {
+  return function (t) {
+    return React.createElement(e, _extends({
       history: history
-    }, props));
+    }, t));
   };
 }
 
-var store$1 = createStore({});
-var withState = react.connect;
+var store$1 = createStore({}),
+    withState = react.connect,
+    Router = function (e) {
+  function t(e) {
+    var r;
+    return _classCallCheck(this, t), (r = _possibleConstructorReturn(this, _getPrototypeOf(t).call(this, e))).state = {
+      children: e.children.pop ? e.children[0] : e.children
+    }, r.currentLocation = e.location, store.listen(function (t) {
+      var o = t.location,
+          n = _slicedToArray(e.router(o), 2),
+          a = n[0],
+          i = n[1];
 
-var Router =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(Router, _React$Component);
-
-  function Router(props) {
-    var _this;
-
-    _classCallCheck(this, Router);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Router).call(this, props));
-    _this.state = {
-      children: props.children.pop ? props.children[0] : props.children
-    };
-    _this.currentLocation = props.location;
-    store.listen(function (_ref) {
-      var location = _ref.location;
-
-      var _props$router = props.router(location),
-          _props$router2 = _slicedToArray(_props$router, 2),
-          route = _props$router2[0],
-          params = _props$router2[1];
-
-      if (location === _this.currentLocation) return;
-      if (route.redirect) return history.pushState(route.redirect.to);
-      props.resolve({
-        location: location,
-        params: params,
-        route: route
-      }, function (children) {
-        _this.currentLocation = location;
-
-        _this.setState({
-          children: children
+      if (o !== r.currentLocation) return a.redirect ? history.pushState(a.redirect.to) : void e.resolve({
+        location: o,
+        params: i,
+        route: a
+      }, function (e) {
+        r.currentLocation = o, r.setState({
+          children: e
         });
       });
-    });
-    return _this;
+    }), r;
   }
 
-  _createClass(Router, [{
+  return _inherits(t, React.Component), _createClass(t, [{
     key: "componentDidMount",
-    value: function componentDidMount() {
-      window.addEventListener('popstate', function (e) {
-        if (!e.target.window) return;
-        history.pushState(e.target.location.href, true);
+    value: function value() {
+      window.addEventListener("popstate", function (e) {
+        e.target.window && history.pushState(e.target.location.href, !0);
       });
     }
   }, {
     key: "render",
-    value: function render() {
-      var Child = this.state.children;
-      return typeof Child === 'function' ? React.createElement(Child, store$1.state) : Child;
+    value: function value() {
+      var e = this.state.children;
+      return "function" == typeof e ? React.createElement(e, store$1.state) : e;
     }
-  }]);
+  }]), t;
+}();
 
-  return Router;
-}(React.Component);
-/**
- * this is used internally for server.js, client.js, and App.js
- */
-
-
-function Hypr(_ref) {
-  var store = _ref.store,
-      router = _ref.router,
-      location = _ref.location,
-      resolve = _ref.resolve,
-      children = _ref.children;
+function Hypr(e) {
+  var t = e.store,
+      r = e.router,
+      o = e.location,
+      n = e.resolve,
+      a = e.children;
   return React.createElement(react.Provider, {
-    store: store
+    store: t
   }, React.createElement(Router, {
-    router: router,
-    location: location,
-    resolve: resolve
-  }, children));
+    router: r,
+    location: o,
+    resolve: n
+  }, a));
 }
 
-function client(routes) {
-  var initialState = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-  var location = window.location.href.replace(window.location.origin, '');
-  var router = matcher(routes.map(function (_ref) {
-    var pathname = _ref.pathname,
-        route = _objectWithoutProperties(_ref, ["pathname"]);
+var createRoot = __webpack_require__(/*! @rola/util/createRoot.js */ "../../rola-util/createRoot.js");
 
-    return [pathname, route];
-  }));
+function clone(e) {
+  return Object.assign({}, e);
+}
 
-  var _router = router(location),
-      _router2 = _slicedToArray(_router, 2),
-      route = _router2[0],
-      params = _router2[1];
+function client(e) {
+  var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
+      r = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {},
+      o = window.location.href.replace(window.location.origin, ""),
+      n = matcher(e.map(function (e) {
+    return [e.pathname, _objectWithoutProperties(e, ["pathname"])];
+  })),
+      a = _slicedToArray(n(o), 2),
+      i = a[0],
+      c = a[1],
+      s = esm.parse(JSON.stringify(window.__rola));
 
-  var serverContext = esm.parse(JSON.stringify(window.__rola));
-  store$1.hydrate(Object.assign({}, serverContext.state, initialState, {
+  store$1.hydrate(Object.assign({}, s.state, t, {
     router: {
-      location: location,
-      params: params
+      location: o,
+      params: c
     }
   }));
-  var view = route.view;
-  var context = {
+  var u = i.view,
+      l = {
     state: store$1.state,
     pathname: window.location.pathname
   };
-  (plugins || []).filter(function (p) {
-    return p.createRoot;
-  }).map(function (p) {
-    view = p.createRoot({
-      app: view(context),
-      context: context
-    });
-  });
-  return function render(root) {
+  return u = createRoot({
+    root: u,
+    context: clone(l),
+    plugins: plugins
+  }), function (e) {
     ReactDOM.hydrate(React.createElement(Hypr, {
       store: store$1,
-      router: router,
-      location: location,
-      resolve: function resolve(_ref2, done) {
-        var location = _ref2.location,
-            params = _ref2.params,
-            route = _ref2.route;
+      router: n,
+      location: o,
+      resolve: function resolve(e, t) {
+        var o = e.location,
+            n = e.params,
+            a = e.route;
         store$1.hydrate({
           router: {
-            location: location,
-            params: params
+            location: o,
+            params: n
           }
         });
-        var _route$load = route.load,
-            load = _route$load === void 0 ? function () {} : _route$load,
-            view = route.view;
-        Promise.resolve(load(store$1.state)).then(function (_ref3) {
-          var redirect = _ref3.redirect,
-              state = _ref3.state;
-          if (redirect) return history.pushState(redirect.to);
-          var meta = state.meta || {};
-          store$1.hydrate(state);
-          Promise.resolve(options.resolve ? options.resolve(store$1.state) : null).then(function () {
-            document.title = meta.title || document.title;
-            var view = route.view;
-            var context = {
+        var i = a.load,
+            c = void 0 === i ? function () {} : i;
+        a.view;
+        Promise.resolve(c(store$1.state)).then(function (e) {
+          var o = e.redirect,
+              n = e.state;
+          if (o) return history.pushState(o.to);
+          var i = n.meta || {};
+          store$1.hydrate(n), Promise.resolve(r.resolve ? r.resolve(store$1.state) : null).then(function () {
+            document.title = i.title || document.title;
+            var e = a.view,
+                r = {
               state: store$1.state,
-              pathname: route.pathname
+              pathname: a.pathname
             };
-            (plugins || []).filter(function (p) {
-              return p.createRoot;
-            }).map(function (p) {
-              view = p.createRoot({
-                app: view(context),
-                context: context
-              });
-            });
-            done(view(context));
+            e = createRoot({
+              root: e,
+              context: clone(r),
+              plugins: plugins
+            }), t(e(r));
           }).catch(function (e) {
-            console.error('options.resolve failed', e);
+            console.error("options.resolve failed", e);
           });
         }).catch(function (e) {
-          console.error('route.load failed', e.message || e);
+          console.error("route.load failed", e.message || e);
         });
       }
-    }, view(context)), root);
+    }, u(l)), e);
   };
 }
 
-var doc = __webpack_require__(/*! @rola/util/document.js */ "../../rola-util/document.js");
+var doc = __webpack_require__(/*! @rola/util/document.js */ "../../rola-util/document.js"),
+    createDocument = __webpack_require__(/*! @rola/util/createDocument.js */ "../../rola-util/createDocument.js"),
+    createRoot$1 = __webpack_require__(/*! @rola/util/createRoot.js */ "../../rola-util/createRoot.js"),
+    postRender = __webpack_require__(/*! @rola/util/postRender.js */ "../../rola-util/postRender.js"),
+    preRender = __webpack_require__(/*! @rola/util/preRender.js */ "../../rola-util/preRender.js");
 
-var createDocument = __webpack_require__(/*! @rola/util/createDocument.js */ "../../rola-util/createDocument.js");
-
-var postRender = __webpack_require__(/*! @rola/util/postRender.js */ "../../rola-util/postRender.js");
-
-var preRender = __webpack_require__(/*! @rola/util/preRender.js */ "../../rola-util/preRender.js");
-
-function clone(obj) {
-  return Object.assign({}, obj);
+function clone$1(e) {
+  return Object.assign({}, e);
 }
 
-function redir(res, Location, Referer) {
-  var status = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 302;
-  res.writeHead(status, {
-    Location: Location,
-    Referer: Referer
-  });
-  res.end();
+function redir(e, t, r) {
+  var o = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : 302;
+  e.writeHead(o, {
+    Location: t,
+    Referer: r
+  }), e.end();
 }
 
-function server(routes) {
-  var initialState = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var router = matcher(routes.map(function (_ref) {
-    var pathname = _ref.pathname,
-        route = _objectWithoutProperties(_ref, ["pathname"]);
-
-    return [pathname, route];
+function server(e) {
+  var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
+      r = matcher(e.map(function (e) {
+    return [e.pathname, _objectWithoutProperties(e, ["pathname"])];
   }));
-  return function handler(req, res, next) {
-    var store = createStore({});
+  return function (e, o, n) {
+    var a = createStore({}),
+        i = _slicedToArray(r(e.url), 2),
+        c = i[0],
+        s = i[1];
 
-    var _router = router(req.url),
-        _router2 = _slicedToArray(_router, 2),
-        route = _router2[0],
-        params = _router2[1];
-
-    if (!route) {
-      return next();
-    }
-
-    var _route$state = route.state,
-        initialRouteState = _route$state === void 0 ? {} : _route$state,
-        _route$load = route.load,
-        load = _route$load === void 0 ? function () {} : _route$load,
-        view = route.view,
-        redirect = route.redirect;
-    if (redirect) return redir(res, redirect);
-    store.hydrate(Object.assign(initialState, initialRouteState, {
+    if (!c) return n();
+    var u = c.state,
+        l = void 0 === u ? {} : u,
+        p = c.load,
+        f = void 0 === p ? function () {} : p,
+        h = c.view,
+        d = c.redirect;
+    return d ? redir(o, d) : (a.hydrate(Object.assign(t, l, {
       router: {
-        location: req.url,
-        params: params
+        location: e.url,
+        params: s
       }
-    }));
-    return Promise.resolve(load(store.state, req)).then(function () {
-      var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-          redirect = _ref2.redirect,
-          cache = _ref2.cache,
-          status = _ref2.status,
-          pathname = _ref2.pathname,
-          _ref2$state = _ref2.state,
-          state = _ref2$state === void 0 ? {} : _ref2$state;
-
-      if (redirect) return redir(res, redirect);
-      /**
-       * set default response headers
-       */
-
-      res.statusCode = status || 200;
-      res.setHeader('Content-Type', 'text/html');
-      res.setHeader('Cache-Control', typeof cache === 'string' ? cache : cache === false ? "no-cache, no-store, must-revalidate" : "public, max-age=".concat(cache || 86400));
-      /**
-       * add any loaded state to store
-       */
-
-      store.hydrate(state);
-      /**
-       * create initial context
-       */
-
-      var context = {
-        state: store.state,
-        pathname: route.pathname || pathname
+    })), Promise.resolve(f(a.state, e)).then(function () {
+      var t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {},
+          n = t.redirect,
+          i = t.cache,
+          s = t.status,
+          u = t.pathname,
+          l = t.state,
+          p = void 0 === l ? {} : l;
+      if (n) return redir(o, n);
+      o.statusCode = s || 200, o.setHeader("Content-Type", "text/html"), o.setHeader("Cache-Control", "string" == typeof i ? i : !1 === i ? "no-cache, no-store, must-revalidate" : "public, max-age=".concat(i || 86400)), a.hydrate(p);
+      var f = {
+        state: a.state,
+        pathname: c.pathname || u
       };
-      (plugins || []).filter(function (p) {
-        return p.createRoot;
-      }).map(function (p) {
-        view = p.createRoot({
-          root: view(context),
-          context: context
-        });
-      });
-      /**
-       * preRender hook
-       */
-
-      var preRenderData = preRender({
-        context: clone(context),
+      h = createRoot$1({
+        root: h,
+        context: clone$1(f),
         plugins: plugins
       });
-      context = Object.assign(clone(context), preRenderData);
-      /**
-       * render
-       */
-
-      var renderedView = ReactDOMServer.renderToString(React.createElement(Hypr, {
-        store: store,
-        router: router,
-        location: req.url
-      }, view(context)));
-      /**
-       * postRender hook
-       */
-
-      var postRenderData = postRender({
-        context: clone(context),
+      var d = preRender({
+        context: clone$1(f),
         plugins: plugins
       });
-      context = Object.assign(clone(context), postRenderData);
-      /**
-       * create tags with new context
-       */
-
-      var tags = createDocument({
-        context: context,
+      f = Object.assign(clone$1(f), d);
+      var v = ReactDOMServer.renderToString(React.createElement(Hypr, {
+        store: a,
+        router: r,
+        location: e.url
+      }, h(f))),
+          y = postRender({
+        context: clone$1(f),
         plugins: plugins
       });
-      /**
-       * return response
-       */
-
-      res.end(doc(Object.assign({}, tags, {
-        context: context,
-        view: renderedView
+      f = Object.assign(clone$1(f), y);
+      var m = createDocument({
+        context: f,
+        plugins: plugins
+      });
+      o.end(doc(Object.assign({}, m, {
+        context: f,
+        view: v
       })));
     }).catch(function (e) {
-      res.statusCode = 500;
-      res.setHeader('Content-Type', 'text/plain');
-      res.end('rola error');
-      console.log(e);
-    });
+      o.statusCode = 500, o.setHeader("Content-Type", "text/plain"), o.end("rola error"), console.log(e);
+    }));
   };
 }
 
-function Link(props) {
-  var children = props.children,
-      href = props.href,
-      className = props.className,
-      target = props.target,
-      download = props.download,
-      rest = _objectWithoutProperties(props, ["children", "href", "className", "target", "download"]);
+function Link(e) {
+  var t = e.children,
+      r = e.href,
+      o = e.className,
+      n = e.target,
+      a = e.download,
+      i = _objectWithoutProperties(e, ["children", "href", "className", "target", "download"]),
+      c = cx([o, history.location === r && "active"]),
+      s = {};
 
-  var cn = cx([className, history.location === href && 'active']);
-  var opts = {};
-  if (target) opts.target = target;
-  if (download) opts.download = download;
-  return React.createElement("a", _extends({
-    href: href,
-    className: cn,
+  return n && (s.target = n), a && (s.download = a), React.createElement("a", _extends({
+    href: r,
+    className: c,
     onClick: function onClick(e) {
-      if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey || e.defaultPrevented || opts.target === '_blank' || opts.download || /mailto|tel/.test(href) || /^(https?:)?\/\//.test(href)) return;
-      e.preventDefault();
-      history.pushState(href);
+      e.ctrlKey || e.metaKey || e.altKey || e.shiftKey || e.defaultPrevented || "_blank" === s.target || s.download || /mailto|tel/.test(r) || /^(https?:)?\/\//.test(r) || (e.preventDefault(), history.pushState(r));
     }
-  }, opts, rest), children);
+  }, s, i), t);
 }
 
-var Router$1 =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(Router, _React$Component);
+var Router$1 = function (e) {
+  function t(e) {
+    var r;
+    return _classCallCheck(this, t), (r = _possibleConstructorReturn(this, _getPrototypeOf(t).call(this, e))).state = {
+      children: e.children.pop ? e.children[0] : e.children
+    }, r.currentLocation = e.location, store.listen(function (t) {
+      var o = t.location,
+          n = _slicedToArray(e.router(o), 2),
+          a = n[0],
+          i = n[1];
 
-  function Router(props) {
-    var _this;
-
-    _classCallCheck(this, Router);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Router).call(this, props));
-    _this.state = {
-      children: props.children.pop ? props.children[0] : props.children
-    };
-    _this.currentLocation = props.location;
-    store.listen(function (_ref) {
-      var location = _ref.location;
-
-      var _props$router = props.router(location),
-          _props$router2 = _slicedToArray(_props$router, 2),
-          route = _props$router2[0],
-          params = _props$router2[1];
-
-      if (location === _this.currentLocation) return;
-      if (route.redirect) return history.pushState(route.redirect.to);
-      props.resolve({
-        location: location,
-        params: params,
-        route: route
-      }, function (children) {
-        _this.currentLocation = location;
-
-        _this.setState({
-          children: children
+      if (o !== r.currentLocation) return a.redirect ? history.pushState(a.redirect.to) : void e.resolve({
+        location: o,
+        params: i,
+        route: a
+      }, function (e) {
+        r.currentLocation = o, r.setState({
+          children: e
         });
       });
-    });
-    return _this;
+    }), r;
   }
 
-  _createClass(Router, [{
+  return _inherits(t, React.Component), _createClass(t, [{
     key: "componentDidMount",
-    value: function componentDidMount() {
-      window.addEventListener('popstate', function (e) {
-        if (!e.target.window) return;
-        history.pushState(e.target.location.href, true);
+    value: function value() {
+      window.addEventListener("popstate", function (e) {
+        e.target.window && history.pushState(e.target.location.href, !0);
       });
     }
   }, {
     key: "render",
-    value: function render() {
-      var Child = this.state.children;
-      return typeof Child === 'function' ? React.createElement(Child, store$1.state) : Child;
+    value: function value() {
+      var e = this.state.children;
+      return "function" == typeof e ? React.createElement(e, store$1.state) : e;
     }
-  }]);
+  }]), t;
+}();
 
-  return Router;
-}(React.Component);
-
-exports.Link = Link;
-exports.Router = Router$1;
-exports.client = client;
-exports.history = history;
-exports.server = server;
-exports.store = store$1;
-exports.withHistory = withHistory;
-exports.withState = withState;
+exports.Link = Link, exports.Router = Router$1, exports.client = client, exports.history = history, exports.server = server, exports.store = store$1, exports.withHistory = withHistory, exports.withState = withState;
 
 /***/ }),
 
@@ -33004,19 +32874,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
-/* harmony default export */ __webpack_exports__["default"] = ([{
-  createDocument: function createDocument(_ref) {
-    var context = _ref.context;
-    return {
-      head: context.style
-    };
-  },
-  postRender: function postRender(_ref2) {
-    var context = _ref2.context;
-    return {
-      style: ["<link rel='stylesheet' />"]
-    };
-  }
+/* harmony default export */ __webpack_exports__["default"] = ([{// createRoot ({ root }) {
+  //   return props => <div id='foo'>{root}</div>
+  // },
+  // createDocument ({ context }) {
+  //   return {
+  //     head: context.style
+  //   }
+  // },
+  // postRender ({ context }) {
+  //   return {
+  //     style: [`<link rel='stylesheet' />`]
+  //   }
+  // },
+  // preRender ({ context }) {
+  //   return {
+  //     style: `<link rel='stylesheet' />`
+  //   }
+  // }
 }]);
 
 /***/ }),

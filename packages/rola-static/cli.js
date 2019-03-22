@@ -14,7 +14,7 @@ const pkg = require('./package.json')
 const cwd = process.cwd()
 
 const compiler = require('@rola/compiler')
-const { getConfig } = require('@rola/util')
+const { getModule } = require('@rola/util')
 
 const prog = require('commander')
   .version(pkg.version)
@@ -28,7 +28,8 @@ prog
 
     log({ actions: [ 'rendering' ] })
 
-    const { config, plugins } = await getConfig()
+    const config = await getModule(path.join(cwd, 'rola.config.js'), path.join(cwd, '.cache'))
+    const plugins = await getModule(path.join(cwd, 'rola.plugins.js'), path.join(cwd, '.cache')).default
 
     const app = rolaStatic({
       ...config,
@@ -47,7 +48,8 @@ prog
   .action(async (src, dest) => {
     log({ actions: [ 'watching' ] })
 
-    const { config, plugins } = await getConfig()
+    const config = await getModule(path.join(cwd, 'rola.config.js'), path.join(cwd, '.cache'))
+    const plugins = await getModule(path.join(cwd, 'rola.plugins.js'), path.join(cwd, '.cache')).default
 
     const app = rolaStatic({
       ...config,

@@ -10,6 +10,7 @@ const { emit } = require('./emitter.js')
 const {
   document: doc,
   createDocument,
+  createRoot,
   preRender,
   postRender
 } = require('@rola/util')
@@ -69,18 +70,11 @@ module.exports = async function render (pages, dest, options) {
             pathname: route.pathname
           }
 
-          options.plugins
-            .filter(p => p.createRoot)
-            .map(p => {
-              try {
-                view = p.createRoot({
-                  root: view(clone(context)),
-                  context
-                })
-              } catch (e) {
-                emit('error', e)
-              }
-            })
+          view = createRoot({
+            root: view,
+            context: clone(context),
+            plugins: options.plugins,
+          })
 
           /**
            * preRender hook

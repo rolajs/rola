@@ -77,6 +77,11 @@ function createConfig (conf, watch) {
     wc.entry = {
       [path.basename(wc.entry, '.js')]: path.resolve(cwd, wc.entry)
     }
+  } else if (Array.isArray(wc.entry)) {
+    wc.entry = wc.entry.reduce((entries, entry) => {
+      entries[path.basename(entry, '.js')] = entry
+      return entries
+    }, {})
   } else if (typeof wc.entry === 'object') {
     wc.entry = Object.keys(wc.entry).reduce((entry, name) => {
       entry[name] = path.resolve(cwd, wc.entry[name])

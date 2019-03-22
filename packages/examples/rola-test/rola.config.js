@@ -1,8 +1,9 @@
 import postcss from '@rola/preset-postcss'
 
-export default {
-  presets: [
-    postcss()
-  ]
+export const env = {
+  foo: 'foo-env'
 }
 
+export const presets = [
+  postcss()
+]

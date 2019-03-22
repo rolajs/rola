@@ -18,7 +18,7 @@ const React = require('react')
 
 const rolaCompiler = require('@rola/compiler')
 const rolaStatic = require('@rola/static')
-const { getConfig } = require('@rola/util')
+const { getModule } = require('@rola/util')
 
 const pkg = require('./package.json')
 const createServer = require('./util/createServer.js')
@@ -64,7 +64,7 @@ function serve () {
   }
 }
 
-function createGenerator ({ config, plugins }) {
+function createGenerator (config, plugins) {
   const generator = rolaStatic({
     env: config.env,
     alias: config.alias,
@@ -98,7 +98,8 @@ prog
   .action(async () => {
     log({ actions: [ 'build' ] })
 
-    const { config, plugins } = await getConfig()
+    const config = await getModule(path.join(cwd, 'rola.config.js'), path.join(cwd, '.cache'))
+    const plugins = await getModule(path.join(cwd, 'rola.plugins.js'), path.join(cwd, '.cache')).default
 
     const configs = []
 
@@ -140,7 +141,7 @@ prog
 
         if (serverEntry) serve()
 
-        await createGenerator({ config, plugins }).render('/routes', '/static')
+        await createGenerator(config, plugins).render('/routes', '/static')
 
         exit()
       })
@@ -156,7 +157,8 @@ prog
   .action(async () => {
     log({ actions: [ 'watch' ] })
 
-    const { config, plugins } = await getConfig()
+    const config = await getModule(path.join(cwd, 'rola.config.js'), path.join(cwd, '.cache'))
+    const plugins = await getModule(path.join(cwd, 'rola.plugins.js'), path.join(cwd, '.cache')).default
 
     let compiled = false
     const configs = []
@@ -214,7 +216,7 @@ prog
         serve()
 
         if (!compiled) {
-          createGenerator({ config, plugins }).watch('/routes', '/static')
+          createGenerator(config, plugins).watch('/routes', '/static')
 
           compiled = true
         }
@@ -223,7 +225,7 @@ prog
       compiler.watch()
     } else {
       serve()
-      createGenerator({ config, plugins }).watch('/routes', '/static')
+      createGenerator(config, plugins).watch('/routes', '/static')
     }
   })
 

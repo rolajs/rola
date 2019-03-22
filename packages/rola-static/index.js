@@ -19,9 +19,9 @@ function abs (p) {
 module.exports = function rolaStatic ({
   env,
   alias,
-  filter,
   presets,
-  plugins
+  plugins,
+  filter,
 } = {}) {
   require('./lib/env.js')({ env, alias })
 

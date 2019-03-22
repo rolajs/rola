@@ -9,6 +9,7 @@ import plugins from '@/rola.plugins.js'
 
 const doc = require('@rola/util/document.js')
 const createDocument = require('@rola/util/createDocument.js')
+const createRoot = require('@rola/util/createRoot.js')
 const postRender = require('@rola/util/postRender.js')
 const preRender = require('@rola/util/preRender.js')
 
@@ -89,14 +90,11 @@ export default function server (routes, initialState = {}, options = {}) {
           pathname: route.pathname || pathname
         }
 
-        ;(plugins || [])
-          .filter(p => p.createRoot)
-          .map(p => {
-            view = p.createRoot({
-              root: view(context),
-              context
-            })
-          })
+        view = createRoot({
+          root: view,
+          context: clone(context),
+          plugins
+        })
 
         /**
          * preRender hook
