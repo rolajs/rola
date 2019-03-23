@@ -53,8 +53,14 @@ module.exports = function rolaStatic ({
       return Promise.resolve(compiler ? compiler.close() : null)
     },
     async render (src, dest, options = {}) {
+      src = /\.js$/.test(src) ? src : path.join(src, '*.js')
+
+      const pages = match.sync(abs(src))
+
+      if (!pages || !pages.length) return Promise.resolve()
+
       return rolaCompiler({
-        in: /\.js$/.test(src) ? src : path.join(src, '*.js'),
+        in: src,
         out: {
           path: tmp,
           libraryTarget: 'commonjs2'
@@ -118,6 +124,10 @@ module.exports = function rolaStatic ({
 
       function createCompiler () {
         const pages = match.sync(abs(src))
+
+        console.log('pages', pages)
+
+        if (!pages || !pages.length) return
 
         compiler = rolaCompiler(pages.map(page => ({
           in: page,
