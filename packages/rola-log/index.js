@@ -126,7 +126,7 @@ function logger (opts) {
       .join('\n')
 
     output(process.env.DEBUG ? (
-      JSON.stringify(state, null, '  ')
+      state
     ) : (
       str
     ))
