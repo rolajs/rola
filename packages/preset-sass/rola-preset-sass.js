@@ -3,6 +3,8 @@ const ExtractCSS = require('mini-css-extract-plugin')
 module.exports = (options = {}) => {
   return {
     createConfig ({ config, context }) {
+      if (context.server) return
+
       config.module.rules.push({
         test: /\.(sa|sc)ss$/,
         exclude: /node_modules/,
