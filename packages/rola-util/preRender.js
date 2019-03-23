@@ -1,5 +1,5 @@
 module.exports = function preRender ({ context, plugins }) {
-  const handlers = plugins.filter(p => p.preRender).map(p => p.preRender)
+  const handlers = plugins.filter(p => p && p.preRender).map(p => p.preRender)
 
   return handlers.reduce((data, handler) => {
     try {

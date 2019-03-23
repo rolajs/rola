@@ -1,5 +1,5 @@
 module.exports = function postRender ({ context, plugins }) {
-  const handlers = plugins.filter(p => p.postRender).map(p => p.postRender)
+  const handlers = plugins.filter(p => p && p.postRender).map(p => p.postRender)
 
   return handlers.reduce((data, handler) => {
     try {

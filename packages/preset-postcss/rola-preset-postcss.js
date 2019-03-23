@@ -2,7 +2,9 @@ const ExtractCSS = require('mini-css-extract-plugin')
 
 module.exports = (options = {}) => {
   return {
-    createConfig ({ config, context }) {
+    createConfig ({ config, context }) { 
+      if (context.server) return
+
       config.module.rules.push({
         test: /\.css$/,
         exclude: /node_modules/,
@@ -32,8 +34,6 @@ module.exports = (options = {}) => {
           filename: options.filename || '[name].css'
         })
       )
-
-      return config
     }
   }
 }

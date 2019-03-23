@@ -5,7 +5,7 @@ const defaultHead = [
 const defaultBody = []
 
 module.exports = function createDocument ({ context, plugins }) {
-  const handlers = plugins.filter(p => p.createDocument).map(p => p.createDocument)
+  const handlers = plugins.filter(p => p && p.createDocument).map(p => p.createDocument)
 
   const head = new Map()
   const body = new Map()

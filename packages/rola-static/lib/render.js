@@ -73,7 +73,7 @@ module.exports = async function render (pages, dest, options) {
           view = createRoot({
             root: view,
             context: clone(context),
-            plugins: options.plugins,
+            plugins: options.plugins
           })
 
           /**

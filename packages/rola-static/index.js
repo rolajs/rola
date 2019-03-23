@@ -135,6 +135,9 @@ module.exports = function rolaStatic ({
         compiler.on('error', e => {
           emit('error', e)
         })
+        compiler.on('warn', e => {
+          emit('warn', e)
+        })
 
         compiler.on('stats', stats => {
           if (restarting) return

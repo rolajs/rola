@@ -119,6 +119,7 @@ prog
 
     let allstats = []
 
+    // TODO break this out so that compiler can emit errors
     ;(configs.length ? rolaCompiler(configs).build() : Promise.resolve(null))
       .then(async stats => {
         stats.map(_stats => {
@@ -189,6 +190,12 @@ prog
         }))
       })
 
+      compiler.on('warn', e => {
+        log(state => ({
+          warn: state.warn.concat(e)
+        }))
+      })
+
       compiler.on('stats', stats => {
         stats.map(_stats => {
           const isServer = _stats.assets.reduce((bool, asset) => {
@@ -205,9 +212,9 @@ prog
 
         log({
           actions: [],
-          error: [],
-          warn: [],
-          log: [],
+          // error: [],
+          // warn: [],
+          // log: [],
           stats: allstats
         })
 

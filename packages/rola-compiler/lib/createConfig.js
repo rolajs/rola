@@ -54,6 +54,7 @@ const baseConfig = {
 }
 
 function createConfig (conf, watch) {
+  const server = typeof conf.in === 'string' ? /server/.test(conf.in) : false
   const wc = clone(baseConfig)
 
   wc.entry = conf.in
@@ -104,7 +105,11 @@ function createConfig (conf, watch) {
     .filter(p => p.createConfig)
     .map(p => p.createConfig({
       config: wc,
-      context: { watch }
+      context: {
+        watch,
+        server,
+        client: !server
+      }
     }))
 
   return [

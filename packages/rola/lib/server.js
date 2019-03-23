@@ -8,7 +8,7 @@ import Hypr from './Hypr.js'
 let plugins = []
 
 try {
-  plugins = require('@/rola.plugins.js')
+  plugins = require('@/rola.plugins.js').default
 } catch (e) {}
 
 const doc = require('@rola/util/document.js')
