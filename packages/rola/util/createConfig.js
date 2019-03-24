@@ -9,9 +9,9 @@ module.exports = function createConfig ({ entry, watch, env, alias, banner, pres
   return {
     in: entry,
     out: isNode ? {
-      path: path.join(cwd, 'static'),
+      path: path.join(cwd, 'build'),
       libraryTarget: 'commonjs2'
-    } : path.join(cwd, 'static'),
+    } : path.join(cwd, 'build'),
     env: env || {},
     alias: alias || {},
     presets: [].concat(presets || []).concat([

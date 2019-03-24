@@ -9,9 +9,7 @@ function req (file) {
   try {
     mod = require(file)
     mod = mod.default || mod
-  } catch (e) {
-    console.error(e)
-  }
+  } catch (e) {}
 
   return mod
 }
@@ -38,7 +36,7 @@ module.exports = function createServer ({ file, port }) {
       this.server = http.createServer(
         require('connect')()
           .use(require('compression')())
-          .use(require('serve-static')(path.join(cwd, 'static')))
+          .use(require('serve-static')(path.join(cwd, 'build')))
           .use((req, res, next) => {
             if (!this.app) return next()
             this.app(req, res, next)

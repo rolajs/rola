@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default [
-  {
+  // {
     // createRoot ({ root }) {
     //   return props => <div id='foo'>{root}</div>
     // },
@@ -20,5 +20,5 @@ export default [
     //     style: `<link rel='stylesheet' />`
     //   }
     // }
-  }
+  // }
 ]

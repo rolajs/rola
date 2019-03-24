@@ -27,7 +27,7 @@ const createConfig = require('./util/createConfig.js')
 /**
  * compiled components
  */
-const App = require('./dist/App.js')
+const App = require('./dist/App.js').default
 
 const PORT = process.env.PORT || 3000
 const cwd = process.cwd()
@@ -50,7 +50,7 @@ let server
 function serve () {
   if (!server) {
     server = createServer({
-      file: path.join(cwd, '/static/server.js'),
+      file: path.join(cwd, '/build/server.js'),
       port: PORT
     })
 
@@ -142,7 +142,7 @@ prog
 
         if (serverEntry) serve()
 
-        await createGenerator(config, plugins).render('/routes', '/static')
+        await createGenerator(config, plugins).render('/static', '/build')
 
         exit()
       })
@@ -223,7 +223,7 @@ prog
         serve()
 
         if (!compiled) {
-          createGenerator(config, plugins).watch('/routes', '/static')
+          createGenerator(config, plugins).watch('/static', '/build')
 
           compiled = true
         }
@@ -232,7 +232,7 @@ prog
       compiler.watch()
     } else {
       serve()
-      createGenerator(config, plugins).watch('/routes', '/static')
+      createGenerator(config, plugins).watch('/static', '/build')
     }
   })
 

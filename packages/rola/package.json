@@ -12,8 +12,8 @@
     "rola": "./cli.js"
   },
   "scripts": {
-    "build": "bili index.js lib/App.js --format cjs --out-dir dist --minify",
-    "watch": "bili index.js lib/App.js --format cjs --out-dir dist --watch"
+    "build": "bili index.js lib/App.js lib/matcher.js lib/Router.js --format cjs --out-dir dist --minify",
+    "watch": "bili index.js lib/App.js lib/matcher.js lib/Router.js --format cjs --out-dir dist --watch"
   },
   "repository": {
     "type": "git",
