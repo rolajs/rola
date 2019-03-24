@@ -9,11 +9,11 @@ const { emit } = require('./emitter.js')
 module.exports = function loadRoutes (routes) {
   return routes.map(route => {
     return () => {
-      return Promise.resolve(route.config ? route.config() : {})
-        .then(config => {
+      return Promise.resolve(route.load ? route.load() : {})
+        .then(load => {
           return [
             route.__filename,
-            [].concat(config)
+            [].concat(load)
               .map(conf => merge(route, conf))
               .filter(conf => conf.pathname && conf.view) // invalid routes
               .map(({ pathname, ...rest })=> {
