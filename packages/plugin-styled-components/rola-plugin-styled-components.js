@@ -1,3 +1,4 @@
+/** @jsx React.createElement */
 import React from 'react'
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 
@@ -13,7 +14,7 @@ export default (options = {}) => {
 
       sheets.set(context.pathname, sheet)
 
-      return props => <StyleSheetManager sheet={sheet.instance}><div id='taco'><Root {...props} /></div></StyleSheetManager>
+      return props => <StyleSheetManager sheet={sheet.instance}><Root {...props} /></StyleSheetManager>
     },
     postRender ({ context }) {
       const sheet = sheets.get(context.pathname)

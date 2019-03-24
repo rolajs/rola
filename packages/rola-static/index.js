@@ -150,6 +150,8 @@ module.exports = function rolaStatic ({
         compiler.on('stats', stats => {
           if (restarting) return
 
+          // TODO don't render if there are errors here
+
           const pages = getCompiledFiles(stats)
 
           render(

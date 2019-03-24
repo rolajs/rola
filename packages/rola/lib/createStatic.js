@@ -53,7 +53,7 @@ export default function createStatic (view) {
 
     context = Object.assign(clone(context), postRenderData)
 
-    console.log(JSON.stringify(context))
+    // console.log(JSON.stringify(context))
 
     /**
      * create tags with new context
