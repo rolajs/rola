@@ -24,11 +24,6 @@ const pkg = require('./package.json')
 const createServer = require('./util/createServer.js')
 const createConfig = require('./util/createConfig.js')
 
-/**
- * compiled components
- */
-const App = require('./dist/App.js').default
-
 const PORT = process.env.PORT || 3000
 const cwd = process.cwd()
 const prog = require('commander')

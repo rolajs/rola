@@ -1,4 +1,5 @@
 import React from 'react'
+import { createStatic, withState } from 'rola'
 import App from '@/components/App.js'
 
 export const pathname = '/about'
@@ -14,10 +15,16 @@ export function config (state, req) {
   }
 }
 
-export function view ({ pathname, state }) {
-  return (
-    <App>
-      <h1>{state.title}</h1>
-    </App>
+export const view = createStatic(
+  withState(state => ({
+    foo: true
+  }))(
+    function view ({ pathname, state, foo }) {
+      return (
+        <App>
+          <h1>{state.title}</h1>
+        </App>
+      )
+    }
   )
-}
+)

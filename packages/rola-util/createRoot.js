@@ -4,12 +4,16 @@ module.exports = function createRoot ({ root, context, plugins }) {
   return handlers.reduce((view, handler) => {
     try {
       view = handler({
-        root: root(context),
+        root: view,
         context
       })
     } catch (e) {
       console.error(`createRoot failed`)
       console.error(e)
+    }
+
+    if (typeof view !== 'function') {
+      console.error(`createRoot must return a component function`)
     }
 
     return view

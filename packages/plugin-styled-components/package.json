@@ -2,7 +2,7 @@
   "name": "@rola/plugin-styled-components",
   "version": "0.6.0",
   "description": "Compile node with rola.",
-  "main": "dist/rola-plugin-styled-components.js",
+  "main": "rola-plugin-styled-components.js",
   "source": "rola-plugin-styled-components.js",
   "scripts": {
     "build": "microbundle build -f cjs",
@@ -19,10 +19,12 @@
   },
   "homepage": "https://github.com/estrattonbailey/rola#readme",
   "gitHead": "570605c164cc377cf02c6819a29398857ca7bb7c",
-  "peerDependencies": {
-    "babel-plugin-styled-components": "^1.10.0",
+  "dependencies": {
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "styled-components": "^4.1.3"
+  },
+  "devDependencies": {
+    "microbundle": "^0.11.0"
   }
 }

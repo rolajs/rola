@@ -3,8 +3,8 @@ import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 
 const sheets = new Map()
 
-export default (options = {}) => {
-  return {
+export default [
+  {
     createDocument ({ context }) {
       head: context.style
     },
@@ -28,4 +28,4 @@ export default (options = {}) => {
       return { style }
     }
   }
-}
+]

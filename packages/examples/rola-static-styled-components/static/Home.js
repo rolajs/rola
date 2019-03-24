@@ -1,4 +1,5 @@
 import React from 'react'
+import { createStatic } from 'rola'
 import App from '@/components/App.js'
 import styled from 'styled-components'
 
@@ -19,10 +20,12 @@ const H1 = styled.h1`
   color: blue;
 `
 
-export function view ({ pathname, state }) {
-  return (
-    <App state={state}>
-      <H1>{state.title}</H1>
-    </App>
-  )
-}
+export const view = createStatic(
+  function view ({ pathname, state }) {
+    return (
+      <App>
+        <H1>{state.title}</H1>
+      </App>
+    )
+  }
+)

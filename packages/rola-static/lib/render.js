@@ -63,59 +63,14 @@ module.exports = async function render (pages, dest, options) {
         currentpaths.push(route.pathname)
 
         try {
-          let view = route.view
-
-          let context = {
+          const context = {
             state: route.state,
             pathname: route.pathname
           }
 
-          view = createRoot({
-            root: view,
-            context: clone(context),
-            plugins: options.plugins
-          })
-
-          /**
-           * preRender hook
-           */
-          const preRenderData = preRender({
-            context: clone(context),
-            plugins: options.plugins
-          })
-
-          context = Object.assign(clone(context), preRenderData)
-
-          /**
-           * render
-           */
-          const renderedView = renderToString(
-            view(
-              clone(context)
-            )
-          )
-
-          /**
-           * postRender hook
-           */
-          const postRenderData = postRender({
-            context: clone(context),
-            plugins: options.plugins
-          })
-
-          context = Object.assign(clone(context), postRenderData)
-
-          /**
-           * create tags with new context
-           */
-          const tags = createDocument({
-            context: clone(context),
-            plugins: options.plugins
-          })
-
           await fs.outputFile(
             path.join(dir, 'index.html'),
-            doc({ ...tags, context, view: renderedView }),
+            route.view(context),
             e => {
               if (e) {
                 emit('error', e)

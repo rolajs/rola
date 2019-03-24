@@ -1,18 +1,17 @@
 {
-  "name": "rola-static-hello-world",
+  "name": "rola-static-styled-components",
   "private": true,
   "scripts": {
-    "start": "rola-static watch routes/ build/",
-    "build": "rola-static render routes/ build/"
+    "start": "rola watch",
+    "build": "rola build"
   },
   "author": "estrattonbailey",
   "dependencies": {
     "@rola/plugin-document": "^0.2.7",
-    "@rola/plugin-styled-components": "^0.2.9",
-    "@rola/static": "^0.2.8",
+    "@rola/plugin-styled-components": "^0.6.0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
-    "rola": "^0.2.8",
+    "rola": "^0.6.0",
     "styled-components": "^4.1.3"
   }
 }
