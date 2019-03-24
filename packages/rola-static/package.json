@@ -1,6 +1,6 @@
 {
   "name": "@rola/static",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Static page generation for rola.",
   "author": "estrattonbailey",
   "license": "MIT",
@@ -9,11 +9,11 @@
     "rola-static": "cli.js"
   },
   "dependencies": {
-    "@rola/compiler": "^0.6.0",
+    "@rola/compiler": "^0.6.1",
     "@rola/log": "^0.6.0",
     "@rola/preset-node": "^0.6.0",
     "@rola/preset-postcss": "^0.6.0",
-    "@rola/util": "^0.6.0",
+    "@rola/util": "^0.6.1",
     "ansi-colors": "^3.2.3",
     "async-exit-hook": "^2.0.1",
     "chokidar": "^1.7.0",

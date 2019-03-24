@@ -1,6 +1,6 @@
 {
   "name": "@rola/plugin-styled-components",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Compile node with rola.",
   "main": "rola-plugin-styled-components.js",
   "source": "rola-plugin-styled-components.js",
