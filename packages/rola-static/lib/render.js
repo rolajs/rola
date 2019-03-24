@@ -29,23 +29,7 @@ function clone (obj) {
  * and render the routes when they're ready to go
  */
 module.exports = async function render (pages, dest, options) {
-  const routes = await getRoutes(pages).then(routes => {
-    if (!options.filter) return routes
-
-    const filtered = options.filter(routes)
-
-    routes
-      .filter(route => filtered.indexOf(route) < 0)
-      .map(route => {
-        const filename = path.basename(route.__filename, '.js')
-
-        ledger.removeFile(filename, { cwd: dest })
-
-        // emit('rendered', ledger.getActiveRoutes())
-      })
-
-    return filtered
-  })
+  const routes = await getRoutes(pages)
 
   return Promise.all(
     loadRoutes(routes).map(async resolver => {
