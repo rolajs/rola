@@ -12,15 +12,11 @@ const createRoot = require('@rola/util/createRoot.js')
 const postRender = require('@rola/util/postRender.js')
 const preRender = require('@rola/util/preRender.js')
 
-function clone (obj) {
-  return Object.assign({}, obj)
-}
-
 export default function createStatic (view) {
   return function StaticComponent (context) {
     const View = createRoot({
       root: view,
-      context: clone(context),
+      context: { ...context },
       plugins
     })
 
@@ -28,18 +24,16 @@ export default function createStatic (view) {
      * preRender hook
      */
     const preRenderData = preRender({
-      context: clone(context),
+      context: { ...context },
       plugins
     })
-
-    context = Object.assign(clone(context), preRenderData)
 
     /**
      * render
      */
     const renderedView = renderToString(
       <Hypr store={createStore(context.state)} router={matcher([])} location={context.pathname}>
-        <View {...context} />
+        <View {...context} {...preRenderData} />
       </Hypr>
     )
 
@@ -47,20 +41,18 @@ export default function createStatic (view) {
      * postRender hook
      */
     const postRenderData = postRender({
-      context: clone(context),
+      context: { ...context },
       plugins: plugins
     })
-
-    context = Object.assign(clone(context), postRenderData)
-
-    // console.log(JSON.stringify(context))
 
     /**
      * create tags with new context
      */
     const tags = createDocument({
-      context: clone(context),
-      plugins: plugins
+      context: { ...context },
+      plugins,
+      ...preRenderData,
+      ...postRenderData
     })
 
     return doc({ ...tags, context, view: renderedView })

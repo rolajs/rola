@@ -20,6 +20,7 @@ function clone (obj) {
   return Object.assign({}, obj)
 }
 
+// TODO root reaction and view reference needs to be addressed
 export default function client (routes, initialState = {}, options = {}) {
   const location = window.location.href.replace(window.location.origin, '')
 

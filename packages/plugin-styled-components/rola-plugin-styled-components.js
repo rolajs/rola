@@ -6,8 +6,10 @@ const sheets = new Map()
 
 export default (options = {}) => {
   return {
-    createDocument ({ context }) {
-      head: context.style
+    createDocument ({ context, style }) {
+      return {
+        head: style
+      }
     },
     createRoot ({ root: Root, context }) {
       const sheet = new ServerStyleSheet()

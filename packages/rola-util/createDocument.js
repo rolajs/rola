@@ -4,13 +4,13 @@ const defaultHead = [
 
 const defaultBody = []
 
-module.exports = function createDocument ({ context, plugins }) {
+module.exports = function createDocument ({ plugins, context, ...customProps }) {
   const handlers = plugins.filter(p => p && p.createDocument).map(p => p.createDocument)
 
   const head = new Map()
   const body = new Map()
 
-  const processed = handlers.map(handler => handler({ context }))
+  const processed = handlers.map(handler => handler({ context, ...customProps }))
 
   processed.forEach((data = {}) => {
     defaultHead.concat(data.head || []).forEach(line => {

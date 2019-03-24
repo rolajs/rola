@@ -17,10 +17,6 @@ const createRoot = require('@rola/util/createRoot.js')
 const postRender = require('@rola/util/postRender.js')
 const preRender = require('@rola/util/preRender.js')
 
-function clone (obj) {
-  return Object.assign({}, obj)
-}
-
 function redir (res, Location, Referer, status = 302) {
   res.writeHead(status, { Location, Referer })
   res.end()
@@ -94,9 +90,9 @@ export default function server (routes, initialState = {}, options = {}) {
           pathname: route.pathname || pathname
         }
 
-        view = createRoot({
+        const View = createRoot({
           root: view,
-          context: clone(context),
+          context: { ...context },
           plugins
         })
 
@@ -104,18 +100,16 @@ export default function server (routes, initialState = {}, options = {}) {
          * preRender hook
          */
         const preRenderData = preRender({
-          context: clone(context),
+          context: { ...context },
           plugins
         })
-
-        context = Object.assign(clone(context), preRenderData)
 
         /**
          * render
          */
         const renderedView = ReactDOMServer.renderToString(
           <Hypr store={store} router={router} location={req.url}>
-            {view(context)}
+            <View {...context} {...preRenderData} />
           </Hypr>
         )
 
@@ -123,18 +117,18 @@ export default function server (routes, initialState = {}, options = {}) {
          * postRender hook
          */
         const postRenderData = postRender({
-          context: clone(context),
+          context: { ...context },
           plugins
         })
-
-        context = Object.assign(clone(context), postRenderData)
 
         /**
          * create tags with new context
          */
         const tags = createDocument({
           context,
-          plugins
+          plugins,
+          ...preRenderData,
+          ...postRenderData
         })
 
         /**
