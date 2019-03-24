@@ -1,14 +1,10 @@
 import React from 'react'
-import { withState } from 'rola'
-import App from '@/components/App.js'
+import { createStatic } from 'rola'
+import * as Home from '@/routes/Home.js'
 
-export const pathname = '/'
+export const pathname = Home.pathname
 
 export function config () {
-  return load()
-}
-
-export function load (state, req) {
   return {
     state: {
       title: 'home - hypr - the react toolkit',
@@ -19,16 +15,4 @@ export function load (state, req) {
   }
 }
 
-export function view ({ pathname, state }) {
-  return (
-    <App>
-      <h1>{state.title}</h1>
-    </App>
-  )
-}
-
-const Stateful = withState(state => state)(function view ({ pathname, state }) {
-  return (
-    <h1>stateful</h1>
-  )
-})
+export const view = createStatic(Home.view)

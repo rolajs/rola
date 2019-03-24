@@ -1,4 +1,5 @@
 import React from 'react'
+import { withState } from 'rola'
 import App from '@/components/App.js'
 
 export const pathname = '/'
@@ -14,10 +15,12 @@ export function load (state, req) {
   }
 }
 
-export function view ({ pathname, state }) {
-  return (
-    <App>
-      <h1>{state.title}</h1>
-    </App>
-  )
-}
+export const view = withState(state => state)(
+  function view ({ pathname, state }) {
+    return (
+      <App>
+        <h1>{state.title}</h1>
+      </App>
+    )
+  }
+)

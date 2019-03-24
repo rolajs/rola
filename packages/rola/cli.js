@@ -69,20 +69,16 @@ function createGenerator (config, plugins) {
     env: config.env,
     alias: config.alias,
     presets: config.presets,
-    plugins: [
-      {
-        createRoot ({ root, context }) {
-          return props => React.createElement(App, context, root)
-        }
-      }
-    ].concat(plugins),
-    filter (routes) {
-      return routes.filter(r => !!r.config)
-    }
+    plugins
   })
 
   generator.on('rendered', pages => {
     log({ static: pages })
+  })
+  generator.on('warn', e => {
+    log(state => ({
+      warn: state.warn.concat(e)
+    }))
   })
   generator.on('error', e => {
     log(state => ({

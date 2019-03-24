@@ -1,9 +1,9 @@
-import * as home from '@/routes/home.js'
-import * as about from '@/routes/about.js'
-import * as notfound from '@/routes/404.js'
+import * as Home from '@/routes/Home.js'
+import * as About from '@/routes/About.js'
+import * as Notfound from '@/routes/404.js'
 
 export default [
-  home,
-  about,
-  notfound
+  Home,
+  About,
+  Notfound
 ]
