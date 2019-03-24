@@ -14,13 +14,12 @@ try {
   plugins = require('@/rola.plugins.js').default
 } catch (e) {}
 
-const createRoot = require('@rola/util/createRoot.js')
+const createClientRoot = require('@rola/util/createClientRoot.js')
 
 function clone (obj) {
   return Object.assign({}, obj)
 }
 
-// TODO root reaction and view reference needs to be addressed
 export default function client (routes, initialState = {}, options = {}) {
   const location = window.location.href.replace(window.location.origin, '')
 
@@ -47,9 +46,9 @@ export default function client (routes, initialState = {}, options = {}) {
     pathname: window.location.pathname
   }
 
-  view = createRoot({
+  const View = createClientRoot({
     root: view,
-    context: clone(context),
+    context: { ...context },
     plugins
   })
 
@@ -80,7 +79,7 @@ export default function client (routes, initialState = {}, options = {}) {
 
               store.hydrate(state)
 
-              Promise.resolve(options.resolve ? options.resolve(store.state) : null)
+              Promise.resolve(options.resolve ? options.resolve({ state: store.state, pathname: route.pathname }) : null)
                 .then(() => {
                   document.title = meta.title || document.title
 
@@ -91,23 +90,25 @@ export default function client (routes, initialState = {}, options = {}) {
                     pathname: route.pathname
                   }
 
-                  view = createRoot({
+                  const View = createClientRoot({
                     root: view,
-                    context: clone(context),
+                    context: { ...context },
                     plugins
                   })
 
-                  done(view(context))
+                  done(<View {...context} />)
                 })
                 .catch(e => {
-                  console.error('options.resolve failed', e)
+                  console.error('options.resolve failed')
+                  console.error(e)
                 })
             })
             .catch(e => {
-              console.error('route.load failed', e.message || e)
+              console.error('route.load failed')
+              console.error(e)
             })
         }}>
-          {view(context)}
+          <View {...context} />
       </Hypr>
     ), root)
   }

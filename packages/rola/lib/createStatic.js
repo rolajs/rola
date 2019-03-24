@@ -8,22 +8,22 @@ import plugins from '@/rola.plugins.js'
 
 const doc = require('@rola/util/document.js')
 const createDocument = require('@rola/util/createDocument.js')
-const createRoot = require('@rola/util/createRoot.js')
-const postRender = require('@rola/util/postRender.js')
-const preRender = require('@rola/util/preRender.js')
+const createServerRoot = require('@rola/util/createServerRoot.js')
+const postServerRender = require('@rola/util/postServerRender.js')
+const preServerRender = require('@rola/util/preServerRender.js')
 
 export default function createStatic (view) {
   return function StaticComponent (context) {
-    const View = createRoot({
+    const View = createServerRoot({
       root: view,
       context: { ...context },
       plugins
     })
 
     /**
-     * preRender hook
+     * preServerRender hook
      */
-    const preRenderData = preRender({
+    const preRenderData = preServerRender({
       context: { ...context },
       plugins
     })
@@ -38,9 +38,9 @@ export default function createStatic (view) {
     )
 
     /**
-     * postRender hook
+     * postServerRender hook
      */
-    const postRenderData = postRender({
+    const postRenderData = postServerRender({
       context: { ...context },
       plugins: plugins
     })

@@ -1,31 +1,11 @@
 import React from 'react'
 import { createStatic } from 'rola'
-import App from '@/components/App.js'
-import styled from 'styled-components'
+import * as Home from '@/routes/Home.js'
 
-export const pathname = '/'
+export const pathname = Home.pathname
 
 export function config (state, req) {
-  return {
-    state: {
-      title: 'home - hypr - the react toolkit',
-      meta: {
-        title: 'home - hypr - the react toolkit',
-      },
-    }
-  }
+  return Home.load()
 }
 
-const H1 = styled.h1`
-  color: blue;
-`
-
-export const view = createStatic(
-  function view ({ pathname, state }) {
-    return (
-      <App>
-        <H1>{state.title}</H1>
-      </App>
-    )
-  }
-)
+export const view = createStatic(Home.view)

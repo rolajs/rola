@@ -12,9 +12,10 @@ const document = require('./document.js')
  * plugin API utils
  */
 const createDocument = require('./createDocument.js')
-const createRoot = require('./createRoot.js')
-const postRender = require('./postRender.js')
-const preRender = require('./preRender.js')
+const createClientRoot = require('./createClientRoot.js')
+const createServerRoot = require('./createServerRoot.js')
+const postServerRender = require('./postServerRender.js')
+const preServerRender = require('./preServerRender.js')
 
 module.exports = {
   getModule,
@@ -22,7 +23,8 @@ module.exports = {
   document,
 
   createDocument,
-  createRoot,
-  postRender,
-  preRender,
+  createClientRoot,
+  createServerRoot,
+  postServerRender,
+  preServerRender,
 }

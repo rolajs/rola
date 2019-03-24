@@ -11,14 +11,14 @@ export default (options = {}) => {
         head: style
       }
     },
-    createRoot ({ root: Root, context }) {
+    createServerRoot ({ root: Root, context }) {
       const sheet = new ServerStyleSheet()
 
       sheets.set(context.pathname, sheet)
 
       return props => <StyleSheetManager sheet={sheet.instance}><Root {...props} /></StyleSheetManager>
     },
-    postRender ({ context }) {
+    postServerRender ({ context }) {
       const sheet = sheets.get(context.pathname)
 
       if (!sheet) return {}
