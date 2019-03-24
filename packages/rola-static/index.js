@@ -125,8 +125,6 @@ module.exports = function rolaStatic ({
       function createCompiler () {
         const pages = match.sync(abs(src))
 
-        console.log('pages', pages)
-
         if (!pages || !pages.length) return
 
         compiler = rolaCompiler(pages.map(page => ({

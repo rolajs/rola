@@ -86,8 +86,6 @@ module.exports = async function render (pages, dest, options) {
 
           context = Object.assign(clone(context), preRenderData)
 
-          console.log('view', view)
-
           /**
            * render
            */
