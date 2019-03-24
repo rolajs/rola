@@ -11,210 +11,47 @@ npm i rola -g
 
 <br />
 
-## features
-- static page generation
-- server side rendering
-- client-side application bundle
-- css compilation w/ PostCSS
-- routing
-- state management
-- builds to lambda function
-- "hello world" 50kb gzipped
-- pick and choose build type
-  - client + static
-  - static + SSR
-  - SSR + API
-  - SSR + client
-  - static
-  - etc
+`rola` is a framework for building production React sites. Easily build static
+pages, a client bundle, server-side rendering and a custom API, all within the
+same project structure. It's simple to opt-in or out of what you don't need, and
+the codebase is simple enough that anyone can contribute plugins and features.
 
-## beta roadmap
-- production server for non lambda envs
-- prefetch route API
-- plugins
-  - think like better css-in-js support, sass, babel config, etc
-- named 404.html support
+## Features
+- easy opt-in builds
+  - ⚡️ static page generation
+  - 🤓 server side rendering
+  - 🏖 client-side application bundle
+- simple built-in routing
+- zero learning curve state management
+- simple plugin API
 
-## usage
+## Install
 ```
-rola build
-```
-```
-rola watch
+npm i rola --save
 ```
 
-## setup
+## Usage
+Coming soooooon.
 
-**routes/Home.js**
-```javascript
-import React from 'react'
+## Presets
+- [@rola/preset-postcss](https://github.com/estrattonbailey/rola/tree/master/packages/preset-postcss)
+- [@rola/preset-sass](https://github.com/estrattonbailey/rola/tree/master/packages/preset-sass)
 
-export const pathname = '/'
-export function view () {
-  return <h1>Hello World</h1>
-}
-```
+> Have a request? Open an
+> [issue](https://github.com/estrattonbailey/rola/issues)!
 
-**routes.js**
-```javascript
-import React from 'react'
-import Home from '@routes/Home.js'
+## Plugins
+- [@rola/plugin-styled-components](https://github.com/estrattonbailey/rola/tree/master/packages/plugin-styled-components)
+- [@rola/plugin-document](https://github.com/estrattonbailey/rola/tree/master/packages/plugin-document)
 
-export default [ Home ]
-```
+> Have a request? Open an
+> [issue](https://github.com/estrattonbailey/rola/issues)!
 
-**client.js**
-```javascript
-import React from 'react'
-import { client } from 'rola'
-import routes from '@routes.js'
+## Motivation
+More flexible, less config, API with high "guessability".
 
-client(routes, { title: 'hello world' })(document.getElementById('root'))
-```
+## Contributing
+Oh please do! Let's collab :)
 
-**server.js**
-```javascript
-import React from 'react'
-import { server } from 'rola'
-import routes from '@routes.js'
-
-export default server(routes, { title: 'hello world' })
-```
-
-## static
-To render a route statically, define a `config()` for [biti](https://github.com/estrattonbailey/biti).
-
-**routes/Home.js**
-```javascript
-import React from 'react'
-
-export const pathname = '/'
-export function config () {
-  return {
-    state: { title: 'homepage' }
-  }
-}
-export function view ({ state }) {
-  return <h1>{state.title}</h1>
-}
-```
-
-## data loading
-A `load()` export will be resolved on both the server and client before
-rendering the view. The returned object should match
-[biti](https://github.com/estrattonbailey/biti) API as well. Any props on the
-`state` object returned will be merged with application state.
-
-During a static render, `load` is not called.
-
-**routes/Home.js**
-```javascript
-import React from 'react'
-
-export const pathname = '/'
-export function config () {
-  return load()
-}
-export function load (state, req) {
-  return {
-    state: { title: 'loaded title' }
-  }
-}
-export function view ({ state }) {
-  return <h1>{state.title}</h1>
-}
-```
-
-## routing
-`rola` comes with routing built in. Use the `Link` export to navigate throughout
-your app.
-
-**routes/Home.js**
-```javascript
-import React from 'react'
-import { Link } from 'rola'
-
-export const pathname = '/'
-export function config () {
-  return load()
-}
-export function load (state, req) {
-  return {
-    state: { title: 'loaded title' }
-  }
-}
-export function view ({ state }) {
-  return (
-    <>
-      <h1>{state.title}</h1>
-
-      <nav>
-        <Link href='/'>home</Link>
-        <Link href='/about'>about</Link>
-      </nav>
-    </>
-  )
-}
-```
-
-## state
-`rola` comes with state management built in also. Use the `withState` export to
-pass state to individual components. Refer to the
-[picostate](https://github.com/estrattonbailey/picostate) docs for more info.
-
-**components/ChangeTitle.js**
-```javascript
-import React from 'react'
-import { withState } from 'rola'
-
-export default withState(state => ({
-  myTitle: state.title
-}))(
-  function ChangeTitle ({ myTitle, hydrate }) {
-    return (
-      <button onClick={() => {
-        hydrate({ title: 'new title' })()
-      }}>update title</button>
-    )
-  }
-)
-```
-**routes/Home.js**
-```javascript
-import React from 'react'
-import { Link, withState } from 'rola'
-import ChangeTitle from '@/components/ChangeTitle.js'
-
-export const pathname = '/'
-export function config () {
-  return load()
-}
-export function load (state, req) {
-  return {
-    state: { title: 'loaded title' }
-  }
-}
-export function view ({ state }) {
-  return (
-    <>
-      <h1>{state.myTitle}</h1>
-
-      <ChangeTitle />
-
-      <nav>
-        <Link href='/'>home</Link>
-        <Link href='/about'>about</Link>
-      </nav>
-    </>
-  )
-}
-```
-
-## motivation
-This will be a blog post, but think *[Next](https://nextjs.org/) plus [Gatsby](https://www.gatsbyjs.org/).*
-
-## contributing
-Wowee would I welcome some help :)
-
-## license
+## License
 MIT License © [Eric Bailey](https://estrattonbailey.com)
