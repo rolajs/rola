@@ -32,13 +32,20 @@ module.exports = confs => {
       closeServer()
       return Promise.resolve(compiler ? new Promise(r => compiler.close(r)) : null)
     },
-    build () {
+    build (options) {
       emit('build')
 
       const configs = confs
         .map(conf => createConfig(conf, false))
         .map(([ conf, wc ]) => {
           wc.mode = 'production'
+
+          if (options.minify === false) {
+            wc.optimizations = {
+              ...wc.optimizations,
+              minimize: false
+            }
+          }
 
           process.env.DEBUG && console.log(JSON.stringify(wc, null, '  '))
 
@@ -66,7 +73,7 @@ module.exports = confs => {
         })
       })
     },
-    watch () {
+    watch (options = {}) {
       emit('watch')
 
       let port = 4000
@@ -102,7 +109,7 @@ module.exports = confs => {
           return wc
         })
 
-      compiler = webpack(configs).watch({}, (e, stats) => {
+      compiler = webpack(configs).watch(options, (e, stats) => {
         if (e) return emit('error', e)
 
         const formatted = formatStats(stats)

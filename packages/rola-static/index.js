@@ -71,7 +71,9 @@ module.exports = function rolaStatic ({
           node()
         ].concat(presets || [])
       })
-        .build()
+        .build({
+          minify: false
+        })
         .then(stats => {
           const pages = getCompiledFiles(stats)
 
@@ -155,8 +157,6 @@ module.exports = function rolaStatic ({
           }, false)
 
           if (restarting || invalid) return
-
-          // TODO don't render if there are errors here
 
           const pages = getCompiledFiles(stats)
 

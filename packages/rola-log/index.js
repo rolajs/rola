@@ -232,6 +232,17 @@ const log = logger({
 if (!process.env.DEBUG) {
   ;['log', 'warn', 'error'].map(type => {
     console[type] = (...args) => {
+      args = args.map(arg => {
+        switch (typeof arg) {
+          case 'object':
+            return JSON.stringify(arg)
+          case 'function':
+            return '[Function' + (arg.name ? ': ' + arg.name : '') + ']'
+          default:
+            return arg
+        }
+      })
+
       log(state => ({
         [type]: state[type].concat(args)
       }))
