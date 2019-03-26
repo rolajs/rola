@@ -201,14 +201,6 @@ prog
           }
         })
 
-        log({
-          actions: [],
-          // error: [],
-          // warn: [],
-          // log: [],
-          stats: allstats
-        })
-
         server && server.update()
 
         serve()
@@ -218,6 +210,16 @@ prog
 
           compiled = true
         }
+
+        /**
+         * reset logs
+         */
+        log({
+          error: [],
+          warn: [],
+          log: [],
+          stats: allstats
+        })
       })
 
       compiler.watch()

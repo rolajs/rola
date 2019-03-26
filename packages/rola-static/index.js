@@ -149,7 +149,12 @@ module.exports = function rolaStatic ({
         })
 
         compiler.on('stats', stats => {
-          if (restarting) return
+          const invalid = stats.reduce((bool, stat) => {
+            if (stat.errors && stat.errors.length) bool = true
+            return bool
+          }, false)
+
+          if (restarting || invalid) return
 
           // TODO don't render if there are errors here
 
