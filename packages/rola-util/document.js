@@ -5,6 +5,8 @@ module.exports = function html ({ head, body, view, context }) {
   const { state } = context
   const meta = state.meta || {}
 
+  const version = `v${process.env.PROJECT_VERSION}`
+
   return `
     <!DOCTYPE html>
     <html>
@@ -12,7 +14,7 @@ module.exports = function html ({ head, body, view, context }) {
         <title>${meta.title || 'rola'}</title>
         ${head.join('')}
         ${tags(meta)}
-        <link rel='stylesheet' href='/client.css' />
+        <link rel='stylesheet' href='/client.css?${version}' />
       </head>
 
       <body>
@@ -21,7 +23,7 @@ module.exports = function html ({ head, body, view, context }) {
         <script>
           window.__rola = ${stringify(context)}
         </script>
-        <script src='/client.js'></script>
+        <script src='/client.js?${version}'></script>
       </body>
     </html>
   `

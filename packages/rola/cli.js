@@ -20,14 +20,20 @@ const rolaCompiler = require('@rola/compiler')
 const rolaStatic = require('@rola/static')
 const { getModule } = require('@rola/util')
 
-const pkg = require('./package.json')
 const createServer = require('./util/createServer.js')
 const createConfig = require('./util/createConfig.js')
 
-const PORT = process.env.PORT || 3000
 const cwd = process.cwd()
+
+const pkg = require('./package.json')
+const userPkg = require(path.join(cwd, './package.json'))
+
+const PORT = process.env.PORT || 3000
 const prog = require('commander')
   .version(pkg.version)
+
+process.env.ROLA_VERSION = pkg.version
+process.env.PROJECT_VERSION = userPkg.version
 
 let clientEntry
 let serverEntry

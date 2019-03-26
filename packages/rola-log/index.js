@@ -161,7 +161,7 @@ function logger (opts) {
 
 const log = logger({
   indent: 2,
-  banner: `${c.bgBlue(` rola `)} v${pkg.version}`,
+  banner: `${c.bgBlue(` rola `)} v${process.env.ROLA_VERSION || pkg.version}`,
   log: {
     filter: filterUnique,
     format (logs) {
