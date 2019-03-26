@@ -66,6 +66,7 @@ module.exports = function rolaStatic ({
         },
         env,
         alias,
+        banner: `require('source-map-support').install({ hookRequire: true });`,
         presets: [
           node()
         ].concat(presets || [])
@@ -134,6 +135,7 @@ module.exports = function rolaStatic ({
           },
           env,
           alias,
+          banner: `require('source-map-support').install({ hookRequire: true });`,
           presets: [
             node()
           ].concat(presets || [])
