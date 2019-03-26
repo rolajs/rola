@@ -112,10 +112,6 @@ function createConfig (conf, watch) {
       }
     }))
 
-  if (wc.target === 'node') {
-    wc.devtool = 'inline-source-map'
-  }
-
   return [
     conf,
     wc

@@ -14,5 +14,9 @@
     "url": "https://github.com/estrattonbailey/rola/issues"
   },
   "homepage": "https://github.com/estrattonbailey/rola#readme",
+  "dependencies": {
+    "source-map-support": "^0.5.9",
+    "webpack": "^4.29.6"
+  },
   "gitHead": "570605c164cc377cf02c6819a29398857ca7bb7c"
 }

@@ -41,8 +41,8 @@ module.exports = confs => {
           wc.mode = 'production'
 
           if (options.minify === false) {
-            wc.optimizations = {
-              ...wc.optimizations,
+            wc.optimization = {
+              ...(wc.optimization || {}),
               minimize: false
             }
           }

@@ -34,11 +34,22 @@ let serverEntry
 
 try {
   clientEntry = require.resolve(path.join(cwd, 'client.js'))
-} catch (e) {}
+} catch (e) {
+  try {
+    fs.removeSync(path.join(cwd, 'build', 'client.js'))
+    fs.removeSync(path.join(cwd, 'build', 'client.js.map'))
+    fs.removeSync(path.join(cwd, 'build', 'client.css'))
+    fs.removeSync(path.join(cwd, 'build', 'client.css.map'))
+  } catch (e) {}
+}
 
 try {
   serverEntry = require.resolve(path.join(cwd, 'server.js'))
-} catch (e) {}
+} catch (e) {
+  try {
+    fs.removeSync(path.join(cwd, 'build', 'server.js'))
+  } catch (e) {}
+}
 
 let server
 
