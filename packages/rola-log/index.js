@@ -35,7 +35,7 @@ function formatErrors (errors) {
 
           return {
             action: fn,
-            location: file.replace(/[\(\)]/g, '').split(process.cwd()).reverse()[0]
+            location: file ? file.replace(/[\(\)]/g, '').split(process.cwd()).reverse()[0] : ''
           }
         })
         .filter(line => !/^internal\//.test(line.location))

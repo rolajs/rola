@@ -125,11 +125,23 @@ prog
       presets: config.presets
     }))
 
-    let allstats = []
+    if (configs.length) {
+      let allstats = []
+      const compiler = rolaCompiler(configs)
 
-    // TODO break this out so that compiler can emit errors
-    ;(configs.length ? rolaCompiler(configs).build() : Promise.resolve(null))
-      .then(async stats => {
+      compiler.on('error', e => {
+        log(state => ({
+          error: state.error.concat(e)
+        }))
+      })
+
+      compiler.on('warn', e => {
+        log(state => ({
+          warn: state.warn.concat(e)
+        }))
+      })
+
+      compiler.on('stats', stats => {
         stats.map(_stats => {
           const server = _stats.assets.reduce((bool, asset) => {
             if (/server/.test(asset.name)) bool = true
@@ -148,17 +160,22 @@ prog
           stats: allstats
         })
 
-        if (serverEntry) serve()
-
-        await createGenerator(config, plugins).render('/static', '/build')
-
-        exit()
+        done()
       })
-      .catch(e => {
-        log(state => ({
-          error: state.error.concat(e)
-        }))
-      })
+    } else {
+      done()
+    }
+
+    async function done () {
+      /**
+       * for api requests, if needed
+       */
+      if (serverEntry) serve()
+
+      await createGenerator(config, plugins).render('/static', '/build')
+
+      exit()
+    }
   })
 
 prog

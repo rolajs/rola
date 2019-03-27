@@ -8,7 +8,7 @@ const node = require('@rola/preset-node')
 
 const render = require('./lib/render.js')
 const ledger = require('./lib/fileLedger.js')
-const fileManager = require('./lib/fileManager.js')
+const { fileManager, createWatchedFiles } = require('./lib/fileManager.js')
 const { on, emit } = require('./lib/emitter.js')
 
 const cwd = process.cwd()
@@ -54,14 +54,14 @@ module.exports = function rolaStatic ({
     async render (src, dest, options = {}) {
       src = /\.js$/.test(src) ? src : path.join(src, '*.js')
 
-      const pages = match.sync(abs(src))
+      const pages = createWatchedFiles(abs(src))
 
       if (!pages || !pages.length) return Promise.resolve()
 
       return rolaCompiler({
         in: src,
         out: {
-          path: path.join(cwd, '.rola'),
+          path: path.join(cwd, '.rola', 'static'),
           libraryTarget: 'commonjs2'
         },
         env,
@@ -91,7 +91,7 @@ module.exports = function rolaStatic ({
     async watch (src, dest, options = {}) {
       src = /\.js$/.test(src) ? src : path.join(src, '*.js')
 
-      // await this.render(src, dest, { cleanup: false })
+      await this.render(src, dest, { cleanup: false })
 
       let compiler
       let restarting = false

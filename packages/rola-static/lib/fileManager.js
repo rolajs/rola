@@ -9,7 +9,7 @@ const ledger = require('./fileLedger.js')
 const cwd = process.cwd()
 const tmp = path.join(cwd, '.cache')
 
-function createWatchedFiles (src, dest) {
+function createWatchedFiles (src) {
   const watchedFiles = []
   const rawFiles = match.sync(src)
 
@@ -36,7 +36,7 @@ function createWatchedFiles (src, dest) {
   return watchedFiles
 }
 
-module.exports = function fileManager (src, dest) {
+function fileManager (src, dest) {
   const watcher = watch(src, { ignoreInitial: true })
     .on('all', async (ev, page) => {
       if (!/unlink|add/.test(ev)) return
@@ -49,16 +49,21 @@ module.exports = function fileManager (src, dest) {
         fs.removeSync(path.join(cwd, '.rola', 'createStatic', filename + '.js')) // wrapped
       }
 
-      emit('updateWatchedFiles', createWatchedFiles(src, dest))
+      emit('updateWatchedFiles', createWatchedFiles(src))
     })
 
   return {
     on,
     init () {
-      emit('updateWatchedFiles', createWatchedFiles(src, dest))
+      emit('updateWatchedFiles', createWatchedFiles(src))
     },
     close () {
       watcher.close()
     }
   }
+}
+
+module.exports = {
+  fileManager,
+  createWatchedFiles
 }
