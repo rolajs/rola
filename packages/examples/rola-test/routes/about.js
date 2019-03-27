@@ -3,10 +3,6 @@ import App from '@/components/App.js'
 
 export const pathname = '/about'
 
-export function config () {
-  return load()
-}
-
 export function load (state, req) {
   return {
     state: {

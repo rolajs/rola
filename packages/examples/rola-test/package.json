@@ -9,9 +9,9 @@
   "dependencies": {
     "@rola/plugin-document": "^0.5.0",
     "@rola/plugin-postcss": "^0.4.0",
-    "@rola/preset-postcss": "^0.5.0",
+    "@rola/preset-postcss": "^0.8.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
-    "rola": "^0.5.3"
+    "rola": "^0.8.0"
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react'
-import * as Home from '@/routes/Home.js'
+import * as About from '@/routes/About.js'
 
-export const pathname = Home.pathname
+export const pathname = About.pathname
 
 export function load () {
   return {
@@ -14,4 +14,4 @@ export function load () {
   }
 }
 
-export const view = Home.view
+export const view = About.view

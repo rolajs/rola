@@ -8,6 +8,7 @@ const node = require('@rola/preset-node')
 
 const render = require('./lib/render.js')
 const ledger = require('./lib/fileLedger.js')
+const fileManager = require('./lib/fileManager.js')
 const { on, emit } = require('./lib/emitter.js')
 
 const cwd = process.cwd()
@@ -16,6 +17,7 @@ function abs (p) {
   return path.join(cwd, p.replace(cwd, ''))
 }
 
+// TODO let top level process clean up, i.e. rola
 module.exports = function rolaStatic ({
   env,
   alias,
@@ -26,8 +28,6 @@ module.exports = function rolaStatic ({
 
   let compiler
   let watcher
-
-  const tmp = path.join(cwd, '.cache')
 
   /**
    * uses compiled asset filenames to find
@@ -42,7 +42,7 @@ module.exports = function rolaStatic ({
             .map(asset => asset.name)
         )
       }, [])
-      .map(page => path.join(tmp, page))
+      .map(page => path.join(cwd, '.rola', 'static', page))
   }
 
   return {
@@ -61,7 +61,7 @@ module.exports = function rolaStatic ({
       return rolaCompiler({
         in: src,
         out: {
-          path: tmp,
+          path: path.join(cwd, '.rola'),
           libraryTarget: 'commonjs2'
         },
         env,
@@ -81,7 +81,7 @@ module.exports = function rolaStatic ({
             abs(dest),
             { plugins }
           ).then(() => {
-            options.cleanup !== false && fs.removeSync(tmp)
+            options.cleanup !== false && fs.removeSync(path.join(cwd, '.rola'))
           })
         })
         .catch(e => {
@@ -89,49 +89,36 @@ module.exports = function rolaStatic ({
         })
     },
     async watch (src, dest, options = {}) {
-      src = /\.js$/.test(src) ? src : path.join(src, '*.js'),
+      src = /\.js$/.test(src) ? src : path.join(src, '*.js')
 
-      onExit(() => {
-        fs.removeSync(tmp)
-      })
-
-      await this.render(src, dest, { cleanup: false })
+      // await this.render(src, dest, { cleanup: false })
 
       let compiler
       let restarting = false
 
-      watcher = watch(abs(src), {
-        ignoreInitial: true
-      })
-        .on('all', async (ev, page) => {
-          if (!/unlink|add/.test(ev)) return
+      const manager = fileManager(abs(src), abs(dest))
 
+      manager.on('updateWatchedFiles', async files => {
+        if (compiler) {
           restarting = true
-
-          if (/unlink/.test(ev)) {
-            const filename = path.basename(page, '.js')
-            const removed = ledger.removeFile(filename, { cwd: abs(dest) })
-
-            fs.removeSync(path.join(tmp, filename + '.js'))
-            fs.removeSync(path.join(tmp, filename + '.js.map'))
-          }
-
           await compiler.close()
-
           restarting = false
 
-          createCompiler()
-        })
+          createCompiler(files)
+        } else {
+          createCompiler(files)
+        }
+      })
 
-      function createCompiler () {
-        const pages = match.sync(abs(src))
+      manager.init()
 
+      function createCompiler (pages) {
         if (!pages || !pages.length) return
 
         compiler = rolaCompiler(pages.map(page => ({
           in: page,
           out: {
-            path: tmp,
+            path: path.join(cwd, '.rola', 'static'),
             libraryTarget: 'commonjs2'
           },
           env,
@@ -168,7 +155,11 @@ module.exports = function rolaStatic ({
         compiler.watch()
       }
 
-      createCompiler()
+      onExit(() => {
+        compiler && compiler.close()
+        manager.close()
+        fs.removeSync(path.join(cwd, '.rola'))
+      })
     }
   }
 }
