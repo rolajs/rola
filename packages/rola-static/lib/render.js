@@ -46,7 +46,7 @@ module.exports = async function render (pages, dest, options) {
             pathname: route.pathname
           }
 
-          await fs.outputFile(
+          fs.outputFileSync(
             path.join(dir, 'index.html'),
             route.view(context, serverProps),
             e => {

@@ -17,15 +17,12 @@ function abs (p) {
   return path.join(cwd, p.replace(cwd, ''))
 }
 
-// TODO let top level process clean up, i.e. rola
 module.exports = function rolaStatic ({
   env,
   alias,
   presets,
   plugins,
 } = {}) {
-  require('./lib/env.js')({ env, alias })
-
   let compiler
   let watcher
 
@@ -59,7 +56,7 @@ module.exports = function rolaStatic ({
       if (!pages || !pages.length) return Promise.resolve()
 
       return rolaCompiler({
-        in: src,
+        in: pages,
         out: {
           path: path.join(cwd, '.rola', 'static'),
           libraryTarget: 'commonjs2'
@@ -70,19 +67,14 @@ module.exports = function rolaStatic ({
           node()
         ].concat(presets || [])
       })
-        .build({
-          minify: false
-        })
+        .build({ minify: false })
         .then(stats => {
           const pages = getCompiledFiles(stats)
-
           return render(
             pages,
             abs(dest),
             { plugins }
-          ).then(() => {
-            options.cleanup !== false && fs.removeSync(path.join(cwd, '.rola'))
-          })
+          )
         })
         .catch(e => {
           emit('error', e)
@@ -91,7 +83,7 @@ module.exports = function rolaStatic ({
     async watch (src, dest, options = {}) {
       src = /\.js$/.test(src) ? src : path.join(src, '*.js')
 
-      await this.render(src, dest, { cleanup: false })
+      await this.render(src, dest)
 
       let compiler
       let restarting = false
@@ -158,7 +150,6 @@ module.exports = function rolaStatic ({
       onExit(() => {
         compiler && compiler.close()
         manager.close()
-        fs.removeSync(path.join(cwd, '.rola'))
       })
     }
   }

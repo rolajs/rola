@@ -5,12 +5,12 @@ const defaultHead = [
 const defaultBody = []
 
 module.exports = function createDocument ({
-  plugins,
+  plugins = [],
   context,
   head = [],
   body = [],
   ...customProps
-}) {
+}, debug) {
   const handlers = plugins.filter(p => p && p.createDocument).map(p => p.createDocument)
 
   const headTags = new Map()
@@ -18,27 +18,30 @@ module.exports = function createDocument ({
 
   const processed = handlers.map(handler => handler({ context, ...customProps }))
 
-  processed.forEach((data = {}) => {
-    defaultHead
-      .concat(head)
-      .concat(data.head || []).forEach(line => {
-        let [ val, key ] = [].concat(line).reverse()
+  const processedHead = processed.filter(data => data.head).map(data => data.head)
+  const processedBody = processed.filter(data => data.body).map(data => data.body)
 
-        key = key || val
+  defaultHead
+    .concat(processedHead)
+    .concat(head)
+    .forEach(line => {
+      let [ val, key ] = [].concat(line).reverse()
 
-        headTags.set(key, val)
-      })
+      key = key || val
 
-    defaultBody
-      .concat(body)
-      .concat(data.body || []).forEach(line => {
-        let [ val, key ] = [].concat(line).reverse()
+      headTags.set(key, val)
+    })
 
-        key = key || val
+  defaultBody
+    .concat(processedBody)
+    .concat(body)
+    .forEach(line => {
+      let [ val, key ] = [].concat(line).reverse()
 
-        bodyTags.set(key, val)
-      })
-  })
+      key = key || val
+
+      bodyTags.set(key, val)
+    })
 
   return {
     head: Array.from(headTags.values()),

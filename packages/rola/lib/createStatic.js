@@ -57,7 +57,7 @@ export default function createStatic (view) {
       ...preRenderData,
       ...postRenderData,
       ...serverProps.tags // { head, body }
-    })
+    }, true)
 
     return doc({ ...tags, context, view: renderedView })
   }

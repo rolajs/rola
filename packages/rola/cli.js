@@ -45,7 +45,17 @@ try {
   serverEntry = require.resolve(path.join(cwd, 'server.js'))
 } catch (e) {}
 
+/**
+ * clean up outdir
+ */
 fs.removeSync(path.join(cwd, 'build'))
+
+/**
+ * remove temp dir on exit
+ */
+onExit(() => {
+  fs.removeSync(path.join(cwd, '.rola'))
+})
 
 let server
 
@@ -119,6 +129,10 @@ prog
 
     const config = await getModule(path.join(cwd, 'rola.config.js'), path.join(cwd, '.rola'))
     const plugins = await getModule(path.join(cwd, 'rola.plugins.js'), path.join(cwd, '.rola')).default
+
+    for (let key in (config.env || {})) {
+      process.env[key] = config.env[key]
+    }
 
     const configs = []
 
@@ -211,6 +225,10 @@ prog
 
     const config = await getModule(path.join(cwd, 'rola.config.js'), path.join(cwd, '.rola'))
     const plugins = await getModule(path.join(cwd, 'rola.plugins.js'), path.join(cwd, '.rola')).default
+
+    for (let key in (config.env || {})) {
+      process.env[key] = config.env[key]
+    }
 
     let compiled = false
     const configs = []
