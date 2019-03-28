@@ -36,7 +36,7 @@ module.exports = function createServer ({ file, port }) {
       this.server = http.createServer(
         require('connect')()
           .use(require('compression')())
-          .use(require('serve-static')(path.join(cwd, 'build')))
+          .use(require('serve-static')(path.join(cwd, 'build/assets')))
           .use((req, res, next) => {
             if (!this.app) return next()
             this.app(req, res, next)

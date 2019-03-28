@@ -172,7 +172,7 @@ prog
        */
       if (serverEntry) serve()
 
-      await createGenerator(config, plugins).render('/static', '/build')
+      await createGenerator(config, plugins).render('/static', '/build/assets')
 
       exit()
     }
@@ -240,7 +240,7 @@ prog
         serve()
 
         if (!compiled) {
-          createGenerator(config, plugins).watch('/static', '/build')
+          createGenerator(config, plugins).watch('/static', '/build/assets')
 
           compiled = true
         }
@@ -259,7 +259,7 @@ prog
       compiler.watch()
     } else {
       serve()
-      createGenerator(config, plugins).watch('/static', '/build')
+      createGenerator(config, plugins).watch('/static', '/build/assets')
     }
   })
 
