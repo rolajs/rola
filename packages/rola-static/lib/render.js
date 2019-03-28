@@ -7,14 +7,6 @@ const loadRoutes = require('./loadRoutes.js')
 const ledger = require('./fileLedger.js')
 const { emit } = require('./emitter.js')
 
-const {
-  document: doc,
-  createDocument,
-  createRoot,
-  preRender,
-  postRender
-} = require('@rola/util')
-
 function clone (obj) {
   return Object.assign({}, obj)
 }
@@ -30,6 +22,8 @@ function clone (obj) {
  */
 module.exports = async function render (pages, dest, options) {
   const routes = await getRoutes(pages)
+
+  const serverProps = require(path.join(process.cwd(), '.rola', 'props.js'))
 
   return Promise.all(
     loadRoutes(routes).map(async resolver => {
@@ -54,7 +48,7 @@ module.exports = async function render (pages, dest, options) {
 
           await fs.outputFile(
             path.join(dir, 'index.html'),
-            route.view(context),
+            route.view(context, serverProps),
             e => {
               if (e) {
                 emit('error', e)

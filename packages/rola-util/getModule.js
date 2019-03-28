@@ -7,7 +7,7 @@ function transpile (file, outDir, options = {}) {
   if (outDir) {
     assert(path.isAbsolute(outDir), 'outDir needs to be an absolute path')
   } else {
-    outDir = path.join(path.dirname(file), '.cache')
+    outDir = path.join(path.dirname(file), '.rola')
   }
 
   try {

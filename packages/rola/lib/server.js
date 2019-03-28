@@ -28,7 +28,7 @@ export default function server (routes, initialState = {}, options = {}) {
     route
   ]))
 
-  return function handler (req, res, next) {
+  return function handler (req, res, next, serverProps) {
     const store = createStore({})
 
     const [ route, params ] = router(req.url)
@@ -125,10 +125,14 @@ export default function server (routes, initialState = {}, options = {}) {
          * create tags with new context
          */
         const tags = createDocument({
-          context,
+          context: {
+            ...context,
+            ...serverProps.context
+          },
           plugins,
           ...preRenderData,
-          ...postRenderData
+          ...postRenderData,
+          ...serverProps.tags // { head, body }
         })
 
         /**

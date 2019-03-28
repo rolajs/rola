@@ -18,7 +18,7 @@ const React = require('react')
 
 const rolaCompiler = require('@rola/compiler')
 const rolaStatic = require('@rola/static')
-const { getModule } = require('@rola/util')
+const { getModule, createDocument } = require('@rola/util')
 
 const createServer = require('./util/createServer.js')
 const createConfig = require('./util/createConfig.js')
@@ -33,29 +33,19 @@ const prog = require('commander')
   .version(pkg.version)
 
 process.env.ROLA_VERSION = pkg.version
-process.env.PROJECT_VERSION = userPkg.version
 
 let clientEntry
 let serverEntry
 
 try {
   clientEntry = require.resolve(path.join(cwd, 'client.js'))
-} catch (e) {
-  try {
-    fs.removeSync(path.join(cwd, 'build', 'client.js'))
-    fs.removeSync(path.join(cwd, 'build', 'client.js.map'))
-    fs.removeSync(path.join(cwd, 'build', 'client.css'))
-    fs.removeSync(path.join(cwd, 'build', 'client.css.map'))
-  } catch (e) {}
-}
+} catch (e) {}
 
 try {
   serverEntry = require.resolve(path.join(cwd, 'server.js'))
-} catch (e) {
-  try {
-    fs.removeSync(path.join(cwd, 'build', 'server.js'))
-  } catch (e) {}
-}
+} catch (e) {}
+
+fs.removeSync(path.join(cwd, 'build'))
 
 let server
 
@@ -101,13 +91,34 @@ function createGenerator (config, plugins) {
   return generator
 }
 
+function createServerProps ({ presets }) {
+  const tags = createDocument({
+    context: {
+      version: userPkg.version
+    },
+    plugins: presets
+  })
+
+  const props = {
+    context: {
+      version: userPkg.version
+    },
+    tags
+  }
+
+  fs.outputFileSync(
+    path.join(cwd, '.rola', 'props.js'),
+    `module.exports = ${JSON.stringify(props, null, '  ')}`
+  )
+}
+
 prog
   .command('build')
   .action(async () => {
     log({ actions: [ 'build' ] })
 
-    const config = await getModule(path.join(cwd, 'rola.config.js'), path.join(cwd, '.cache'))
-    const plugins = await getModule(path.join(cwd, 'rola.plugins.js'), path.join(cwd, '.cache')).default
+    const config = await getModule(path.join(cwd, 'rola.config.js'), path.join(cwd, '.rola'))
+    const plugins = await getModule(path.join(cwd, 'rola.plugins.js'), path.join(cwd, '.rola')).default
 
     const configs = []
 
@@ -125,6 +136,30 @@ prog
       presets: config.presets
     }))
 
+    createServerProps({
+      presets: [
+        ...config.presets,
+        (clientEntry ? {
+          createDocument ({ context }) {
+            return {
+              body: `<script src='/client.js?v${context.version}'></script>`
+            }
+          }
+        } : {})
+      ]
+    })
+
+    async function done () {
+      /**
+       * for api requests, if needed
+       */
+      if (serverEntry) serve()
+
+      await createGenerator(config, plugins).render('/static', '/build/assets')
+
+      exit()
+    }
+
     if (configs.length) {
       let allstats = []
       const compiler = rolaCompiler(configs)
@@ -141,7 +176,7 @@ prog
         }))
       })
 
-      compiler.on('stats', stats => {
+      compiler.on('stats', async stats => {
         stats.map(_stats => {
           const server = _stats.assets.reduce((bool, asset) => {
             if (/server/.test(asset.name)) bool = true
@@ -162,19 +197,10 @@ prog
 
         done()
       })
+
+      compiler.build()
     } else {
       done()
-    }
-
-    async function done () {
-      /**
-       * for api requests, if needed
-       */
-      if (serverEntry) serve()
-
-      await createGenerator(config, plugins).render('/static', '/build/assets')
-
-      exit()
     }
   })
 
@@ -183,8 +209,8 @@ prog
   .action(async () => {
     log({ actions: [ 'watch' ] })
 
-    const config = await getModule(path.join(cwd, 'rola.config.js'), path.join(cwd, '.cache'))
-    const plugins = await getModule(path.join(cwd, 'rola.plugins.js'), path.join(cwd, '.cache')).default
+    const config = await getModule(path.join(cwd, 'rola.config.js'), path.join(cwd, '.rola'))
+    const plugins = await getModule(path.join(cwd, 'rola.plugins.js'), path.join(cwd, '.rola')).default
 
     let compiled = false
     const configs = []
@@ -205,6 +231,19 @@ prog
     }))
 
     let allstats = []
+
+    createServerProps({
+      presets: [
+        ...config.presets,
+        (clientEntry ? {
+          createDocument ({ context }) {
+            return {
+              body: `<script src='/client.js?v${context.version}'></script>`
+            }
+          }
+        } : {})
+      ]
+    })
 
     if (configs.length) {
       const compiler = rolaCompiler(configs)

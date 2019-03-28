@@ -13,7 +13,7 @@ const postServerRender = require('@rola/util/postServerRender.js')
 const preServerRender = require('@rola/util/preServerRender.js')
 
 export default function createStatic (view) {
-  return function StaticComponent (context) {
+  return function StaticComponent (context, serverProps) {
     const View = createServerRoot({
       root: view,
       context: { ...context },
@@ -49,10 +49,14 @@ export default function createStatic (view) {
      * create tags with new context
      */
     const tags = createDocument({
-      context: { ...context },
+      context: {
+        ...context,
+        ...serverProps.context
+      },
       plugins,
       ...preRenderData,
-      ...postRenderData
+      ...postRenderData,
+      ...serverProps.tags // { head, body }
     })
 
     return doc({ ...tags, context, view: renderedView })

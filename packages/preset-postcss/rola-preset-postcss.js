@@ -2,6 +2,11 @@ const ExtractCSS = require('mini-css-extract-plugin')
 
 module.exports = (options = {}) => {
   return {
+    createDocument ({ context }) {
+      return {
+        head: `<link rel='stylesheet' href='/client.css?v${context.version}' />`
+      }
+    },
     createConfig ({ config, context }) { 
       if (context.server) return
 

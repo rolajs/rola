@@ -112,201 +112,6 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "../../rola-compiler/node_modules/process/browser.js":
-/*!****************************************************************************************************!*\
-  !*** /Users/estrattonbailey/Sites/oss/rola/packages/rola-compiler/node_modules/process/browser.js ***!
-  \****************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-
 /***/ "../../rola-compiler/node_modules/webpack/buildin/global.js":
 /*!***********************************!*\
   !*** (webpack)/buildin/global.js ***!
@@ -404,15 +209,19 @@ var defaultBody = [];
 module.exports = function createDocument(_ref) {
   var plugins = _ref.plugins,
       context = _ref.context,
-      customProps = _objectWithoutProperties(_ref, ["plugins", "context"]);
+      _ref$head = _ref.head,
+      head = _ref$head === void 0 ? [] : _ref$head,
+      _ref$body = _ref.body,
+      body = _ref$body === void 0 ? [] : _ref$body,
+      customProps = _objectWithoutProperties(_ref, ["plugins", "context", "head", "body"]);
 
   var handlers = plugins.filter(function (p) {
     return p && p.createDocument;
   }).map(function (p) {
     return p.createDocument;
   });
-  var head = new Map();
-  var body = new Map();
+  var headTags = new Map();
+  var bodyTags = new Map();
   var processed = handlers.map(function (handler) {
     return handler(_objectSpread({
       context: context
@@ -420,28 +229,28 @@ module.exports = function createDocument(_ref) {
   });
   processed.forEach(function () {
     var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    defaultHead.concat(data.head || []).forEach(function (line) {
+    defaultHead.concat(head).concat(data.head || []).forEach(function (line) {
       var _concat$reverse = [].concat(line).reverse(),
           _concat$reverse2 = _slicedToArray(_concat$reverse, 2),
           val = _concat$reverse2[0],
           key = _concat$reverse2[1];
 
       key = key || val;
-      head.set(key, val);
+      headTags.set(key, val);
     });
-    defaultBody.concat(data.body || []).forEach(function (line) {
+    defaultBody.concat(body).concat(data.body || []).forEach(function (line) {
       var _concat$reverse3 = [].concat(line).reverse(),
           _concat$reverse4 = _slicedToArray(_concat$reverse3, 2),
           val = _concat$reverse4[0],
           key = _concat$reverse4[1];
 
       key = key || val;
-      body.set(key, val);
+      bodyTags.set(key, val);
     });
   });
   return {
-    head: Array.from(head.values()),
-    body: Array.from(body.values())
+    head: Array.from(headTags.values()),
+    body: Array.from(bodyTags.values())
   };
 };
 
@@ -491,7 +300,7 @@ module.exports = function createServerRoot(_ref) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {var tags = __webpack_require__(/*! html-meta-tags */ "../../rola-util/node_modules/html-meta-tags/index.js");
+var tags = __webpack_require__(/*! html-meta-tags */ "../../rola-util/node_modules/html-meta-tags/index.js");
 
 var _require = __webpack_require__(/*! flatted/cjs */ "../../rola-util/node_modules/flatted/cjs/index.js"),
     stringify = _require.stringify;
@@ -503,10 +312,8 @@ module.exports = function html(_ref) {
       context = _ref.context;
   var state = context.state;
   var meta = state.meta || {};
-  var version = "v".concat(process.env.PROJECT_VERSION);
-  return "\n    <!DOCTYPE html>\n    <html>\n      <head>\n        <title>".concat(meta.title || 'rola', "</title>\n        ").concat(head.join(''), "\n        ").concat(tags(meta), "\n        <link rel='stylesheet' href='/client.css?").concat(version, "' />\n      </head>\n\n      <body>\n        <div id='root'>").concat(view, "</div>\n        ").concat(body.join(''), "\n        <script>\n          window.__rola = ").concat(stringify(context), "\n        </script>\n        <script src='/client.js?").concat(version, "'></script>\n      </body>\n    </html>\n  ");
+  return "\n    <!DOCTYPE html>\n    <html>\n      <head>\n        <title>".concat(meta.title || 'rola', "</title>\n        ").concat(head.join(''), "\n        ").concat(tags(meta), "\n      </head>\n\n      <body>\n        <div id='root'>").concat(view, "</div>\n        <script>\n          window.__rola = ").concat(stringify(context), "\n        </script>\n        ").concat(body.join(''), "\n      </body>\n    </html>\n  ");
 };
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../rola-compiler/node_modules/process/browser.js */ "../../rola-compiler/node_modules/process/browser.js")))
 
 /***/ }),
 
@@ -1174,63 +981,65 @@ function server(e) {
       r = matcher(e.map(function (e) {
     return [e.pathname, _objectWithoutProperties(e, ["pathname"])];
   }));
-  return function (e, o, n) {
-    var a = createStore({}),
-        i = _slicedToArray(r(e.url), 2),
-        c = i[0],
-        s = i[1];
+  return function (e, o, n, a) {
+    var i = createStore({}),
+        c = _slicedToArray(r(e.url), 2),
+        s = c[0],
+        u = c[1];
 
-    if (!c) return n();
-    var u = c.state,
-        l = void 0 === u ? {} : u,
-        p = c.load,
-        d = void 0 === p ? function () {} : p,
-        f = c.view,
-        h = c.redirect;
-    return h ? redir(o, h) : (a.hydrate(Object.assign(t, l, {
+    if (!s) return n();
+    var l = s.state,
+        p = void 0 === l ? {} : l,
+        d = s.load,
+        f = void 0 === d ? function () {} : d,
+        h = s.view,
+        v = s.redirect;
+    return v ? redir(o, v) : (i.hydrate(Object.assign(t, p, {
       router: {
         location: e.url,
-        params: s
+        params: u
       }
-    })), Promise.resolve(d(a.state, e)).then(function () {
+    })), Promise.resolve(f(i.state, e)).then(function () {
       var t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {},
           n = t.redirect,
-          i = t.cache,
-          s = t.status,
-          u = t.pathname,
-          l = t.state,
-          p = void 0 === l ? {} : l;
+          c = t.cache,
+          u = t.status,
+          l = t.pathname,
+          p = t.state,
+          d = void 0 === p ? {} : p;
       if (n) return redir(o, n);
-      o.statusCode = s || 200, o.setHeader("Content-Type", "text/html"), o.setHeader("Cache-Control", "string" == typeof i ? i : !1 === i ? "no-cache, no-store, must-revalidate" : "public, max-age=".concat(i || 86400)), a.hydrate(p);
-      var d = {
-        state: a.state,
-        pathname: c.pathname || u
+      o.statusCode = u || 200, o.setHeader("Content-Type", "text/html"), o.setHeader("Cache-Control", "string" == typeof c ? c : !1 === c ? "no-cache, no-store, must-revalidate" : "public, max-age=".concat(c || 86400)), i.hydrate(d);
+
+      var f = {
+        state: i.state,
+        pathname: s.pathname || l
       },
-          h = createServerRoot({
-        root: f,
-        context: Object.assign({}, d),
+          v = createServerRoot({
+        root: h,
+        context: Object.assign({}, f),
         plugins: plugins$1
       }),
-          v = preServerRender({
-        context: Object.assign({}, d),
+          y = preServerRender({
+        context: Object.assign({}, f),
         plugins: plugins$1
       }),
-          y = ReactDOMServer__default.renderToString(React.createElement(Hypr, {
-        store: a,
+          m = ReactDOMServer__default.renderToString(React.createElement(Hypr, {
+        store: i,
         router: r,
         location: e.url
-      }, React.createElement(h, _extends({}, d, v)))),
-          m = postServerRender({
-        context: Object.assign({}, d),
+      }, React.createElement(v, _extends({}, f, y)))),
+          g = postServerRender({
+        context: Object.assign({}, f),
         plugins: plugins$1
       }),
-          g = createDocument(Object.assign({
-        context: d,
+          _ = createDocument(Object.assign({
+        context: Object.assign({}, f, a.context),
         plugins: plugins$1
-      }, v, m));
-      o.end(doc(Object.assign({}, g, {
-        context: d,
-        view: y
+      }, y, g, a.tags));
+
+      o.end(doc(Object.assign({}, _, {
+        context: f,
+        view: m
       })));
     }).catch(function (e) {
       o.statusCode = 500, o.setHeader("Content-Type", "text/plain"), o.end("rola error"), console.log(e);
@@ -1302,32 +1111,32 @@ var Router$1 = function (e) {
     preServerRender$1 = __webpack_require__(/*! @rola/util/preServerRender.js */ "../../rola-util/preServerRender.js");
 
 function createStatic(e) {
-  return function (t) {
-    var r = createServerRoot$1({
+  return function (t, r) {
+    var o = createServerRoot$1({
       root: e,
       context: Object.assign({}, t),
       plugins: plugins$2
     }),
-        o = preServerRender$1({
+        n = preServerRender$1({
       context: Object.assign({}, t),
       plugins: plugins$2
     }),
-        n = ReactDOMServer.renderToString(React.createElement(Hypr, {
+        a = ReactDOMServer.renderToString(React.createElement(Hypr, {
       store: createStore(t.state),
       router: matcher([]),
       location: t.pathname
-    }, React.createElement(r, _extends({}, t, o)))),
-        a = postServerRender$1({
+    }, React.createElement(o, _extends({}, t, n)))),
+        i = postServerRender$1({
       context: Object.assign({}, t),
       plugins: plugins$2
     }),
-        i = createDocument$1(Object.assign({
-      context: Object.assign({}, t),
+        c = createDocument$1(Object.assign({
+      context: Object.assign({}, t, r.context),
       plugins: plugins$2
-    }, o, a));
-    return doc$1(Object.assign({}, i, {
+    }, n, i, r.tags));
+    return doc$1(Object.assign({}, c, {
       context: t,
-      view: n
+      view: a
     }));
   };
 }

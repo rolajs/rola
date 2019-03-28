@@ -17,6 +17,8 @@ function req (file) {
 module.exports = function createServer ({ file, port }) {
   let active = false
 
+  const serverProps = require(path.join(cwd, '.rola', 'props.js'))
+
   return {
     server: null,
     app: null,
@@ -39,7 +41,7 @@ module.exports = function createServer ({ file, port }) {
           .use(require('serve-static')(path.join(cwd, 'build/assets')))
           .use((req, res, next) => {
             if (!this.app) return next()
-            this.app(req, res, next)
+            this.app(req, res, next, serverProps)
           })
           .use((req, res) => {
             res.writeHead(404, {

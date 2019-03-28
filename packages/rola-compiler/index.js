@@ -32,7 +32,7 @@ module.exports = confs => {
       closeServer()
       return Promise.resolve(compiler ? new Promise(r => compiler.close(r)) : null)
     },
-    build (options) {
+    build (options = {}) {
       emit('build')
 
       const configs = confs
