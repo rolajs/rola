@@ -18,7 +18,7 @@ const React = require('react')
 
 const rolaCompiler = require('@rola/compiler')
 const rolaStatic = require('@rola/static')
-const { getModule, createDocument } = require('@rola/util')
+const { getConfig, createDocument } = require('@rola/util')
 
 const createServer = require('./util/createServer.js')
 const createConfig = require('./util/createConfig.js')
@@ -127,8 +127,7 @@ prog
   .action(async () => {
     log({ actions: [ 'build' ] })
 
-    const config = await getModule(path.join(cwd, 'rola.config.js'), path.join(cwd, '.rola'))
-    const plugins = await getModule(path.join(cwd, 'rola.plugins.js'), path.join(cwd, '.rola')).default
+    const { plugins, ...config } = getConfig()
 
     for (let key in (config.env || {})) {
       process.env[key] = config.env[key]
@@ -223,8 +222,7 @@ prog
   .action(async () => {
     log({ actions: [ 'watch' ] })
 
-    const config = await getModule(path.join(cwd, 'rola.config.js'), path.join(cwd, '.rola'))
-    const plugins = await getModule(path.join(cwd, 'rola.plugins.js'), path.join(cwd, '.rola')).default
+    const { plugins, ...config } = getConfig()
 
     for (let key in (config.env || {})) {
       process.env[key] = config.env[key]

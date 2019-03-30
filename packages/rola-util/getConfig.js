@@ -3,6 +3,8 @@ const path = require('path')
 const assert = require('assert')
 const { transformSync } = require('@babel/core')
 
+const cwd = process.cwd()
+
 function transpile (file, outDir, options = {}) {
   if (outDir) {
     assert(path.isAbsolute(outDir), 'outDir needs to be an absolute path')
@@ -20,7 +22,7 @@ function transpile (file, outDir, options = {}) {
         require.resolve('fast-async'),
         [require.resolve('babel-plugin-module-resolver'), {
           alias: {
-            '@': process.cwd(),
+            '@': cwd,
             ...(options.alias || {})
           }
         }]
@@ -35,20 +37,39 @@ function transpile (file, outDir, options = {}) {
 
     const mod = require(out)
 
-    fs.removeSync(out)
-
     return mod
   } catch (e) {
     return {}
   }
 }
 
-module.exports = function getModule (file, outDir, options) {
-  console.error('getModule is deprecated, use getConfig')
+module.exports = function getConfig () {
+  const out = path.join(cwd, '.rola')
+  const conf = path.join(cwd, 'rola.config.js')
+  const plug = path.join(cwd, 'rola.plugins.js')
 
-  const { alias } = transpile(path.join(process.cwd(), 'rola.config.js'), null, { quiet: true })
+  let config = {
+    env: {},
+    alias: {},
+    presets: []
+  }
 
-  assert(!path.isAbsolute(file), 'file needs to be an absolute path')
+  if (fs.existsSync(conf)) {
+    const mod = transpile(conf, out)
+    config = mod.default || mod
+  }
 
-  return transpile(file, outDir, { alias })
+  let plugins = []
+
+  if (fs.existsSync(plug)) {
+    const mod = transpile(plug, out, { alias: config.alias })
+    plugins = mod.default || mod
+  } else {
+    fs.outputFileSync(path.join(out, 'rola.plugins.js'), `module.exports = []`)
+  }
+
+  return {
+    ...config,
+    plugins
+  }
 }

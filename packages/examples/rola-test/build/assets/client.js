@@ -3991,10 +3991,10 @@ var React = _interopDefault(__webpack_require__(/*! react */ "../../../node_modu
     esm = __webpack_require__(/*! flatted/esm */ "../../rola/node_modules/flatted/esm/index.js"),
     matchit = __webpack_require__(/*! matchit */ "../../rola/node_modules/matchit/lib/matchit.mjs"),
     react = __webpack_require__(/*! @picostate/react */ "../../rola/node_modules/@picostate/react/dist/picostate-react.es.js"),
+    plugins = _interopDefault(__webpack_require__(/*! @/.rola/rola.plugins.js */ "./.rola/rola.plugins.js")),
     ReactDOMServer = __webpack_require__(/*! react-dom/server */ "../../rola/node_modules/react-dom/server.browser.js"),
     ReactDOMServer__default = _interopDefault(ReactDOMServer),
-    cx = _interopDefault(__webpack_require__(/*! nanoclass */ "../../rola/node_modules/nanoclass/dist/nanoclass.es.js")),
-    plugins$2 = _interopDefault(__webpack_require__(/*! @/rola.plugins.js */ "./rola.plugins.js"));
+    cx = _interopDefault(__webpack_require__(/*! nanoclass */ "../../rola/node_modules/nanoclass/dist/nanoclass.es.js"));
 
 function _classCallCheck(e, t) {
   if (!(e instanceof t)) throw new TypeError("Cannot call a class as a function");
@@ -4229,12 +4229,6 @@ function Hypr(e) {
   }, a));
 }
 
-var plugins = [];
-
-try {
-  plugins = __webpack_require__(/*! @/rola.plugins.js */ "./rola.plugins.js").default;
-} catch (e) {}
-
 var createClientRoot = __webpack_require__(/*! @rola/util/createClientRoot.js */ "../../rola-util/createClientRoot.js");
 
 function client(e) {
@@ -4315,12 +4309,6 @@ function client(e) {
   };
 }
 
-var plugins$1 = [];
-
-try {
-  plugins$1 = __webpack_require__(/*! @/rola.plugins.js */ "./rola.plugins.js").default;
-} catch (e) {}
-
 var doc = __webpack_require__(/*! @rola/util/document.js */ "../../rola-util/document.js"),
     createDocument = __webpack_require__(/*! @rola/util/createDocument.js */ "../../rola-util/createDocument.js"),
     createServerRoot = __webpack_require__(/*! @rola/util/createServerRoot.js */ "../../rola-util/createServerRoot.js"),
@@ -4376,11 +4364,11 @@ function server(e) {
           v = createServerRoot({
         root: h,
         context: Object.assign({}, f),
-        plugins: plugins$1
+        plugins: plugins
       }),
           y = preServerRender({
         context: Object.assign({}, f),
-        plugins: plugins$1
+        plugins: plugins
       }),
           m = ReactDOMServer__default.renderToString(React.createElement(Hypr, {
         store: i,
@@ -4389,11 +4377,11 @@ function server(e) {
       }, React.createElement(v, _extends({}, f, y)))),
           g = postServerRender({
         context: Object.assign({}, f),
-        plugins: plugins$1
+        plugins: plugins
       }),
           _ = createDocument(Object.assign({
         context: Object.assign({}, f, a.context),
-        plugins: plugins$1
+        plugins: plugins
       }, y, g, a.tags));
 
       o.end(doc(Object.assign({}, _, {
@@ -4474,11 +4462,11 @@ function createStatic(e) {
     var o = createServerRoot$1({
       root: e,
       context: Object.assign({}, t),
-      plugins: plugins$2
+      plugins: plugins
     }),
         n = preServerRender$1({
       context: Object.assign({}, t),
-      plugins: plugins$2
+      plugins: plugins
     }),
         a = ReactDOMServer.renderToString(React.createElement(Hypr, {
       store: createStore(t.state),
@@ -4487,11 +4475,11 @@ function createStatic(e) {
     }, React.createElement(o, _extends({}, t, n)))),
         i = postServerRender$1({
       context: Object.assign({}, t),
-      plugins: plugins$2
+      plugins: plugins
     }),
         c = createDocument$1(Object.assign({
       context: Object.assign({}, t, r.context),
-      plugins: plugins$2
+      plugins: plugins
     }, n, i, r.tags), !0);
     return doc$1(Object.assign({}, c, {
       context: t,
@@ -30114,6 +30102,17 @@ if (false) {} else {
 
 /***/ }),
 
+/***/ "./.rola/rola.plugins.js":
+/*!*******************************!*\
+  !*** ./.rola/rola.plugins.js ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = [];
+
+/***/ }),
+
 /***/ "./client.js":
 /*!*******************!*\
   !*** ./client.js ***!
@@ -30162,19 +30161,6 @@ function App(props) {
     href: "/whoops"
   }, "/whoops")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, props.children));
 }
-
-/***/ }),
-
-/***/ "./rola.plugins.js":
-/*!*************************!*\
-  !*** ./rola.plugins.js ***!
-  \*************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ([]);
 
 /***/ }),
 
@@ -30313,9 +30299,9 @@ var view = Object(rola__WEBPACK_IMPORTED_MODULE_1__["withState"])(function (stat
   !*** ./styles/main.css ***!
   \*************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-// extracted by mini-css-extract-plugin
+throw new Error("Module parse failed: Unexpected token (1:11)\nYou may need an appropriate loader to handle this file type.\n> html, body {\n|   background: whitesmoke;\n| }");
 
 /***/ })
 

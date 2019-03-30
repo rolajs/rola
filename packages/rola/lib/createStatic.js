@@ -4,7 +4,7 @@ import createStore from 'picostate'
 import matcher from './matcher.js'
 import Hypr from './Hypr.js'
 
-import plugins from '@/rola.plugins.js'
+import plugins from '@/.rola/rola.plugins.js'
 
 const doc = require('@rola/util/document.js')
 const createDocument = require('@rola/util/createDocument.js')

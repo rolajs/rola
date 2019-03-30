@@ -2,6 +2,7 @@
  * internal utils
  */
 const getModule = require('./getModule.js')
+const getConfig = require('./getConfig.js')
 
 /**
  * the default document creator
@@ -19,6 +20,7 @@ const preServerRender = require('./preServerRender.js')
 
 module.exports = {
   getModule,
+  getConfig,
 
   document,
 
