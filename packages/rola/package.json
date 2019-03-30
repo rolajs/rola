@@ -55,6 +55,7 @@
     "matchit": "^1.0.7",
     "nanoclass": "0.0.2",
     "picostate": "^1.4.0",
+    "pocket.io": "^0.1.4",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "serve-static": "^1.13.2",

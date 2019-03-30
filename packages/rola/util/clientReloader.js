@@ -2,14 +2,14 @@ module.exports = function clientReloader (port) {
   return `
     (function (global) {
       try {
-        const socketio = document.createElement('script')
-        socketio.src = 'https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.slim.js'
-        socketio.onload = function init () {
+        const pocketio = document.createElement('script')
+        pocketio.src = 'https://unpkg.com/pocket.io@0.1.4/min.js'
+        pocketio.onload = function init () {
           var disconnected = false
           var socket = io('http://localhost:${port}', {
             reconnectionAttempts: 3
           })
-          socket.on('connect', () => console.log('rola watch'))
+          socket.on('connect', () => console.log('rola connected'))
           socket.on('update', () => {
             global.location.reload()
           })
@@ -21,7 +21,7 @@ module.exports = function clientReloader (port) {
             console.error("rola - connection to server on :${port} failed")
           })
         }
-        document.head.appendChild(socketio)
+        document.head.appendChild(pocketio)
       } catch (e) {}
     })(this);
   `

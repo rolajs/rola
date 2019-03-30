@@ -68,7 +68,7 @@ module.exports = function createServer ({ file, port }) {
           })
       )
 
-      this.socket = require('socket.io')(this.server, {
+      this.socket = require('pocket.io')(this.server, {
         serveClient: false
       })
 
@@ -79,7 +79,6 @@ module.exports = function createServer ({ file, port }) {
     },
     close () {
       this.server && this.server.close()
-      this.socket && this.socket.close()
     }
   }
 }
