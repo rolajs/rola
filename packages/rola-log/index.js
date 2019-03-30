@@ -3,6 +3,8 @@ const createStore = require('picostate')
 const output = process.env.DEBUG ? console.log : require('log-update')
 const pkg = require('./package.json')
 
+const flattenRoutes = require('./lib/flattenRoutes.js')
+
 function cond (args) {
   return args && args
 }
@@ -166,9 +168,7 @@ const log = logger({
     filter: filterUnique,
     format (logs) {
       return [
-        logs.map(log => {
-          return c.gray('log') + '  ' + log
-        })
+        [ c.gray('logs'), '' ].concat(logs)
       ]
     },
   },
@@ -176,9 +176,7 @@ const log = logger({
     filter: filterUnique,
     format (warnings) {
       return [
-        warnings.map(warning => {
-          return c.yellow('warn') + '  ' + warning
-        })
+        [ c.yellow('warnings'), '' ].concat(warnings)
       ]
     },
   },
@@ -186,12 +184,12 @@ const log = logger({
     filter: filterUnique, // won't work for objects
     format (errors) {
       return [
-        formatErrors(errors).map(e => {
+        [ c.red('errors'), '' ].concat(formatErrors(errors).map(e => {
           return [
-            c.red('error') + '  ' + e.message,
+            e.message,
             e.stack && e.stack.map(trace => trace.action + '  ' + trace.location)
           ].filter(Boolean).flat()
-        })
+        }))
       ]
     },
   },
@@ -213,10 +211,18 @@ const log = logger({
   },
   static: {
     format (files) {
+      const routes = flattenRoutes(files.slice(0))
+
       return [
-        files.map(file => {
-          return c.gray('static') + '  ' + file
-        })
+        routes
+          .map(route => [].concat(route))
+          .sort(([ a ], [ b ]) => {
+            return a.length - b.length
+          })
+          .map(([ route, count ]) => {
+            return count ? route + c.gray(` x ${count}`) : route
+          })
+          // .map(str => c.cyan(str))
       ]
     }
   },

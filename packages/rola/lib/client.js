@@ -6,7 +6,7 @@ import { parse } from 'flatted/esm'
 import matcher from './matcher.js'
 import { history, withHistory } from './history.js'
 import { store } from './state.js'
-import Hypr from './Hypr.js'
+import Rola from './Rola.js'
 
 import plugins from '@/.rola/rola.plugins.js'
 
@@ -45,7 +45,7 @@ export default function client (routes, initialState = {}, options = {}) {
   })
 
   ReactDOM.hydrate((
-    <Hypr
+    <Rola
       store={store}
       router={router}
       location={location}
@@ -100,6 +100,6 @@ export default function client (routes, initialState = {}, options = {}) {
           })
       }}>
         <View {...context} />
-    </Hypr>
+    </Rola>
   ), document.getElementById('root'))
 }

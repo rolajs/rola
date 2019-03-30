@@ -1,7 +1,7 @@
 const tags = require('html-meta-tags')
 const { stringify } = require('flatted/cjs')
 
-module.exports = function html ({ head, body, view, context }) {
+module.exports = function html ({ head = [], body = [], view, context }) {
   const { state } = context
   const meta = state.meta || {}
 

@@ -3,7 +3,7 @@ import ReactDOMServer from 'react-dom/server'
 import createStore from 'picostate'
 
 import matcher from './matcher.js'
-import Hypr from './Hypr.js'
+import Rola from './Rola.js'
 
 import plugins from '@/.rola/rola.plugins.js'
 
@@ -24,7 +24,9 @@ export default function server (routes, initialState = {}, options = {}) {
     route
   ]))
 
-  return function handler (req, res, next, serverProps) {
+  return function handler (req, res, next) {
+    const serverProps = res.serverProps
+
     const store = createStore({})
 
     const [ route, params ] = router(req.url)
@@ -104,9 +106,9 @@ export default function server (routes, initialState = {}, options = {}) {
          * render
          */
         const renderedView = ReactDOMServer.renderToString(
-          <Hypr store={store} router={router} location={req.url}>
+          <Rola store={store} router={router} location={req.url}>
             <View {...context} {...preRenderData} />
-          </Hypr>
+          </Rola>
         )
 
         /**

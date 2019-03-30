@@ -102,17 +102,18 @@ function createGenerator (config, plugins) {
 }
 
 function createServerProps ({ presets }) {
+  const context = {
+    name: userPkg.name,
+    version: userPkg.version
+  }
+
   const tags = createDocument({
-    context: {
-      version: userPkg.version
-    },
+    context,
     plugins: presets
   })
 
   const props = {
-    context: {
-      version: userPkg.version
-    },
+    context,
     tags
   }
 

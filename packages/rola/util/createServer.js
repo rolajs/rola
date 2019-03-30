@@ -1,5 +1,6 @@
 const path = require('path')
 const http = require('http')
+const { document } = require('@rola/util')
 
 const cwd = process.cwd()
 
@@ -41,13 +42,28 @@ module.exports = function createServer ({ file, port }) {
           .use(require('serve-static')(path.join(cwd, 'build/assets')))
           .use((req, res, next) => {
             if (!this.app) return next()
-            this.app(req, res, next, serverProps)
+
+            res.serverProps = serverProps
+
+            this.app(req, res, next)
           })
           .use((req, res) => {
-            res.writeHead(404, {
-              'Content-Type': 'text/plain'
-            })
-            res.write('rola')
+            const { name, version } = serverProps.context
+
+            res.writeHead(404, { 'Content-Type': 'text/html' })
+
+            res.write(document({
+              head: [ `<link rel='stylesheet' href='https://unpkg.com/svbstrate@4.1.0/dist/svbstrate.css' />` ],
+              view: `<div class='f aic jcc x h4' style='height: 100vh'>404 | ${name}@${version}</div>`,
+              context: {
+                state: {
+                  meta: {
+                    title: '404 | rola'
+                  }
+                }
+              }
+            }))
+
             res.end()
           })
       )
