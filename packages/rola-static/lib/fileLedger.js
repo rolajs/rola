@@ -23,7 +23,12 @@ module.exports = {
   },
   removePathnames (pathnames, { cwd }) {
     for (const pathname of pathnames) {
-      const filepath = path.join(cwd, pathname === '/' ? 'index.html' : pathname)
+      let p = pathname
+      if (p === '/') p = 'index.html'
+      if (p === '/*') p = '404.html'
+
+      const filepath = path.join(cwd, p)
+
       fs.removeSync(filepath)
       routes.delete(pathname)
     }

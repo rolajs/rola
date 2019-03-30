@@ -36,7 +36,13 @@ module.exports = async function render (pages, dest, options) {
       let currentpaths = []
 
       for (let route of routes) {
-        const dir = path.join(dest, route.pathname)
+        const is404Route = route.pathname === '/*'
+
+        const outFile = is404Route ? (
+          path.join(dest, '404.html')
+        ) : (
+          path.join(dest, route.pathname, 'index.html')
+        )
 
         currentpaths.push(route.pathname)
 
@@ -47,7 +53,7 @@ module.exports = async function render (pages, dest, options) {
           }
 
           fs.outputFileSync(
-            path.join(dir, 'index.html'),
+            outFile,
             route.view(context, serverProps),
             e => {
               if (e) {
@@ -58,7 +64,7 @@ module.exports = async function render (pages, dest, options) {
 
           emit(
             'render',
-            dir.split(dest)[1] || '/'
+            path.dirname(outFile).split(dest)[1] || '/'
           )
         } catch (e) {
           e.message = `rola error rendering ${route.pathname} -> ${e.message}`
