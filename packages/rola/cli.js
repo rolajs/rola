@@ -1,14 +1,7 @@
 #! /usr/bin/env node
 'use strict'
 
-const log = require('@rola/log')
-
-/**
- * fresh console
- */
-console.clear()
-
-log({ actions: [ 'initializing' ] })
+let log = null
 
 const fs = require('fs-extra')
 const path = require('path')
@@ -325,7 +318,14 @@ if (!process.argv.slice(2).length) {
     exit()
   })
 } else {
+  /**
+   * fresh console
+   */
+  console.clear()
+
+  log = require('@rola/log')
+
+  log({ actions: [ 'initializing' ] })
+
   prog.parse(process.argv)
 }
-
-
