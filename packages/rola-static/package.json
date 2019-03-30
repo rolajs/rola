@@ -1,6 +1,6 @@
 {
   "name": "@rola/static",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "Static page generation for rola.",
   "author": "estrattonbailey",
   "license": "MIT",
@@ -28,7 +28,7 @@
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "recursive-readdir": "^2.2.2",
-    "rola": "^0.10.0",
+    "rola": "^0.10.1",
     "source-map-support": "^0.5.9"
   },
   "repository": {
