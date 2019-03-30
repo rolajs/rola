@@ -48,64 +48,62 @@ export default function client (routes, initialState = {}, options = {}) {
     plugins
   })
 
-  return function render (root) {
-    ReactDOM.hydrate((
-      <Hypr
-        store={store}
-        router={router}
-        location={location}
-        resolve={({ location, params, route }, done) => {
-          store.hydrate({
-            router: {
-              location,
-              params
-            }
+  ReactDOM.hydrate((
+    <Hypr
+      store={store}
+      router={router}
+      location={location}
+      resolve={({ location, params, route }, done) => {
+        store.hydrate({
+          router: {
+            location,
+            params
+          }
+        })
+
+        const {
+          load = () =>  {},
+          view
+        } = route
+
+        Promise.resolve(load(store.state))
+          .then(({ redirect, state }) => {
+            if (redirect) return history.pushState(redirect.to)
+
+            const meta = state.meta || {}
+
+            store.hydrate(state)
+
+            Promise.resolve(options.resolve ? options.resolve({ state: store.state, pathname: route.pathname }) : null)
+              .then(() => {
+                document.title = meta.title || document.title
+
+                let view = route.view
+
+                const context = {
+                  state: store.state,
+                  pathname: route.pathname
+                }
+
+                const View = createClientRoot({
+                  root: view,
+                  context: { ...context },
+                  plugins
+                })
+
+                done(<View {...context} />)
+              })
+              .catch(e => {
+                console.error('options.resolve failed')
+                console.error(e)
+              })
           })
-
-          const {
-            load = () =>  {},
-            view
-          } = route
-
-          Promise.resolve(load(store.state))
-            .then(({ redirect, state }) => {
-              if (redirect) return history.pushState(redirect.to)
-
-              const meta = state.meta || {}
-
-              store.hydrate(state)
-
-              Promise.resolve(options.resolve ? options.resolve({ state: store.state, pathname: route.pathname }) : null)
-                .then(() => {
-                  document.title = meta.title || document.title
-
-                  let view = route.view
-
-                  const context = {
-                    state: store.state,
-                    pathname: route.pathname
-                  }
-
-                  const View = createClientRoot({
-                    root: view,
-                    context: { ...context },
-                    plugins
-                  })
-
-                  done(<View {...context} />)
-                })
-                .catch(e => {
-                  console.error('options.resolve failed')
-                  console.error(e)
-                })
-            })
-            .catch(e => {
-              console.error('route.load failed')
-              console.error(e)
-            })
-        }}>
-          <View {...context} />
-      </Hypr>
-    ), root)
-  }
+          .catch(e => {
+            console.error('route.load failed')
+            console.error(e)
+          })
+      }}>
+        <View {...context} />
+    </Hypr>
+  ), document.getElementById('root'))
 }
