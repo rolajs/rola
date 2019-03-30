@@ -9,9 +9,9 @@
   "author": "estrattonbailey",
   "dependencies": {
     "@rola/plugin-document": "^0.9.0",
-    "@rola/preset-postcss": "^0.9.1",
+    "@rola/preset-postcss": "^0.10.0",
     "react": "^17.8.4",
     "react-dom": "^16.8.4",
-    "rola": "^0.9.1"
+    "rola": "^0.10.0"
   }
 }

@@ -12,10 +12,6 @@ import plugins from '@/.rola/rola.plugins.js'
 
 const createClientRoot = require('@rola/util/createClientRoot.js')
 
-function clone (obj) {
-  return Object.assign({}, obj)
-}
-
 export default function client (routes, initialState = {}, options = {}) {
   const location = window.location.href.replace(window.location.origin, '')
 
