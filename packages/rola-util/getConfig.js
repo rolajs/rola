@@ -56,7 +56,7 @@ module.exports = function getConfig () {
 
   if (fs.existsSync(conf)) {
     const mod = transpile(conf, out)
-    config = mod.default || mod
+    config = Object.assign(config, mod.default || mod)
   }
 
   let plugins = []
