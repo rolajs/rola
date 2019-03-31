@@ -18,7 +18,6 @@
     "url": "https://github.com/estrattonbailey/rola/issues"
   },
   "homepage": "https://github.com/estrattonbailey/rola#readme",
-  "gitHead": "570605c164cc377cf02c6819a29398857ca7bb7c",
   "dependencies": {
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
@@ -26,5 +25,6 @@
   },
   "devDependencies": {
     "microbundle": "^0.11.0"
-  }
+  },
+  "gitHead": "570605c164cc377cf02c6819a29398857ca7bb7"
 }
