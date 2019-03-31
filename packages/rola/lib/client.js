@@ -22,9 +22,9 @@ export default function client (routes, initialState = {}, options = {}) {
 
   const [ route, params ] = router(location)
 
-  const serverContext = parse(JSON.stringify(window.__rola))
+  const { state, ...serverContext } = parse(JSON.stringify(window.__rola))
 
-  store.hydrate(Object.assign({}, serverContext.state, initialState, {
+  store.hydrate(Object.assign({}, state, initialState, {
     router: {
       location,
       params
@@ -34,6 +34,7 @@ export default function client (routes, initialState = {}, options = {}) {
   let view = route.view
 
   const context = {
+    ...serverContext,
     state: store.state,
     pathname: window.location.pathname
   }

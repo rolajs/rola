@@ -85,7 +85,8 @@ export default function server (routes, initialState = {}, options = {}) {
          */
         let context = {
           state: store.state,
-          pathname: route.pathname || pathname
+          pathname: route.pathname || pathname,
+          ...serverProps.context
         }
 
         const View = createServerRoot({
@@ -123,10 +124,7 @@ export default function server (routes, initialState = {}, options = {}) {
          * create tags with new context
          */
         const tags = createDocument({
-          context: {
-            ...context,
-            ...serverProps.context
-          },
+          context,
           plugins,
           ...preRenderData,
           ...postRenderData,

@@ -14,6 +14,18 @@ const preServerRender = require('@rola/util/preServerRender.js')
 
 export default function createStatic (view) {
   return function StaticComponent (context, serverProps) {
+    context = {
+      ...context,
+      ...serverProps.context,
+      state: {
+        ...context.state,
+        router: {
+          location: context.pathname,
+          params: {}
+        }
+      }
+    }
+
     const View = createServerRoot({
       root: view,
       context: { ...context },

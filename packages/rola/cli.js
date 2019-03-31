@@ -79,6 +79,8 @@ function createGenerator (config, plugins) {
 
   generator.on('rendered', pages => {
     log({ static: pages })
+    // TODO clear logs?
+    server && server.update()
   })
   generator.on('warn', e => {
     log(state => ({
@@ -271,6 +273,9 @@ prog
       })
 
       compiler.on('stats', stats => {
+        // TODO
+        // use the errors/warnings on stats objects
+        // to keep track on pertinent warnings
         stats.map(_stats => {
           const isServer = _stats.assets.reduce((bool, asset) => {
             if (/server/.test(asset.name)) bool = true

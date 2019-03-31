@@ -27,7 +27,13 @@ module.exports = async function render (pages, dest, options) {
 
   return Promise.all(
     loadRoutes(routes).map(async resolver => {
-      const resolved = await resolver()
+      let resolved
+
+      try {
+        resolved = await resolver()
+      } catch (e) {
+        emit('error', e)
+      }
 
       if (!resolved) return
 
