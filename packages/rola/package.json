@@ -12,6 +12,7 @@
     "rola": "./cli.js"
   },
   "scripts": {
+    "prepublish": "npm run build",
     "build": "bili index.js --format cjs --out-dir dist --minify",
     "watch": "bili index.js --format cjs --out-dir dist --watch"
   },
