@@ -1,6 +1,6 @@
 {
   "name": "@rola/preset-sass",
-  "version": "0.10.4",
+  "version": "0.10.5",
   "description": "Enable SASS for rola.",
   "main": "rola-preset-sass.js",
   "scripts": {},

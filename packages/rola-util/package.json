@@ -1,6 +1,6 @@
 {
   "name": "@rola/util",
-  "version": "0.10.4",
+  "version": "0.10.5",
   "description": "Internal utilities for rola.",
   "author": "estrattonbailey",
   "license": "MIT",
@@ -30,7 +30,7 @@
     "@babel/plugin-transform-react-jsx": "^7.3.0",
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
-    "@rola/log": "^0.10.4",
+    "@rola/log": "^0.10.5",
     "babel-loader": "^8.0.5",
     "babel-plugin-module-resolver": "^3.2.0",
     "fast-async": "^6.3.8",

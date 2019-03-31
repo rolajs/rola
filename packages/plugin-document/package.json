@@ -1,6 +1,6 @@
 {
   "name": "@rola/plugin-document",
-  "version": "0.10.0",
+  "version": "0.10.5",
   "description": "Tap into rola document creation.",
   "main": "rola-plugin-document.js",
   "scripts": {},
