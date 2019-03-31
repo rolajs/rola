@@ -1,6 +1,6 @@
 {
   "name": "rola",
-  "version": "0.10.5",
+  "version": "0.10.6",
   "description": "",
   "main": "dist/index.js",
   "files": [
@@ -40,7 +40,7 @@
     "@rola/compiler": "^0.10.5",
     "@rola/log": "^0.10.5",
     "@rola/preset-node": "^0.10.5",
-    "@rola/static": "^0.10.5",
+    "@rola/static": "^0.10.6",
     "@rola/util": "^0.10.5",
     "ansi-colors": "^3.2.3",
     "biti": "^2.4.0",
