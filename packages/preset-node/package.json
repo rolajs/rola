@@ -1,6 +1,6 @@
 {
   "name": "@rola/preset-node",
-  "version": "0.10.0",
+  "version": "0.10.4",
   "description": "Compile node with rola.",
   "main": "rola-preset-node.js",
   "scripts": {},
