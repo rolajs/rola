@@ -10,7 +10,9 @@ function req (file) {
   try {
     mod = require(file)
     mod = mod.default || mod
-  } catch (e) {}
+  } catch (e) {
+    console.error(e)
+  }
 
   return mod
 }
@@ -47,6 +49,7 @@ module.exports = function createServer ({ file, port }) {
 
             this.app(req, res, next)
           })
+          // TODO pass an error from developer through to brwoser?
           .use((req, res) => {
             const { name, version } = serverProps.context
 

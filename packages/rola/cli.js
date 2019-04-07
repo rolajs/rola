@@ -289,16 +289,6 @@ prog
           }
         })
 
-        server && server.update()
-
-        serve()
-
-        if (!compiled) {
-          createGenerator(config, plugins).watch('/static', '/build/assets')
-
-          compiled = true
-        }
-
         /**
          * reset logs
          */
@@ -308,6 +298,18 @@ prog
           log: [],
           stats: allstats
         })
+
+        if (server) {
+          server.update()
+        } else {
+          serve()
+        }
+
+        if (!compiled) {
+          createGenerator(config, plugins).watch('/static', '/build/assets')
+
+          compiled = true
+        }
       })
 
       compiler.watch()

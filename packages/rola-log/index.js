@@ -239,6 +239,10 @@ if (!process.env.DEBUG) {
   ;['log', 'warn', 'error'].map(type => {
     console[type] = (...args) => {
       args = args.map(arg => {
+        if (arg instanceof Error) {
+          return arg
+        }
+
         switch (typeof arg) {
           case 'object':
             return JSON.stringify(arg)

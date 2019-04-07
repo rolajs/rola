@@ -9,6 +9,7 @@ export default function Link (props) {
     className,
     target,
     download,
+    onClick,
     ...rest
   } = props
 
@@ -24,6 +25,8 @@ export default function Link (props) {
 
   return (
     <a href={href} className={cn} onClick={e => {
+      onClick && onClick(e)
+
       if (
         e.ctrlKey ||
         e.metaKey ||
