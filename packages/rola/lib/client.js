@@ -71,7 +71,7 @@ export default function client (routes, initialState = {}, options = {}) {
 
             store.hydrate(state)
 
-            Promise.resolve(options.resolve ? options.resolve({ state: store.state, pathname: route.pathname }) : null)
+            Promise.resolve(options.resolve ? options.resolve({ state: store.state, pathname: location }) : null)
               .then(() => {
                 document.title = meta.title || document.title
 
